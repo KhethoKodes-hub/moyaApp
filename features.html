@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>MoyaApp · Features</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-950: #0a1628;
+      --blue-900: #0f2240;
+      --blue-800: #1a3a6e;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #e8f2ff;
+      color: var(--blue-900);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Animated mesh background ── */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 80% at 20% -10%, rgba(147,197,253,0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 90% 30%, rgba(59,130,246,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 10% 80%, rgba(191,219,254,0.6) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 80% 90%, rgba(255,255,255,0.9) 0%, transparent 60%),
+        linear-gradient(160deg, #f0f8ff 0%, #dbeafe 40%, #bfdbfe 75%, #93c5fd 100%);
+      animation: meshFloat 20s ease-in-out infinite alternate;
+    }
+    @keyframes meshFloat {
+      0%   { background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%, 0% 0%; }
+      100% { background-position: 10% 20%, 90% 80%, 15% 85%, 85% 10%, 0% 0%; }
+    }
+
+    .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.35; pointer-events: none; z-index: -1; }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #93c5fd, #3b82f6); top: -100px; left: -150px; animation: o1 18s ease-in-out infinite; }
+    .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #bfdbfe, #60a5fa); top: 40%; right: -80px; animation: o2 22s ease-in-out infinite; }
+    .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, #dbeafe, #93c5fd); bottom: 10%; left: 15%; animation: o3 26s ease-in-out infinite; }
+    @keyframes o1 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,80px) scale(1.1);} 66%{transform:translate(-40px,40px) scale(0.9);} }
+    @keyframes o2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-80px,-60px) scale(1.15);} }
+    @keyframes o3 { 0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(50px,-40px) scale(1.08);} 80%{transform:translate(-30px,30px) scale(0.95);} }
+
+    /* ── Glass utilities ── */
+    .glass {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: 0 25px 50px -12px rgba(15,34,64,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .glass-strong {
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow: 0 32px 64px -16px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    /* ── Layout ── */
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── NAV ── */
+    nav { position: sticky; top: 0; z-index: 100; padding: 12px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 11px 22px; border-radius: 18px; gap: 12px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-mark { width: 36px; height: 36px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37,99,235,0.4); flex-shrink: 0; }
+    .logo-mark span { color: white; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; }
+    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--blue-900); letter-spacing: -0.5px; white-space: nowrap; }
+    .logo-text em { font-style: normal; color: var(--blue-600); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--blue-800); font-size: 14px; font-weight: 500; transition: color 0.2s; opacity: 0.8; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue-600); opacity: 1; }
+    .nav-links a.active { font-weight: 600; border-bottom: 2px solid var(--blue-600); padding-bottom: 2px; }
+    .badge-datafree { background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(96,165,250,0.15)); border: 1px solid rgba(37,99,235,0.3); color: var(--blue-700); padding: 6px 13px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .btn-nav { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 9px 18px; border-radius: 13px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4); transition: all 0.2s; white-space: nowrap; font-family: 'DM Sans', sans-serif; }
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; flex-shrink: 0; touch-action: manipulation; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--blue-800); border-radius: 2px; transition: all 0.3s; }
+
+    /* Mobile nav overlay */
+    .mobile-nav {
+      display: none;
+      position: fixed; inset: 0; z-index: 190;
+      background: rgba(240,248,255,0.97);
+      backdrop-filter: blur(30px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; padding: 80px 32px 40px;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav.open { display: flex; opacity: 1; }
+    .mobile-nav a {
+      text-decoration: none; color: var(--blue-900);
+      font-size: 26px; font-weight: 800; font-family: 'Syne', sans-serif;
+      padding: 13px 0; border-bottom: 1px solid rgba(37,99,235,0.1);
+      width: 100%; text-align: center; letter-spacing: -0.5px; transition: color 0.2s;
+    }
+    .mobile-nav a:hover, .mobile-nav a.active { color: var(--blue-600); }
+    .mobile-nav-close {
+      position: absolute; top: 18px; right: 18px;
+      width: 44px; height: 44px; background: rgba(37,99,235,0.08);
+      border: 1px solid rgba(37,99,235,0.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--blue-900);
+      font-family: 'Syne', sans-serif; touch-action: manipulation;
+    }
+    .mobile-nav-cta {
+      margin-top: 18px; background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white; border: none; padding: 17px 48px; border-radius: 18px;
+      font-size: 17px; font-weight: 700; font-family: 'Syne', sans-serif;
+      cursor: pointer; box-shadow: 0 10px 30px rgba(37,99,235,0.45);
+      width: 100%; touch-action: manipulation;
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero { margin: 20px 0 56px; border-radius: 28px; overflow: hidden; position: relative; min-height: 280px; display: flex; align-items: center; justify-content: center; }
+    .page-hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center 20%; transition: transform 0.6s ease; }
+    .page-hero:hover .page-hero-img { transform: scale(1.03); }
+    .page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(191,219,254,0.5) 0%, rgba(255,255,255,0.3) 50%, rgba(147,197,253,0.35) 100%); backdrop-filter: blur(3px); }
+    .page-hero-content { position: relative; z-index: 1; text-align: center; padding: 56px 20px; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(20px); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); padding: 7px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--blue-800); margin-bottom: 20px; }
+    .page-hero-h1 { font-family: 'Syne', sans-serif; font-size: clamp(30px, 6vw, 68px); font-weight: 800; letter-spacing: -2px; color: var(--blue-950); line-height: 1.06; margin-bottom: 18px; }
+    .page-hero-h1 .accent { background: linear-gradient(135deg, #2563eb, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .page-hero-sub { font-size: 16px; color: #3a5a8c; max-width: 480px; margin: 0 auto; backdrop-filter: blur(12px); background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.5); padding: 12px 22px; border-radius: 18px; font-weight: 300; line-height: 1.65; }
+
+    /* ── FILTER CHIPS ── */
+    .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-bottom: 56px; }
+    .chip { padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; color: var(--blue-800); user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .chip:hover, .chip.active { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-color: transparent; box-shadow: 0 6px 18px rgba(37,99,235,0.4); transform: translateY(-2px); }
+
+    /* ── SECTION HEADER ── */
+    .section-header { margin-bottom: 36px; }
+    .section-header.center { text-align: center; }
+    .section-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--blue-600); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; }
+    .section-h2 { font-family: 'Syne', sans-serif; font-size: clamp(22px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 10px; }
+    .section-sub { font-size: 16px; color: #4a6a9c; font-weight: 300; line-height: 1.7; max-width: 560px; }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    /* ── MESSAGING ── */
+    .msg-section { padding: 0 0 64px; }
+    .msg-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; }
+
+    .msg-hero-card {
+      border-radius: 26px; overflow: hidden; position: relative;
+      min-height: 360px; display: flex; flex-direction: column; justify-content: flex-end;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .msg-hero-card:hover { transform: translateY(-8px) scale(1.005); }
+    .msg-hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop'); background-size: cover; background-position: center 30%; transition: transform 0.5s; }
+    .msg-hero-card:hover .msg-hero-img { transform: scale(1.05); }
+    .msg-hero-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.05) 60%, transparent 100%); }
+    .msg-hero-content { position: relative; z-index: 1; padding: 24px 28px; }
+
+    .datafree-badge {
+      display: inline-flex; align-items: center; gap: 6px;
+      background: rgba(34,197,94,0.2); border: 1px solid rgba(34,197,94,0.4);
+      color: #86efac; padding: 5px 13px; border-radius: 20px;
+      font-size: 12px; font-weight: 700; margin-bottom: 12px;
+      animation: badgePulse 2.5s ease-in-out infinite;
+    }
+    @keyframes badgePulse { 0%,100%{box-shadow: 0 0 0 0 rgba(34,197,94,0);} 50%{box-shadow: 0 0 0 6px rgba(34,197,94,0.15);} }
+    .datafree-dot { width: 6px; height: 6px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
+
+    .msg-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; color: white; margin-bottom: 10px; letter-spacing: -0.5px; line-height: 1.15; }
+    .msg-desc { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.65; font-weight: 300; margin-bottom: 16px; }
+    .msg-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .msg-tag { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 12px; border-radius: 20px; font-size: 11px; font-weight: 500; color: white; }
+
+    .msg-stack { display: flex; flex-direction: column; gap: 18px; }
+    .msg-sub-card {
+      border-radius: 22px; overflow: hidden; position: relative;
+      flex: 1; min-height: 160px; display: flex; flex-direction: column; justify-content: flex-end;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .msg-sub-card:hover { transform: translateY(-6px); }
+    .msg-sub-img { position: absolute; inset: 0; background-size: cover; background-position: center; transition: transform 0.5s; }
+    .msg-sub-card:hover .msg-sub-img { transform: scale(1.06); }
+    .msg-sub-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.6) 0%, transparent 65%); }
+    .msg-sub-content { position: relative; z-index: 1; padding: 16px 20px; }
+    .sub-badge { display: inline-flex; align-items: center; gap: 5px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.35); padding: 4px 10px; border-radius: 14px; font-size: 11px; font-weight: 600; color: white; margin-bottom: 7px; }
+    .sub-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: white; margin-bottom: 4px; }
+    .sub-desc { font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.5; }
+
+    /* ── DISCOVER GRID ── */
+    .discover-section { padding: 0 0 64px; }
+    .discover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .discover-card {
+      border-radius: 22px; overflow: hidden;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .discover-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 28px 56px -16px rgba(37,99,235,0.35); }
+    .discover-img-wrap { height: 185px; overflow: hidden; position: relative; }
+    .discover-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; display: block; }
+    .discover-card:hover .discover-img { transform: scale(1.07); }
+    .discover-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.4) 0%, transparent 60%); }
+    .discover-img-tag { position: absolute; top: 10px; left: 10px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.45); padding: 4px 11px; border-radius: 14px; font-size: 11px; font-weight: 600; color: white; }
+    .discover-body { padding: 18px 20px 22px; }
+    .discover-icon { font-size: 26px; margin-bottom: 9px; }
+    .discover-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px; color: var(--blue-950); margin-bottom: 7px; }
+    .discover-desc { font-size: 13px; color: #4a6a9c; line-height: 1.65; }
+
+    /* ── PLAY + PAY ── */
+    .playpay-section { padding: 0 0 64px; }
+    .playpay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .playpay-card {
+      border-radius: 26px; overflow: hidden; position: relative;
+      min-height: 320px; display: flex; flex-direction: column; justify-content: flex-end;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .playpay-card:hover { transform: translateY(-10px) scale(1.01); }
+    .playpay-img { position: absolute; inset: 0; background-size: cover; background-position: center 30%; transition: transform 0.5s; }
+    .playpay-card:hover .playpay-img { transform: scale(1.05); }
+    .playpay-overlay { position: absolute; inset: 0; }
+    .playpay-overlay.purple { background: linear-gradient(to top, rgba(88,28,135,0.6) 0%, rgba(10,22,40,0.1) 60%, transparent 100%); }
+    .playpay-overlay.blue   { background: linear-gradient(to top, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.1) 60%, transparent 100%); }
+    .playpay-content { position: relative; z-index: 1; padding: 24px 28px; }
+    .playpay-badge { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 5px 12px; border-radius: 18px; font-size: 12px; font-weight: 600; color: white; margin-bottom: 10px; }
+    .playpay-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 26px; color: white; margin-bottom: 9px; letter-spacing: -0.5px; }
+    .playpay-desc { font-size: 14px; color: rgba(255,255,255,0.82); line-height: 1.65; font-weight: 300; margin-bottom: 14px; }
+    .playpay-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .playpay-tag { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 4px 11px; border-radius: 14px; font-size: 12px; color: white; }
+
+    /* ── PRIVACY + NETWORKS ── */
+    .trust-section { padding: 0 0 64px; }
+    .trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+
+    .privacy-card { border-radius: 26px; padding: 32px; }
+    .privacy-top { display: flex; align-items: flex-start; gap: 18px; margin-bottom: 22px; }
+    .privacy-icon-wrap { width: 58px; height: 58px; background: linear-gradient(135deg, rgba(37,99,235,0.12), rgba(96,165,250,0.12)); border: 1px solid rgba(37,99,235,0.2); border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 28px; flex-shrink: 0; }
+    .privacy-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--blue-950); margin-bottom: 7px; }
+    .privacy-desc { font-size: 14px; color: #4a6a9c; line-height: 1.7; }
+    .privacy-badges { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .privacy-badge { display: flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.06); border: 1px solid rgba(37,99,235,0.15); padding: 9px 12px; border-radius: 12px; font-size: 13px; font-weight: 500; color: var(--blue-900); }
+
+    .network-card { border-radius: 26px; padding: 32px; position: relative; overflow: hidden; min-height: 240px; }
+    .network-card-bg { position: absolute; inset: 0; background: linear-gradient(135deg, #0f2240 0%, #1a3a6e 50%, #1e3fa3 100%); }
+    .network-card-bg::before { content: ''; position: absolute; inset: 0; background: radial-gradient(ellipse 70% 80% at 80% 20%, rgba(96,165,250,0.25), transparent); }
+    .network-card-content { position: relative; z-index: 1; }
+    .network-eyebrow { font-size: 12px; font-weight: 600; color: #93c5fd; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 10px; }
+    .network-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: white; margin-bottom: 8px; }
+    .network-desc { font-size: 14px; color: #93c5fd; line-height: 1.65; margin-bottom: 22px; font-weight: 300; }
+    .network-pills { display: flex; gap: 9px; flex-wrap: wrap; }
+    .network-pill { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); backdrop-filter: blur(12px); padding: 9px 18px; border-radius: 14px; font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: white; }
+
+    /* ── MORE IN DISCOVER ── */
+    .more-section { padding: 0 0 64px; }
+    .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+    .more-card {
+      border-radius: 18px; padding: 20px 22px;
+      display: flex; align-items: center; gap: 16px;
+      transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      touch-action: manipulation;
+    }
+    .more-card:hover { transform: translateY(-6px) scale(1.01); }
+    .more-icon { font-size: 36px; flex-shrink: 0; }
+    .more-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--blue-950); margin-bottom: 3px; }
+    .more-label { font-size: 12px; color: #64748b; }
+
+    /* ── COMPARISON ── */
+    .compare-section { padding: 0 0 64px; }
+    .compare-card { border-radius: 26px; padding: 40px 44px; }
+    .compare-header { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
+    .compare-icon { font-size: 34px; }
+    .compare-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--blue-950); }
+    .compare-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .compare-item { display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px; border-radius: 16px; background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.12); transition: all 0.2s; }
+    .compare-item:hover { background: rgba(37,99,235,0.1); transform: translateX(4px); }
+    .check-circle { width: 26px; height: 26px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; flex-shrink: 0; margin-top: 1px; }
+    .compare-item-text { font-size: 14px; font-weight: 500; color: var(--blue-900); line-height: 1.4; }
+
+    /* ── DOWNLOAD CTA ── */
+    .download-section { padding: 0 0 56px; }
+    .download-inner { border-radius: 32px; padding: 58px 48px; text-align: center; position: relative; overflow: hidden; }
+    .download-inner::before { content:''; position:absolute; inset: 0; background: radial-gradient(ellipse 80% 80% at 50% -20%, rgba(37,99,235,0.07), transparent); pointer-events: none; }
+    .download-h2 { font-family: 'Syne', sans-serif; font-size: clamp(26px, 4vw, 48px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 12px; }
+    .download-sub { font-size: 16px; color: #4a6a9c; margin-bottom: 32px; font-weight: 300; }
+    .download-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
+    .btn-store { display: inline-flex; align-items: center; gap: 12px; background: var(--blue-950); color: white; border: none; padding: 15px 26px; border-radius: 17px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 8px 24px rgba(10,22,40,0.3); transition: all 0.25s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; }
+    .btn-store:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(10,22,40,0.4); }
+    .btn-store-icon { font-size: 24px; }
+    .btn-store-small { font-size: 10px; opacity: 0.7; }
+    .btn-store-big { font-size: 16px; font-weight: 700; }
+    .download-note { font-size: 12px; color: #94a3b8; }
+
+    /* ── FOOTER ── */
+    footer { padding: 36px 0 24px; border-top: 1px solid rgba(37,99,235,0.12); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: #94a3b8; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: #64748b; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--blue-600); }
+
+    /* ══════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ══════════════════════════════ */
+
+    /* ── Large tablet: 900–1200px ── */
+    @media (max-width: 1200px) {
+      .msg-grid { grid-template-columns: 1fr; }
+      .msg-stack { flex-direction: row; gap: 16px; }
+      .msg-sub-card { min-height: 190px; }
+    }
+
+    /* ── Tablet: 768–900px ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none !important; }
+      .badge-datafree { display: none; }
+      .hamburger { display: flex !important; }
+
+      .discover-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+      .playpay-grid { grid-template-columns: 1fr; }
+      .trust-grid { grid-template-columns: 1fr; }
+      .compare-grid { grid-template-columns: 1fr; }
+      .more-grid { grid-template-columns: 1fr 1fr; }
+
+      .page-hero { margin: 16px 0 44px; border-radius: 22px; }
+      .page-hero-content { padding: 44px 16px; }
+
+      .chips-wrap { margin-bottom: 44px; }
+
+      .msg-grid { grid-template-columns: 1fr; }
+      .msg-stack { flex-direction: row; }
+      .msg-sub-card { min-height: 200px; }
+    }
+
+    /* ── Mobile: 600–768px ── */
+    @media (max-width: 768px) {
+      .container { padding: 0 14px; }
+      .nav-inner { padding: 10px 14px; border-radius: 15px; }
+      .logo-text { font-size: 18px; }
+      .logo-mark { width: 33px; height: 33px; border-radius: 10px; }
+      .logo-mark span { font-size: 16px; }
+
+      .page-hero { margin: 12px 0 36px; border-radius: 20px; min-height: 220px; }
+      .page-hero-content { padding: 36px 14px; }
+      .page-hero-h1 { font-size: clamp(26px, 8vw, 40px); letter-spacing: -1.5px; }
+      .page-hero-sub { font-size: 14px; padding: 10px 16px; }
+      .hero-pill { font-size: 12px; padding: 6px 14px; }
+
+      .chips-wrap { gap: 7px; margin-bottom: 36px; }
+      .chip { padding: 7px 13px; font-size: 12px; }
+
+      .section-h2 { font-size: clamp(20px, 6vw, 32px); letter-spacing: -1px; }
+      .section-sub { font-size: 14px; }
+      .section-header { margin-bottom: 28px; }
+
+      .msg-section { padding: 0 0 48px; }
+      .msg-grid { grid-template-columns: 1fr; gap: 14px; }
+      .msg-hero-card { min-height: 300px; border-radius: 20px; }
+      .msg-hero-content { padding: 18px 20px; }
+      .msg-title { font-size: 20px; }
+      .msg-stack { flex-direction: column; gap: 12px; }
+      .msg-sub-card { min-height: 150px; border-radius: 18px; }
+
+      .discover-section { padding: 0 0 48px; }
+      .discover-grid { grid-template-columns: 1fr; gap: 12px; }
+      .discover-img-wrap { height: 160px; }
+      .discover-card { border-radius: 18px; }
+      .discover-body { padding: 16px 18px 20px; }
+
+      .playpay-section { padding: 0 0 48px; }
+      .playpay-grid { grid-template-columns: 1fr; gap: 14px; }
+      .playpay-card { min-height: 270px; border-radius: 20px; }
+      .playpay-content { padding: 18px 22px; }
+      .playpay-title { font-size: 22px; }
+
+      .trust-section { padding: 0 0 48px; }
+      .trust-grid { grid-template-columns: 1fr; gap: 14px; }
+      .privacy-card { padding: 24px 22px; border-radius: 20px; }
+      .privacy-top { gap: 14px; }
+      .privacy-icon-wrap { width: 50px; height: 50px; font-size: 24px; }
+      .privacy-badges { grid-template-columns: 1fr 1fr; gap: 8px; }
+      .network-card { padding: 24px 22px; border-radius: 20px; }
+
+      .more-section { padding: 0 0 48px; }
+      .more-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .more-card { padding: 16px 18px; border-radius: 16px; gap: 12px; }
+      .more-icon { font-size: 30px; }
+
+      .compare-section { padding: 0 0 48px; }
+      .compare-card { padding: 26px 22px; border-radius: 20px; }
+      .compare-header { margin-bottom: 22px; }
+      .compare-grid { grid-template-columns: 1fr; gap: 10px; }
+      .compare-item { padding: 12px 14px; border-radius: 13px; }
+      .compare-item-text { font-size: 13px; }
+
+      .download-section { padding: 0 0 44px; }
+      .download-inner { padding: 40px 22px; border-radius: 22px; }
+      .download-buttons { flex-direction: column; align-items: center; gap: 10px; }
+      .btn-store { width: 100%; max-width: 300px; justify-content: center; }
+
+      footer { padding: 28px 0 20px; }
+      .footer-inner { flex-direction: column; gap: 14px; }
+      .footer-links { gap: 14px; }
+    }
+
+    /* ── Small Mobile: up to 480px ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 12px; }
+
+      .page-hero { border-radius: 16px; min-height: 200px; }
+      .page-hero-content { padding: 28px 12px; }
+      .page-hero-h1 { font-size: clamp(22px, 9vw, 34px); }
+
+      .more-grid { grid-template-columns: 1fr; gap: 9px; }
+      .more-card { padding: 14px 16px; }
+
+      .privacy-badges { grid-template-columns: 1fr; }
+
+      .msg-hero-card { min-height: 260px; }
+      .msg-title { font-size: 18px; }
+      .msg-tags { gap: 5px; }
+      .msg-tag { font-size: 10px; padding: 4px 10px; }
+
+      .playpay-card { min-height: 240px; }
+      .playpay-title { font-size: 20px; }
+
+      .network-pills { gap: 7px; }
+      .network-pill { padding: 8px 14px; font-size: 13px; }
+
+      footer { padding: 24px 0 18px; }
+    }
+
+    /* ── Very small: up to 360px ── */
+    @media (max-width: 360px) {
+      .page-hero-h1 { font-size: 20px; letter-spacing: -0.5px; }
+      .section-h2 { font-size: 20px; }
+      .msg-title { font-size: 16px; }
+      .playpay-title { font-size: 18px; }
+    }
+
+    /* ── Landscape phone ── */
+    @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+      .page-hero { min-height: 160px; margin: 10px 0 30px; }
+      .page-hero-content { padding: 24px 14px; }
+      .page-hero-h1 { font-size: 28px; }
+      .chips-wrap { margin-bottom: 28px; }
+      .msg-grid { grid-template-columns: 1.2fr 1fr; }
+      .msg-stack { flex-direction: column; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-mesh"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- MOBILE NAV OVERLAY -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="index.html" onclick="closeMobileNav()">Home</a>
+    <a href="features.html" class="active" onclick="closeMobileNav()">Features</a>
+    <a href="works.html" onclick="closeMobileNav()">How it works</a>
+    <a href="discover.html" onclick="closeMobileNav()">Discover</a>
+    <a href="story.html" onclick="closeMobileNav()">Our story</a>
+    <a href="business.html" onclick="closeMobileNav()">Business</a>
+    <a href="download.html"><button class="mobile-nav-cta" onclick="closeMobileNav()">🚀 Download free</button></a>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner glass">
+        <a class="logo" href="index.html">
+          <div class="logo-mark"><span>M</span></div>
+          <span class="logo-text">Moya<em>App</em></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="features.html" class="active">Features</a></li>
+          <li><a href="works.html">How it works</a></li>
+          <li><a href="discover.html">Discover</a></li>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="business.html">Business</a></li>
+        </ul>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+          <span class="badge-datafree">dataFREE in SA ✓</span>
+          <a href="download.html"><button class="btn-nav">Download</button></a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="container">
+    <div class="page-hero">
+      <div class="page-hero-img"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="hero-pill">✨ Everything you need</div>
+        <h1 class="page-hero-h1">Powerful features,<br><span class="accent">zero data worries</span></h1>
+        <p class="page-hero-sub">Chat, discover, earn, and pay — all in one app built for South Africa.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER CHIPS -->
+  <div class="container">
+    <div class="chips-wrap">
+      <span class="chip glass active">💬 Messaging</span>
+      <span class="chip glass">📞 Calls</span>
+      <span class="chip glass">🔍 Discover</span>
+      <span class="chip glass">🎮 MoyaPlay</span>
+      <span class="chip glass">💳 MoyaPay</span>
+      <span class="chip glass">🔒 Privacy</span>
+      <span class="chip glass">🇿🇦 Gov services</span>
+    </div>
+  </div>
+
+  <!-- MESSAGING -->
+  <section class="msg-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Core feature</div>
+        <h2 class="section-h2">Chat & messaging</h2>
+        <p class="section-sub">The original datafree feature — texts that never stop, even when your bundle hits zero.</p>
+      </div>
+      <div class="msg-grid">
+        <div class="msg-hero-card">
+          <div class="msg-hero-img"></div>
+          <div class="msg-hero-overlay"></div>
+          <div class="msg-hero-content">
+            <div class="datafree-badge"><span class="datafree-dot"></span> dataFREE texts active</div>
+            <div class="msg-title">Unlimited text messaging — even with zero data</div>
+            <p class="msg-desc">Chat with friends and family even when your data runs out. On MTN, Vodacom, Cell C, and Telkom, texts keep flowing — zero data, zero cost, zero stress.</p>
+            <div class="msg-tags">
+              <span class="msg-tag">💬 Group chats</span>
+              <span class="msg-tag">🎤 Voice notes</span>
+              <span class="msg-tag">📎 Attachments (uses data)</span>
+              <span class="msg-tag">😊 Stickers</span>
+            </div>
+          </div>
+        </div>
+        <div class="msg-stack">
+          <div class="msg-sub-card glass">
+            <div class="msg-sub-img" style="background-image: url('https://images.unsplash.com/photo-1589254066213-a0c9dc85327c?q=80&w=1964&auto=format&fit=crop');"></div>
+            <div class="msg-sub-overlay"></div>
+            <div class="msg-sub-content">
+              <div class="sub-badge">📞 High quality</div>
+              <div class="sub-title">Voice & video calls</div>
+              <p class="sub-desc">Crystal-clear calls on Wi-Fi or data — low bandwidth, high clarity.</p>
+            </div>
+          </div>
+          <div class="msg-sub-card glass">
+            <div class="msg-sub-img" style="background-image: url('https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=2070&auto=format&fit=crop'); background-position: center 50%;"></div>
+            <div class="msg-sub-overlay"></div>
+            <div class="msg-sub-content">
+              <div class="sub-badge">🔒 Private</div>
+              <div class="sub-title">End-to-end encryption</div>
+              <p class="sub-desc">Your messages are for your eyes only — not even Moya can read them.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section class="discover-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Discover</div>
+        <h2 class="section-h2">Services & information</h2>
+        <p class="section-sub">All inside one app, data-efficient or zero-rated — always accessible.</p>
+      </div>
+      <div class="discover-grid">
+        <div class="discover-card glass">
+          <div class="discover-img-wrap">
+            <img class="discover-img" src="https://images.unsplash.com/photo-1575505586569-646b2ca898fc?q=80&w=2070&auto=format&fit=crop" alt="SASSA" loading="lazy">
+            <div class="discover-overlay"></div>
+            <span class="discover-img-tag">🇿🇦 Government</span>
+          </div>
+          <div class="discover-body">
+            <div class="discover-icon">🏛️</div>
+            <div class="discover-title">SASSA grants</div>
+            <p class="discover-desc">Check your grant status, apply for SRD, and access social services — all data-free on supported networks.</p>
+          </div>
+        </div>
+        <div class="discover-card glass">
+          <div class="discover-img-wrap">
+            <img class="discover-img" src="https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=2070&auto=format&fit=crop" alt="Load shedding" loading="lazy">
+            <div class="discover-overlay"></div>
+            <span class="discover-img-tag">⚡ Essential</span>
+          </div>
+          <div class="discover-body">
+            <div class="discover-icon">🔦</div>
+            <div class="discover-title">Load shedding schedules</div>
+            <p class="discover-desc">Real-time updates by area, stage forecasts, and push notifications so you're always prepared.</p>
+          </div>
+        </div>
+        <div class="discover-card glass">
+          <div class="discover-img-wrap">
+            <img class="discover-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop" alt="News" loading="lazy">
+            <div class="discover-overlay"></div>
+            <span class="discover-img-tag">📰 Daily</span>
+          </div>
+          <div class="discover-body">
+            <div class="discover-icon">🌤️</div>
+            <div class="discover-title">News & weather</div>
+            <p class="discover-desc">Top SA stories, severe weather alerts, and live sports scores — data-light browsing, always current.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOYAPLAY + MOYAPAY -->
+  <section class="playpay-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Play & Pay</div>
+        <h2 class="section-h2">Earn and transact</h2>
+        <p class="section-sub">Win real cash and manage your money — all within the app you already love.</p>
+      </div>
+      <div class="playpay-grid">
+        <div class="playpay-card">
+          <div class="playpay-img" style="background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=2070&auto=format&fit=crop');"></div>
+          <div class="playpay-overlay purple"></div>
+          <div class="playpay-content">
+            <div class="playpay-badge">🎮 Play & earn</div>
+            <div class="playpay-title">MoyaPlay</div>
+            <p class="playpay-desc">Daily quizzes, games, and live competitions — win real cash. No data needed for the quiz lobby or leaderboard.</p>
+            <div class="playpay-tags">
+              <span class="playpay-tag">🏆 R5,000+ weekly</span>
+              <span class="playpay-tag">⏱️ 60-sec rounds</span>
+              <span class="playpay-tag">📊 Leaderboards</span>
+            </div>
+          </div>
+        </div>
+        <div class="playpay-card">
+          <div class="playpay-img" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d9?q=80&w=2070&auto=format&fit=crop'); background-position: center 20%;"></div>
+          <div class="playpay-overlay blue"></div>
+          <div class="playpay-content">
+            <div class="playpay-badge">💳 Financial</div>
+            <div class="playpay-title">MoyaPay & Marketplace</div>
+            <p class="playpay-desc">Digital wallet, prepaid Mastercard, airtime top-ups, and bus tickets — zero-rated transactions on supported networks.</p>
+            <div class="playpay-tags">
+              <span class="playpay-tag">💸 Send money</span>
+              <span class="playpay-tag">💳 Virtual card</span>
+              <span class="playpay-tag">🚌 Bus tickets</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PRIVACY + NETWORKS -->
+  <section class="trust-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Trust & coverage</div>
+        <h2 class="section-h2">Private and nationwide</h2>
+      </div>
+      <div class="trust-grid">
+        <div class="privacy-card glass-strong">
+          <div class="privacy-top">
+            <div class="privacy-icon-wrap">🛡️</div>
+            <div>
+              <div class="privacy-title">Privacy by default</div>
+              <p class="privacy-desc">All one-on-one chats are end-to-end encrypted. We don't store message history — your conversations stay yours, always.</p>
+            </div>
+          </div>
+          <div class="privacy-badges">
+            <div class="privacy-badge"><span>🔐</span> e2e encrypted</div>
+            <div class="privacy-badge"><span>📵</span> No tracking</div>
+            <div class="privacy-badge"><span>🔑</span> Local keys</div>
+            <div class="privacy-badge"><span>✅</span> Open standard</div>
+          </div>
+        </div>
+        <div class="network-card">
+          <div class="network-card-bg"></div>
+          <div class="network-card-content">
+            <div class="network-eyebrow">📡 Supported networks</div>
+            <div class="network-title">Zero-rated on 4 SA networks</div>
+            <p class="network-desc">MTN, Vodacom, Cell C, and Telkom. Texts never count toward your data bundle — even when you're at zero. Nationwide coverage, automatic switching.</p>
+            <div class="network-pills">
+              <span class="network-pill">MTN</span>
+              <span class="network-pill">Vodacom</span>
+              <span class="network-pill">Cell C</span>
+              <span class="network-pill">Telkom</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE IN DISCOVER -->
+  <section class="more-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ More inside Discover</div>
+        <h2 class="section-h2">Even more to explore</h2>
+      </div>
+      <div class="more-grid">
+        <div class="more-card glass"><span class="more-icon">📚</span><div><div class="more-title">Wikipedia</div><div class="more-label">Zero-data browsing</div></div></div>
+        <div class="more-card glass"><span class="more-icon">💼</span><div><div class="more-title">Job listings</div><div class="more-label">Updated daily</div></div></div>
+        <div class="more-card glass"><span class="more-icon">🏥</span><div><div class="more-title">Health vouchers</div><div class="more-label">Clinic bookings</div></div></div>
+        <div class="more-card glass"><span class="more-icon">⚽</span><div><div class="more-title">Live sports scores</div><div class="more-label">PSL, rugby & more</div></div></div>
+        <div class="more-card glass"><span class="more-icon">🎟️</span><div><div class="more-title">Event tickets</div><div class="more-label">Concerts & sport</div></div></div>
+        <div class="more-card glass"><span class="more-icon">🛒</span><div><div class="more-title">Classifieds</div><div class="more-label">Buy & sell locally</div></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPARISON -->
+  <section class="compare-section">
+    <div class="container">
+      <div class="compare-card glass-strong">
+        <div class="compare-header">
+          <span class="compare-icon">⚡</span>
+          <div class="compare-title">What makes Moya unique</div>
+        </div>
+        <div class="compare-grid">
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">dataFREE texts when your bundle runs out</div></div>
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">SASSA & government services access</div></div>
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">End-to-end encryption by default</div></div>
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">MoyaPay digital wallet & Mastercard</div></div>
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">Earn real money with MoyaPlay</div></div>
+          <div class="compare-item"><div class="check-circle">✓</div><div class="compare-item-text">Zero-rated on all 4 major SA networks</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section class="download-section">
+    <div class="container">
+      <div class="download-inner glass-strong">
+        <div class="section-eyebrow" style="display:inline-flex;justify-content:center;margin-bottom:18px;">✨ Experience every feature</div>
+        <h2 class="download-h2">All features. <span style="color:var(--blue-600)">Free. Forever.</span></h2>
+        <p class="download-sub">Download MoyaApp — it's free, it's datafree, it's yours.</p>
+        <div class="download-buttons">
+          <button class="btn-store">
+            <span class="btn-store-icon">🤖</span>
+            <div><div class="btn-store-small">Get it on</div><div class="btn-store-big">Google Play</div></div>
+          </button>
+          <button class="btn-store">
+            <span class="btn-store-icon">🍎</span>
+            <div><div class="btn-store-small">Download on the</div><div class="btn-store-big">App Store</div></div>
+          </button>
+        </div>
+        <p class="download-note">* dataFREE texts on MTN, Vodacom, Cell C & Telkom when out of bundle. Attachments and calls use data or Wi-Fi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <a class="logo" href="index.html" style="display:inline-flex;margin-bottom:8px;">
+            <div class="logo-mark"><span>M</span></div>
+            <span class="logo-text">Moya<em>App</em></span>
+          </a>
+          <p class="footer-copy" style="margin-top:8px;">© 2025 MoyaApp · Built for South Africa 🇿🇦</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Support</a>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Mobile Nav ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      hamburger.children[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+      hamburger.children[1].style.opacity = '0';
+      hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+      hamburger.children[0].style.transform = '';
+      hamburger.children[1].style.opacity = '';
+      hamburger.children[2].style.transform = '';
+    }
+    hamburger.addEventListener('click', () => {
+      if (mobileNav.classList.contains('open')) closeMobileNav();
+      else openMobileNav();
+    });
+    mobileNavClose.addEventListener('click', closeMobileNav);
+
+    // ── Filter chips ──
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // ── Scroll entrance animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+
+    const animEls = document.querySelectorAll(
+      '.discover-card, .playpay-card, .more-card, .compare-item, .privacy-badge, .network-pill'
+    );
+    animEls.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(26px)';
+      el.style.transition = `opacity 0.55s ease ${i * 0.05}s, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.05}s`;
+      observer.observe(el);
+    });
+
+    document.querySelectorAll('.msg-sub-card, .msg-hero-card').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(26px)';
+      el.style.transition = `opacity 0.55s ease ${i * 0.06 + 0.15}s, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.06 + 0.15}s`;
+      observer.observe(el);
+    });
+
+    // ── Touch feedback ──
+    document.querySelectorAll('.btn-store, .mobile-nav-cta, .btn-nav').forEach(btn => {
+      btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
+      btn.addEventListener('touchend', () => btn.style.opacity = '', { passive: true });
+    });
+  </script>
+</body>
+</html>

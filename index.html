@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>MoyaApp · Chat Without Limits</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cabinet+Grotesk:wght@300;400;500;700;800;900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --ink: #050d1a;
+      --ink-soft: #1a2d4a;
+      --cobalt: #0038ff;
+      --cobalt-bright: #3364ff;
+      --electric: #00e5ff;
+      --surface: #f0f5ff;
+      --white: #ffffff;
+      --cream: #f8faff;
+      --glass: rgba(255,255,255,0.55);
+      --glass-border: rgba(255,255,255,0.8);
+      --shadow-deep: 0 40px 80px -20px rgba(0,20,80,0.3);
+      --shadow-card: 0 20px 50px -12px rgba(0,20,80,0.18);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+    body {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    /* ── CUSTOM CURSOR (desktop only) ── */
+    @media (hover: hover) and (pointer: fine) {
+      body { cursor: none; }
+      #cursor {
+        width: 14px; height: 14px;
+        background: var(--cobalt);
+        border-radius: 50%;
+        position: fixed; top: 0; left: 0;
+        pointer-events: none; z-index: 9999;
+        transition: transform 0.15s ease, background 0.2s ease;
+        mix-blend-mode: multiply;
+      }
+      #cursor-ring {
+        width: 38px; height: 38px;
+        border: 2px solid var(--cobalt);
+        border-radius: 50%;
+        position: fixed; top: 0; left: 0;
+        pointer-events: none; z-index: 9998;
+        transition: all 0.18s ease;
+        opacity: 0.5;
+      }
+      .cursor-hover #cursor { transform: scale(2.5); background: var(--electric); }
+      .cursor-hover #cursor-ring { transform: scale(1.5); opacity: 0.2; }
+    }
+    #cursor, #cursor-ring { display: none; }
+    @media (hover: hover) and (pointer: fine) {
+      #cursor, #cursor-ring { display: block; }
+    }
+
+    /* ── BACKGROUND ── */
+    .bg-layer {
+      position: fixed; inset: 0; z-index: -2;
+      background:
+        radial-gradient(ellipse 120% 80% at 0% 0%, #c5d8ff 0%, transparent 55%),
+        radial-gradient(ellipse 80% 80% at 100% 100%, #d0e4ff 0%, transparent 60%),
+        linear-gradient(175deg, #f8faff 0%, #eaf1ff 50%, #dce9ff 100%);
+    }
+    .noise {
+      position: fixed; inset: 0; z-index: -1;
+      opacity: 0.035;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+      background-size: 256px;
+      pointer-events: none;
+    }
+
+    /* ── CONTAINER ── */
+    .container { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── NAV ── */
+    nav { position: sticky; top: 0; z-index: 200; padding: 10px 0; }
+    .nav-inner {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 12px 20px; border-radius: 18px;
+      background: rgba(248,250,255,0.92);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: blur(24px) saturate(180%);
+      box-shadow: 0 8px 32px rgba(0,20,80,0.08);
+      gap: 12px;
+    }
+
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-mark {
+      width: 38px; height: 38px;
+      background: linear-gradient(135deg, var(--cobalt), var(--cobalt-bright));
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; color: white; font-size: 18px;
+      box-shadow: 0 6px 20px rgba(0,56,255,0.5);
+      transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.3s;
+      flex-shrink: 0;
+    }
+    .logo:hover .logo-mark { transform: rotate(-8deg) scale(1.12); box-shadow: 0 12px 30px rgba(0,56,255,0.6); }
+    .logo-text { font-size: 20px; font-weight: 800; color: var(--ink); letter-spacing: -0.5px; white-space: nowrap; }
+    .logo-text em { font-style: normal; color: var(--cobalt); }
+
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a {
+      text-decoration: none; color: var(--ink-soft); font-size: 14px; font-weight: 500;
+      position: relative; padding-bottom: 2px; transition: color 0.2s; white-space: nowrap;
+    }
+    .nav-links a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0;
+      width: 0; height: 2px; background: var(--cobalt);
+      border-radius: 2px; transition: width 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .nav-links a:hover { color: var(--cobalt); }
+    .nav-links a:hover::after { width: 100%; }
+
+    .nav-right { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+    .badge-free {
+      background: linear-gradient(135deg, rgba(0,229,255,0.15), rgba(0,56,255,0.12));
+      border: 1px solid rgba(0,56,255,0.25);
+      color: var(--cobalt); padding: 6px 14px; border-radius: 20px;
+      font-size: 11px; font-weight: 700;
+      font-family: 'JetBrains Mono', monospace;
+      transition: all 0.3s; cursor: default; white-space: nowrap;
+    }
+    .btn-nav {
+      background: var(--cobalt); color: white; border: none;
+      padding: 10px 20px; border-radius: 12px;
+      font-size: 13px; font-weight: 700;
+      font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      box-shadow: 0 6px 20px rgba(0,56,255,0.45);
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      position: relative; overflow: hidden; white-space: nowrap;
+      text-decoration: none; display: inline-block;
+    }
+    .btn-nav:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 14px 36px rgba(0,56,255,0.65); }
+    .btn-nav:active { transform: scale(0.97); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; background: none; border: none; padding: 4px; touch-action: manipulation; flex-shrink: 0; }
+    .hamburger span { width: 24px; height: 2px; background: var(--ink); border-radius: 2px; transition: all 0.3s; display: block; }
+
+    /* Mobile nav menu */
+    .mobile-nav {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(248,250,255,0.98);
+      backdrop-filter: blur(30px);
+      z-index: 190;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 80px 32px 40px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .mobile-nav.open {
+      display: flex;
+      opacity: 1;
+    }
+    .mobile-nav a {
+      text-decoration: none;
+      color: var(--ink);
+      font-size: 28px;
+      font-weight: 900;
+      padding: 14px 0;
+      border-bottom: 1px solid rgba(0,56,255,0.1);
+      width: 100%;
+      text-align: center;
+      letter-spacing: -0.5px;
+      transition: color 0.2s;
+    }
+    .mobile-nav a:hover { color: var(--cobalt); }
+    .mobile-nav-close {
+      position: absolute; top: 20px; right: 20px;
+      width: 44px; height: 44px;
+      background: rgba(0,56,255,0.08);
+      border: 1px solid rgba(0,56,255,0.15);
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--ink);
+      transition: all 0.25s; font-family: 'Cabinet Grotesk', sans-serif;
+    }
+    .mobile-nav-cta {
+      margin-top: 20px;
+      background: var(--cobalt);
+      color: white;
+      border: none;
+      padding: 18px 48px;
+      border-radius: 18px;
+      font-size: 18px;
+      font-weight: 800;
+      font-family: 'Cabinet Grotesk', sans-serif;
+      cursor: pointer;
+      box-shadow: 0 12px 36px rgba(0,56,255,0.5);
+      width: 100%;
+      touch-action: manipulation;
+    }
+
+    /* ── HERO ── */
+    .hero { padding: 60px 0 40px; display: grid; grid-template-columns: 1.1fr 1fr; gap: 50px; align-items: center; }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 7px 16px; border-radius: 20px;
+      background: rgba(0,56,255,0.07); border: 1px solid rgba(0,56,255,0.2);
+      font-size: 12px; font-weight: 700; color: var(--cobalt);
+      margin-bottom: 24px; font-family: 'JetBrains Mono', monospace;
+      flex-wrap: wrap; line-height: 1.4;
+    }
+    .live-dot {
+      width: 8px; height: 8px; background: #00e676; border-radius: 50%;
+      box-shadow: 0 0 0 0 rgba(0,230,118,0.5); animation: livePulse 2s infinite;
+      flex-shrink: 0;
+    }
+    @keyframes livePulse { 0%{box-shadow:0 0 0 0 rgba(0,230,118,0.6)} 70%{box-shadow:0 0 0 10px rgba(0,230,118,0)} 100%{box-shadow:0 0 0 0 rgba(0,230,118,0)} }
+
+    .hero-h1 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(42px, 5.5vw, 76px);
+      font-weight: 900; line-height: 1.0;
+      letter-spacing: -3px; color: var(--ink); margin-bottom: 24px;
+    }
+    .hero-h1 .italic-serif {
+      font-family: 'Instrument Serif', serif;
+      font-style: italic; font-weight: 400;
+      letter-spacing: -1px; color: var(--cobalt);
+    }
+    .hero-h1 .stroke-text {
+      -webkit-text-stroke: 2.5px var(--ink);
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+    }
+    .hero-h1 .highlight-wrap { position: relative; display: inline-block; }
+    .hero-h1 .highlight-wrap::after {
+      content: ''; position: absolute;
+      bottom: 4px; left: -4px; right: -4px; height: 14px;
+      background: linear-gradient(90deg, rgba(0,229,255,0.45), rgba(0,56,255,0.3));
+      z-index: -1; border-radius: 4px;
+    }
+
+    .hero-sub {
+      font-size: 17px; color: #4a6080; line-height: 1.75;
+      max-width: 500px; margin-bottom: 36px; font-weight: 400;
+    }
+    .hero-sub strong { color: var(--ink); font-weight: 700; }
+
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 40px; }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: var(--cobalt); color: white; border: none;
+      padding: 16px 32px; border-radius: 18px;
+      font-size: 15px; font-weight: 800;
+      font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      box-shadow: 0 12px 36px rgba(0,56,255,0.5), inset 0 1px 0 rgba(255,255,255,0.2);
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      text-decoration: none; position: relative; overflow: hidden;
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    }
+    .btn-primary:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 20px 50px rgba(0,56,255,0.65); }
+    .btn-primary:active { transform: scale(0.97); }
+
+    .btn-outline {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 16px 26px; border-radius: 18px;
+      font-size: 14px; font-weight: 700;
+      font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      text-decoration: none; color: var(--ink);
+      background: rgba(255,255,255,0.7); border: 1.5px solid rgba(0,56,255,0.2);
+      backdrop-filter: blur(10px); transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1);
+      touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    }
+    .btn-outline:hover { background: white; border-color: var(--cobalt); color: var(--cobalt); transform: translateY(-3px); }
+
+    .networks-row { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .networks-label { font-size: 12px; font-weight: 600; color: #8899bb; font-family: 'JetBrains Mono', monospace; }
+    .network-chip {
+      padding: 5px 12px; border-radius: 10px;
+      font-size: 12px; font-weight: 700; color: var(--cobalt);
+      background: rgba(0,56,255,0.07); border: 1px solid rgba(0,56,255,0.18);
+      transition: all 0.25s; cursor: default;
+    }
+
+    /* ── 3D PHONE ── */
+    .hero-right {
+      position: relative; height: 580px;
+      display: flex; align-items: center; justify-content: center;
+      perspective: 1200px;
+    }
+    .phone-scene {
+      position: relative; z-index: 3;
+      transform-style: preserve-3d;
+      animation: phoneFloat 8s ease-in-out infinite;
+    }
+    @keyframes phoneFloat {
+      0%,100%{ transform: rotateY(-12deg) rotateX(4deg) translateY(0); }
+      50%{ transform: rotateY(-6deg) rotateX(2deg) translateY(-18px); }
+    }
+    .phone-body {
+      width: 240px;
+      background: linear-gradient(145deg, #1a1f35, #0d1220);
+      border-radius: 44px;
+      border: 1px solid rgba(255,255,255,0.12);
+      box-shadow: 0 60px 120px rgba(0,10,40,0.5), 0 0 0 1px rgba(100,150,255,0.15), inset 0 1px 0 rgba(255,255,255,0.1), 12px 0 40px rgba(0,56,255,0.15);
+      padding: 16px 12px 20px;
+      transform-style: preserve-3d;
+    }
+    .phone-side-light {
+      position: absolute; top: 10%; bottom: 10%; right: -4px;
+      width: 4px;
+      background: linear-gradient(180deg, transparent, rgba(0,56,255,0.6), rgba(0,229,255,0.4), transparent);
+      border-radius: 0 4px 4px 0;
+    }
+    .phone-notch {
+      width: 80px; height: 7px; background: rgba(255,255,255,0.1);
+      border-radius: 4px; margin: 0 auto 14px;
+    }
+    .phone-screen-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 12px; background: rgba(0,56,255,0.15);
+      border-radius: 12px 12px 0 0; margin-bottom: 10px;
+    }
+    .phone-avatar {
+      width: 28px; height: 28px;
+      background: linear-gradient(135deg, #0038ff, #00e5ff);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px;
+      flex-shrink: 0;
+    }
+    .phone-contact { font-size: 11px; font-weight: 700; color: #93c5fd; flex: 1; }
+    .online-badge { font-size: 9px; color: #00e676; font-family: 'JetBrains Mono', monospace; }
+
+    .chat-bubble {
+      padding: 9px 13px; margin: 5px 0;
+      border-radius: 14px 14px 14px 3px;
+      font-size: 11px; line-height: 1.5; color: rgba(255,255,255,0.88);
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+      opacity: 0; animation: bubbleIn 0.4s ease forwards;
+    }
+    .chat-bubble.me {
+      border-radius: 14px 14px 3px 14px;
+      background: linear-gradient(135deg, #0038ff, #0050dd);
+      border-color: rgba(0,56,255,0.5); margin-left: 28px;
+    }
+    .chat-bubble:nth-child(1){animation-delay:0.3s}.chat-bubble:nth-child(2){animation-delay:0.8s}
+    .chat-bubble:nth-child(3){animation-delay:1.3s}.chat-bubble:nth-child(4){animation-delay:1.8s}
+    .chat-bubble:nth-child(5){animation-delay:2.3s}
+    @keyframes bubbleIn { from{opacity:0;transform:translateY(10px)} to{opacity:1;transform:none} }
+
+    .datafree-bar {
+      margin-top: 12px; padding: 8px 12px;
+      background: rgba(0,230,118,0.12); border: 1px solid rgba(0,230,118,0.3); border-radius: 10px;
+      display: flex; align-items: center; gap: 7px;
+      font-size: 10px; color: #86efac; font-weight: 700; font-family: 'JetBrains Mono', monospace;
+    }
+    .datafree-dot { width:6px;height:6px;background:#00e676;border-radius:50%;animation:livePulse 2s infinite; flex-shrink: 0; }
+
+    .float-chip {
+      position: absolute; border-radius: 20px; padding: 14px 18px;
+      background: rgba(255,255,255,0.88); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px);
+      box-shadow: 0 20px 50px rgba(0,20,80,0.15), inset 0 1px 0 white;
+    }
+    .float-chip-1 { top: 60px; left: -40px; animation: floatA 7s ease-in-out infinite; }
+    .float-chip-2 { top: 220px; right: -45px; animation: floatB 9s ease-in-out infinite; }
+    .float-chip-3 { bottom: 90px; left: -35px; animation: floatC 6s ease-in-out infinite; }
+    @keyframes floatA { 0%,100%{transform:translateY(0) rotate(-2deg)} 50%{transform:translateY(-14px) rotate(1deg)} }
+    @keyframes floatB { 0%,100%{transform:translateY(0) rotate(1deg)} 50%{transform:translateY(-10px) rotate(-2deg)} }
+    @keyframes floatC { 0%,100%{transform:translateY(0) rotate(2deg)} 50%{transform:translateY(-12px) rotate(-1deg)} }
+    .chip-icon { font-size: 26px; margin-bottom: 4px; }
+    .chip-val { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 900; font-size: 22px; color: var(--ink); line-height: 1; }
+    .chip-label { font-size: 10px; color: #64748b; font-weight: 600; margin-top: 2px; }
+
+    .phone-glow {
+      position: absolute; width: 320px; height: 320px;
+      background: radial-gradient(circle, rgba(0,56,255,0.2), rgba(0,229,255,0.1), transparent 70%);
+      border-radius: 50%; filter: blur(40px); z-index: 0;
+      animation: glowPulse 4s ease-in-out infinite;
+    }
+    @keyframes glowPulse { 0%,100%{transform:scale(1);opacity:0.6} 50%{transform:scale(1.15);opacity:1} }
+
+    /* ── STATS ── */
+    .stats-bar {
+      margin: 16px 0 64px; padding: 24px 40px; border-radius: 28px;
+      background: rgba(255,255,255,0.78); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px); box-shadow: var(--shadow-card);
+      display: flex; gap: 0; justify-content: space-around; align-items: center; flex-wrap: wrap;
+    }
+    .stat-item { text-align: center; padding: 8px 16px; cursor: default; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+    .stat-item:hover { transform: translateY(-4px); }
+    .stat-num { font-family: 'Cabinet Grotesk', sans-serif; font-size: 32px; font-weight: 900; color: var(--ink); line-height: 1; letter-spacing: -1.5px; }
+    .stat-num span { color: var(--cobalt); }
+    .stat-label { font-size: 11px; color: #7a90b0; font-weight: 600; margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    .stat-divider { width: 1px; height: 50px; background: linear-gradient(180deg, transparent, rgba(0,56,255,0.15), transparent); }
+
+    /* ── SECTIONS ── */
+    .section-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,56,255,0.07); border: 1px solid rgba(0,56,255,0.18);
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; color: var(--cobalt);
+      margin-bottom: 16px; font-family: 'JetBrains Mono', monospace;
+      letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .section-h2 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(28px, 4vw, 52px); font-weight: 900; letter-spacing: -2px;
+      color: var(--ink); margin-bottom: 14px; line-height: 1.05;
+    }
+    .section-sub { font-size: 16px; color: #4a6080; max-width: 520px; margin: 0 auto; font-weight: 400; line-height: 1.7; }
+    .section-header { text-align: center; margin-bottom: 50px; }
+
+    /* ── FEATURES ── */
+    .features { padding: 40px 0 80px; }
+    .feature-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .feature-card {
+      border-radius: 28px; overflow: hidden;
+      background: rgba(255,255,255,0.78); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(20px); box-shadow: var(--shadow-card);
+      transition: box-shadow 0.4s ease, transform 0.4s ease;
+      cursor: pointer; position: relative;
+    }
+    .feature-card::before {
+      content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, transparent, var(--cobalt), var(--electric), transparent);
+      opacity: 0; transition: opacity 0.3s; z-index: 1;
+    }
+    .feature-card:hover { box-shadow: 0 40px 80px rgba(0,20,80,0.2), 0 0 0 1.5px rgba(0,56,255,0.3); }
+    .feature-card:hover::before { opacity: 1; }
+    .feature-card.large { grid-column: span 2; }
+
+    .feature-img-wrap { position: relative; overflow: hidden; }
+    .feature-card:not(.large) .feature-img-wrap { height: 180px; }
+    .feature-card.large .feature-img-wrap { height: 240px; }
+    .feature-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+    .feature-card:hover .feature-img { transform: scale(1.08); }
+    .feature-img-overlay { position: absolute; inset: 0; background: linear-gradient(0deg, rgba(5,13,26,0.45) 0%, transparent 65%); }
+    .feature-tag {
+      position: absolute; bottom: 12px; left: 14px;
+      background: rgba(255,255,255,0.22); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.45);
+      padding: 5px 12px; border-radius: 20px;
+      font-size: 10px; font-weight: 700; color: white; font-family: 'JetBrains Mono', monospace;
+    }
+    .feature-body { padding: 20px 22px 24px; }
+    .feature-icon {
+      width: 40px; height: 40px;
+      background: linear-gradient(135deg, rgba(0,56,255,0.1), rgba(0,229,255,0.1));
+      border: 1px solid rgba(0,56,255,0.18); border-radius: 12px;
+      display: flex; align-items: center; justify-content: center; font-size: 18px; margin-bottom: 12px;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .feature-card:hover .feature-icon { background: var(--cobalt); border-color: var(--cobalt); transform: scale(1.1) rotate(-6deg); }
+    .feature-title { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 18px; color: var(--ink); margin-bottom: 8px; letter-spacing: -0.5px; }
+    .feature-desc { font-size: 13px; color: #4a6080; line-height: 1.7; }
+    .feature-link {
+      display: inline-flex; align-items: center; gap: 6px; margin-top: 12px;
+      font-size: 13px; font-weight: 700; color: var(--cobalt); text-decoration: none;
+      opacity: 0; transform: translateX(-8px); transition: all 0.3s;
+    }
+    .feature-link span { transition: transform 0.3s; }
+    .feature-card:hover .feature-link { opacity: 1; transform: none; }
+
+    /* ── MOYAPAY ── */
+    .moyapay-section { margin: 20px 0 70px; }
+    .moyapay-inner { border-radius: 36px; overflow: hidden; position: relative; min-height: 380px; }
+    .moyapay-bg { position: absolute; inset: 0; background: linear-gradient(130deg, #020818 0%, #040e28 40%, #071840 70%, #0a1f52 100%); }
+    .moyapay-grid-lines {
+      position: absolute; inset: 0; opacity: 0.08;
+      background-image: linear-gradient(rgba(0,56,255,0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(0,56,255,0.8) 1px, transparent 1px);
+      background-size: 50px 50px; animation: gridDrift 20s linear infinite;
+    }
+    @keyframes gridDrift { 0%{background-position:0 0} 100%{background-position:50px 50px} }
+    .moyapay-orb {
+      position: absolute; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,56,255,0.3), transparent 70%);
+      border-radius: 50%; right: -100px; top: -100px; filter: blur(60px); pointer-events: none;
+    }
+    .moyapay-content {
+      position: relative; z-index: 1;
+      display: grid; grid-template-columns: 1fr auto; gap: 50px; align-items: center; padding: 60px 56px;
+    }
+    .moyapay-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(0,56,255,0.25); border: 1px solid rgba(0,100,255,0.4);
+      padding: 6px 16px; border-radius: 20px;
+      font-size: 11px; font-weight: 700; color: #93c5fd; margin-bottom: 20px;
+      font-family: 'JetBrains Mono', monospace; text-transform: uppercase;
+    }
+    .moyapay-h2 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(26px, 4vw, 52px); font-weight: 900; letter-spacing: -2px;
+      color: white; line-height: 1.05; margin-bottom: 18px;
+    }
+    .moyapay-h2 em { font-style: italic; font-family: 'Instrument Serif', serif; font-weight: 400; color: var(--electric); }
+    .moyapay-sub { font-size: 16px; color: rgba(147,197,253,0.85); max-width: 500px; margin-bottom: 32px; font-weight: 400; line-height: 1.7; }
+    .btn-glass-white {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: white; color: var(--ink); border: none; padding: 14px 26px; border-radius: 16px;
+      font-size: 14px; font-weight: 800; font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      touch-action: manipulation;
+    }
+    .btn-glass-white:hover { transform: translateY(-4px) scale(1.04); box-shadow: 0 20px 50px rgba(0,0,0,0.4); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.2);
+      color: rgba(255,255,255,0.85); padding: 14px 22px; border-radius: 16px;
+      font-size: 14px; font-weight: 600; font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      transition: all 0.3s; touch-action: manipulation;
+    }
+    .moyapay-cards { display: flex; flex-direction: column; gap: 12px; }
+    .mp-card {
+      background: rgba(255,255,255,0.07); border: 1px solid rgba(0,100,255,0.3);
+      border-radius: 18px; padding: 16px 20px; min-width: 200px;
+      backdrop-filter: blur(12px); transition: all 0.3s;
+    }
+    .mp-card:hover { background: rgba(0,56,255,0.2); border-color: rgba(0,150,255,0.5); transform: translateX(-6px); }
+    .mp-card-icon { font-size: 30px; margin-bottom: 8px; }
+    .mp-card-title { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 14px; color: white; margin-bottom: 3px; }
+    .mp-card-sub { font-size: 11px; color: #93c5fd; }
+
+    /* ── HOW IT WORKS ── */
+    .hiw { padding: 70px 0; }
+    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .step-card {
+      border-radius: 26px; padding: 32px 22px; text-align: center;
+      background: rgba(255,255,255,0.72); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(16px); box-shadow: var(--shadow-card);
+      transition: box-shadow 0.4s ease, transform 0.4s ease; position: relative; overflow: hidden;
+    }
+    .step-card:hover { box-shadow: 0 40px 80px rgba(0,20,80,0.2); }
+    .step-num {
+      width: 52px; height: 52px;
+      background: linear-gradient(135deg, var(--cobalt), #3b82f6);
+      border-radius: 18px; display: flex; align-items: center; justify-content: center;
+      font-family: 'Cabinet Grotesk', sans-serif; font-weight: 900; font-size: 20px; color: white;
+      margin: 0 auto 20px; box-shadow: 0 10px 28px rgba(0,56,255,0.45);
+      transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .step-card:hover .step-num { transform: scale(1.15) rotate(-6deg); }
+    .step-title { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 800; font-size: 16px; color: var(--ink); margin-bottom: 10px; }
+    .step-desc { font-size: 13px; color: #4a6080; line-height: 1.65; }
+
+    /* ── DISCOVER ── */
+    .discover { padding: 40px 0 70px; }
+    .discover-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; }
+    .discover-card {
+      border-radius: 26px; overflow: hidden; position: relative;
+      transition: box-shadow 0.4s ease; cursor: pointer;
+    }
+    .discover-card:hover { box-shadow: 0 40px 80px rgba(0,20,80,0.25); }
+    .discover-card img { width: 100%; height: 240px; object-fit: cover; transition: transform 0.6s ease; display: block; }
+    .discover-card:hover img { transform: scale(1.08); }
+    .discover-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(5,13,26,0.75) 0%, rgba(5,13,26,0.1) 60%, transparent 100%);
+      display: flex; align-items: flex-end; padding: 24px 22px;
+    }
+    .discover-tag {
+      display: inline-flex; align-items: center; gap: 5px;
+      background: rgba(255,255,255,0.15); backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.3);
+      padding: 5px 12px; border-radius: 16px;
+      font-size: 11px; color: white; font-weight: 700;
+      margin-bottom: 8px; width: fit-content; font-family: 'JetBrains Mono', monospace;
+    }
+    .discover-title { font-family: 'Cabinet Grotesk', sans-serif; font-weight: 900; font-size: 19px; color: white; letter-spacing: -0.5px; }
+    .discover-sub { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; }
+    .discover-arrow {
+      margin-left: auto; width: 38px; height: 38px;
+      background: rgba(255,255,255,0.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 15px; color: white; opacity: 0; transform: translateX(-10px);
+      transition: all 0.3s; align-self: flex-end; flex-shrink: 0;
+    }
+    .discover-card:hover .discover-arrow { opacity: 1; transform: none; }
+
+    /* ── DOWNLOAD CTA ── */
+    .download-cta { padding: 70px 0 60px; }
+    .download-inner {
+      border-radius: 36px; padding: 72px 52px; text-align: center;
+      background: rgba(255,255,255,0.82); border: 1px solid var(--glass-border);
+      backdrop-filter: blur(30px); box-shadow: var(--shadow-deep); position: relative; overflow: hidden;
+    }
+    .download-inner::before {
+      content: ''; position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 600px; height: 400px;
+      background: radial-gradient(ellipse, rgba(0,56,255,0.08), transparent 70%); pointer-events: none;
+    }
+    .download-h2 {
+      font-family: 'Cabinet Grotesk', sans-serif;
+      font-size: clamp(32px, 5vw, 64px); font-weight: 900; letter-spacing: -2.5px;
+      color: var(--ink); margin-bottom: 16px; line-height: 1.0;
+    }
+    .download-h2 em { font-style: italic; font-family: 'Instrument Serif', serif; font-weight: 400; color: var(--cobalt); }
+    .download-sub { font-size: 17px; color: #4a6080; margin-bottom: 44px; font-weight: 400; }
+    .download-btns { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
+    .btn-store {
+      display: inline-flex; align-items: center; gap: 12px;
+      background: var(--ink); color: white; border: none;
+      padding: 16px 28px; border-radius: 18px; font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer;
+      box-shadow: 0 12px 36px rgba(5,13,26,0.35); transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      touch-action: manipulation;
+    }
+    .btn-store:hover { transform: translateY(-5px) scale(1.04); box-shadow: 0 20px 50px rgba(5,13,26,0.5); }
+    .btn-store-icon { font-size: 26px; }
+    .btn-store-text small { display: block; font-size: 10px; opacity: 0.6; font-family: 'JetBrains Mono', monospace; }
+    .btn-store-text strong { display: block; font-size: 17px; font-weight: 900; letter-spacing: -0.5px; }
+    .download-note { font-size: 11px; color: #94a3b8; font-family: 'JetBrains Mono', monospace; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      position: fixed; inset: 0; z-index: 10000;
+      background: rgba(5,13,26,0.65); backdrop-filter: blur(12px);
+      display: flex; align-items: center; justify-content: center; padding: 16px;
+      opacity: 0; pointer-events: none; transition: opacity 0.35s ease;
+      -webkit-overflow-scrolling: touch;
+    }
+    .modal-overlay.active { opacity: 1; pointer-events: all; }
+    .modal {
+      background: white; border-radius: 32px; max-width: 480px; width: 100%;
+      position: relative; transform: translateY(30px) scale(0.95);
+      transition: all 0.45s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 60px 120px rgba(0,10,40,0.5), 0 0 0 1px rgba(0,56,255,0.1);
+      overflow: hidden; max-height: 95vh; overflow-y: auto;
+    }
+    .modal-overlay.active .modal { transform: none; }
+    .modal-hero {
+      height: 160px; background: linear-gradient(135deg, #020818, #0a1f52);
+      position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center;
+    }
+    .modal-hero-grid {
+      position: absolute; inset: 0; opacity: 0.1;
+      background-image: linear-gradient(rgba(0,56,255,1) 1px, transparent 1px), linear-gradient(90deg, rgba(0,56,255,1) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+    .modal-hero-content { position: relative; z-index: 1; text-align: center; }
+    .modal-brand { font-family: 'Cabinet Grotesk', sans-serif; font-size: 38px; font-weight: 900; color: white; letter-spacing: -2px; }
+    .modal-brand em { color: var(--electric); font-style: normal; }
+    .modal-tagline { font-size: 12px; color: rgba(147,197,253,0.8); margin-top: 4px; font-family: 'JetBrains Mono', monospace; }
+    .modal-body { padding: 32px 36px 36px; }
+    .modal-title { font-family: 'Cabinet Grotesk', sans-serif; font-size: 24px; font-weight: 900; color: var(--ink); margin-bottom: 10px; letter-spacing: -0.8px; }
+    .modal-sub { font-size: 14px; color: #4a6080; line-height: 1.6; margin-bottom: 26px; }
+    .modal-perks { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 24px; }
+    .perk-item {
+      display: flex; align-items: center; gap: 10px;
+      padding: 11px 12px; border-radius: 12px;
+      background: rgba(0,56,255,0.05); border: 1px solid rgba(0,56,255,0.12);
+    }
+    .perk-icon { font-size: 18px; }
+    .perk-text { font-size: 12px; font-weight: 700; color: var(--ink); }
+    .modal-btns { display: flex; gap: 10px; flex-direction: column; }
+    .btn-modal-primary {
+      width: 100%; padding: 14px 20px; border-radius: 14px;
+      background: var(--cobalt); color: white; border: none;
+      font-family: 'Cabinet Grotesk', sans-serif; font-size: 15px; font-weight: 800; cursor: pointer;
+      box-shadow: 0 8px 24px rgba(0,56,255,0.45); transition: all 0.3s;
+      touch-action: manipulation;
+    }
+    .btn-modal-apple { background: linear-gradient(135deg, #1a1a2e, #0d0d1a) !important; }
+    .btn-modal-close {
+      width: 100%; margin-top: 8px; padding: 12px 20px; border-radius: 14px;
+      background: rgba(0,56,255,0.07); border: 1px solid rgba(0,56,255,0.15);
+      color: #64748b; font-size: 14px; font-weight: 600;
+      font-family: 'Cabinet Grotesk', sans-serif; cursor: pointer; transition: all 0.25s;
+      touch-action: manipulation;
+    }
+    .modal-close-x {
+      position: absolute; top: 14px; right: 14px; width: 36px; height: 36px;
+      background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center;
+      color: white; font-size: 16px; transition: all 0.25s; z-index: 10;
+      font-family: 'Cabinet Grotesk', sans-serif; touch-action: manipulation;
+    }
+
+    /* ── FOOTER ── */
+    footer { padding: 40px 0 28px; border-top: 1px solid rgba(0,56,255,0.1); }
+    .footer-inner { display: flex; align-items: flex-start; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .footer-copy { font-size: 12px; color: #94a3b8; margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+    .footer-links { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: #64748b; text-decoration: none; font-weight: 500; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--cobalt); }
+
+    /* ── REVEALS ── */
+    .reveal { opacity: 0; transform: translateY(36px); transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.34,1.56,0.64,1); }
+    .reveal.visible { opacity: 1; transform: none; }
+
+    @keyframes countPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+    /* ════════════════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ════════════════════════════════════════ */
+
+    /* ── Large Tablets: 900px–1200px ── */
+    @media (max-width: 1200px) {
+      .float-chip { display: none; }
+      .hero-right { height: 500px; }
+      .nav-links { gap: 20px; }
+      .feature-grid { grid-template-columns: repeat(2, 1fr); }
+      .feature-card.large { grid-column: span 2; }
+    }
+
+    /* ── Tablets: 768px–900px ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none !important; }
+      .badge-free { display: none; }
+      .hamburger { display: flex !important; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        padding: 40px 0 30px;
+        gap: 36px;
+        text-align: center;
+      }
+      .hero-left { display: flex; flex-direction: column; align-items: center; }
+      .hero-eyebrow { font-size: 11px; }
+      .hero-sub { text-align: center; margin: 0 auto 32px; }
+      .hero-actions { justify-content: center; }
+      .networks-row { justify-content: center; }
+      .hero-right { height: 380px; }
+      .phone-body { width: 210px; }
+
+      .stats-bar { padding: 20px 24px; gap: 16px; }
+      .stat-divider { display: none; }
+      .stat-item { padding: 8px 12px; }
+      .stat-num { font-size: 26px; }
+
+      .feature-grid { grid-template-columns: repeat(2, 1fr); gap: 14px; }
+      .feature-card.large { grid-column: span 2; }
+
+      .steps-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+      .discover-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
+
+      .moyapay-content { grid-template-columns: 1fr; padding: 44px 36px; gap: 28px; }
+      .moyapay-cards {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        width: 100%;
+      }
+      .mp-card { min-width: 0; }
+      .mp-card:hover { transform: translateY(-4px); }
+
+      .download-inner { padding: 52px 36px; }
+    }
+
+    /* ── Mobile: 600px–768px ── */
+    @media (max-width: 768px) {
+      .container { padding: 0 16px; }
+      .nav-inner { padding: 10px 16px; border-radius: 14px; }
+      .logo-text { font-size: 18px; }
+      .logo-mark { width: 34px; height: 34px; font-size: 16px; }
+
+      .hero { padding: 32px 0 24px; gap: 28px; }
+      .hero-h1 { font-size: clamp(36px, 9vw, 52px); letter-spacing: -2px; margin-bottom: 18px; }
+      .hero-sub { font-size: 15px; margin-bottom: 24px; }
+      .btn-primary { padding: 15px 28px; font-size: 15px; }
+      .btn-outline { padding: 15px 22px; font-size: 14px; }
+      .hero-right { height: 340px; }
+      .phone-body { width: 190px; }
+
+      .stats-bar { 
+        border-radius: 20px;
+        margin-bottom: 48px;
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0;
+        padding: 16px;
+      }
+      .stat-item {
+        padding: 12px 8px;
+        border-bottom: 1px solid rgba(0,56,255,0.07);
+      }
+      .stat-item:nth-child(odd) { border-right: 1px solid rgba(0,56,255,0.07); }
+      .stat-num { font-size: 24px; }
+      .stat-label { font-size: 10px; }
+
+      .section-h2 { font-size: clamp(24px, 7vw, 36px); letter-spacing: -1.5px; }
+      .section-sub { font-size: 14px; }
+      .section-header { margin-bottom: 36px; }
+
+      .features { padding: 30px 0 60px; }
+      .feature-grid { grid-template-columns: 1fr; gap: 12px; }
+      .feature-card.large { grid-column: 1; }
+      .feature-card:not(.large) .feature-img-wrap { height: 160px; }
+      .feature-card.large .feature-img-wrap { height: 200px; }
+      .feature-body { padding: 16px 18px 20px; }
+      .feature-title { font-size: 16px; }
+      .feature-link { opacity: 1; transform: none; }
+
+      .moyapay-section { margin: 16px 0 56px; }
+      .moyapay-inner { border-radius: 24px; }
+      .moyapay-content { padding: 36px 28px; }
+      .moyapay-h2 { font-size: clamp(22px, 6vw, 32px); }
+      .moyapay-sub { font-size: 14px; }
+      .moyapay-cards { grid-template-columns: 1fr; }
+      .mp-card { padding: 14px 18px; }
+
+      .hiw { padding: 52px 0; }
+      .steps-grid { grid-template-columns: 1fr; gap: 10px; }
+      .step-card { padding: 28px 22px; border-radius: 22px; text-align: left; display: flex; align-items: flex-start; gap: 20px; }
+      .step-num { margin: 0; flex-shrink: 0; }
+
+      .discover { padding: 28px 0 56px; }
+      .discover-grid { grid-template-columns: 1fr; gap: 12px; }
+      .discover-card img { height: 200px; }
+
+      .download-cta { padding: 52px 0 48px; }
+      .download-inner { padding: 44px 24px; border-radius: 24px; }
+      .download-h2 { font-size: clamp(28px, 8vw, 44px); letter-spacing: -1.5px; }
+      .download-sub { font-size: 14px; margin-bottom: 32px; }
+      .download-btns { flex-direction: column; align-items: center; gap: 10px; }
+      .btn-store { width: 100%; max-width: 320px; justify-content: center; }
+
+      footer { padding: 32px 0 24px; }
+      .footer-inner { flex-direction: column; gap: 16px; }
+      .footer-links { gap: 16px; }
+    }
+
+    /* ── Small Mobile: up to 480px ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 14px; }
+      .nav-inner { padding: 10px 14px; }
+
+      .hero { padding: 24px 0 20px; gap: 22px; }
+      .hero-h1 { font-size: clamp(32px, 10vw, 44px); letter-spacing: -1.5px; }
+      .hero-eyebrow { font-size: 10px; padding: 6px 12px; gap: 7px; }
+      .hero-actions { flex-direction: column; width: 100%; gap: 10px; }
+      .btn-primary, .btn-outline { width: 100%; justify-content: center; }
+      .hero-right { height: 300px; }
+      .phone-body { width: 170px; border-radius: 36px; }
+      .phone-body .phone-notch { width: 60px; }
+      .chat-bubble { font-size: 10px; padding: 7px 10px; }
+      .chat-bubble.me { margin-left: 18px; }
+
+      .stats-bar { margin-bottom: 40px; }
+
+      .moyapay-content { padding: 28px 20px; }
+      .moyapay-eyebrow { font-size: 10px; }
+      .moyapay-btns-row { flex-direction: column; gap: 10px; width: 100%; }
+      .btn-glass-white, .btn-ghost { width: 100%; justify-content: center; }
+
+      .step-card { padding: 20px 18px; gap: 14px; border-radius: 20px; }
+      .step-num { width: 46px; height: 46px; font-size: 18px; border-radius: 15px; }
+      .step-title { font-size: 15px; }
+      .step-desc { font-size: 12px; }
+
+      .modal-body { padding: 24px 20px 28px; }
+      .modal-perks { grid-template-columns: 1fr; gap: 7px; }
+      .modal-brand { font-size: 32px; }
+      .modal-title { font-size: 20px; }
+      .modal-hero { height: 140px; }
+
+      .discover-card img { height: 180px; }
+
+      footer { padding: 28px 0 20px; }
+      .footer-links { gap: 12px; }
+      .footer-links a { font-size: 12px; }
+    }
+
+    /* ── Very small: up to 360px ── */
+    @media (max-width: 360px) {
+      .hero-h1 { font-size: 30px; }
+      .phone-body { width: 155px; border-radius: 30px; }
+      .hero-right { height: 270px; }
+      .btn-primary { padding: 14px 22px; font-size: 14px; }
+      .btn-outline { padding: 14px 18px; font-size: 13px; }
+    }
+
+    /* ── Landscape phone ── */
+    @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+      .hero { grid-template-columns: 1fr 1fr; gap: 24px; padding: 20px 0; text-align: left; }
+      .hero-left { align-items: flex-start; }
+      .hero-sub { text-align: left; margin: 0 0 20px; }
+      .hero-actions { justify-content: flex-start; }
+      .networks-row { justify-content: flex-start; }
+      .hero-right { height: 280px; }
+      .phone-body { width: 155px; }
+      .hero-h1 { font-size: 32px; margin-bottom: 12px; }
+      .hero-sub { font-size: 13px; margin-bottom: 16px; }
+      .stats-bar { margin-bottom: 36px; }
+    }
+  </style>
+</head>
+<body>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+  <div class="bg-layer"></div>
+  <div class="noise"></div>
+
+  <!-- MOBILE NAV OVERLAY -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="features.html" onclick="closeMobileNav()">Features</a>
+    <a href="works.html" onclick="closeMobileNav()">How it works</a>
+    <a href="discover.html" onclick="closeMobileNav()">Discover</a>
+    <a href="story.html" onclick="closeMobileNav()">Our Story</a>
+    <a href="business.html" onclick="closeMobileNav()">Business</a>
+    <button class="mobile-nav-cta" onclick="closeMobileNav(); openModal();">🚀 Download free</button>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner">
+        <a class="logo" href="#">
+          <div class="logo-mark">M</div>
+          <span class="logo-text">Moya<em>App</em></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="features.html">Features</a></li>
+          <li><a href="works.html">How it works</a></li>
+          <li><a href="discover.html">Discover</a></li>
+          <li><a href="story.html">Our Story</a></li>
+          <li><a href="business.html">Business</a></li>
+        </ul>
+        <div class="nav-right">
+          <span class="badge-free">dataFREE ✓</span>
+          <a class="btn-nav" onclick="openModal(); return false;" href="download.html">Download free</a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section>
+    <div class="container">
+      <div class="hero">
+        <div class="hero-left">
+          <div class="hero-eyebrow">
+            <span class="live-dot"></span>
+            LIVE · MTN · VODACOM · CELL C · TELKOM
+          </div>
+          <h1 class="hero-h1">
+            Keep<br>
+            <span class="italic-serif">chatting</span><br>
+            on <span class="highlight-wrap stroke-text">zero</span><br>
+            data.
+          </h1>
+          <p class="hero-sub">
+            Texts, voice notes & groups — <strong>no data bundle needed.</strong> When your bundle runs out, the conversation never has to stop.
+          </p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="#" onclick="openModal(); return false;">🚀 Download free</a>
+            <a class="btn-outline" href="#how">▶ How it works</a>
+          </div>
+          <div class="networks-row">
+            <span class="networks-label">Works on:</span>
+            <span class="network-chip">MTN</span>
+            <span class="network-chip">Vodacom</span>
+            <span class="network-chip">Cell C</span>
+            <span class="network-chip">Telkom</span>
+          </div>
+        </div>
+        <div class="hero-right" id="heroRight">
+          <div class="phone-glow"></div>
+          <div class="float-chip float-chip-1">
+            <div class="chip-icon">📱</div>
+            <div class="chip-val">6.5M<span style="color:var(--cobalt);font-size:16px">+</span></div>
+            <div class="chip-label">Monthly users</div>
+          </div>
+          <div class="float-chip float-chip-2">
+            <div class="chip-icon">💬</div>
+            <div class="chip-val">3M<span style="color:var(--cobalt);font-size:16px">+</span></div>
+            <div class="chip-label">Daily active</div>
+          </div>
+          <div class="float-chip float-chip-3">
+            <div class="chip-icon">⚡</div>
+            <div class="chip-val">0<span style="color:var(--cobalt);font-size:16px">MB</span></div>
+            <div class="chip-label">Data to text</div>
+          </div>
+          <div class="phone-scene" id="phoneScene">
+            <div class="phone-body">
+              <div class="phone-side-light"></div>
+              <div class="phone-notch"></div>
+              <div class="phone-screen-header">
+                <div class="phone-avatar">👩🏽</div>
+                <div>
+                  <div class="phone-contact">Lerato</div>
+                  <div class="online-badge">● online</div>
+                </div>
+              </div>
+              <div class="chat-bubble">Hey! You coming to braai? 🥩🔥</div>
+              <div class="chat-bubble me">Yep! No data but chatting anyway 😎</div>
+              <div class="chat-bubble">Wait — how??</div>
+              <div class="chat-bubble me">MoyaApp! dataFREE 🚀</div>
+              <div class="chat-bubble">Downloading NOW omg!!</div>
+              <div class="datafree-bar">
+                <span class="datafree-dot"></span>
+                dataFREE active · 0MB used
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="container">
+    <div class="stats-bar reveal">
+      <div class="stat-item"><div class="stat-num">6.5<span>M+</span></div><div class="stat-label">monthly active users</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num"><span>4</span></div><div class="stat-label">SA networks</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">0<span>MB</span></div><div class="stat-label">to send a text</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">300<span>+</span></div><div class="stat-label">content services</div></div>
+      <div class="stat-divider"></div>
+      <div class="stat-item"><div class="stat-num">e<span>2e</span>e</div><div class="stat-label">encrypted</div></div>
+    </div>
+  </div>
+
+  <!-- FEATURES -->
+  <section class="features" id="features">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Core Features</div>
+        <h2 class="section-h2">What makes Moya awesome</h2>
+        <p class="section-sub">Chat, discover, earn and pay — all in a beautifully designed, data-free super app built for South Africa.</p>
+      </div>
+      <div class="feature-grid">
+        <div class="feature-card large reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?q=80&w=1974&auto=format&fit=crop" alt="Messaging" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">💬 zero data texting</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">📡</div>
+            <div class="feature-title">Unlimited DataFree Texting</div>
+            <p class="feature-desc">Send unlimited texts, voice notes, and stickers even when your data bundle is empty. Moya connects you through the network itself — no data required for basic messaging.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+        <div class="feature-card reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1633265486064-086b219458ec?q=80&w=2070&auto=format&fit=crop" alt="Privacy" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">🔒 e2e encrypted</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">🛡️</div>
+            <div class="feature-title">Private by Design</div>
+            <p class="feature-desc">End-to-end encrypted by default. Not even Moya can read your messages.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+        <div class="feature-card reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1589254066213-a0c9dc85327c?q=80&w=1964&auto=format&fit=crop" alt="Calls" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">📞 HD calls</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">📹</div>
+            <div class="feature-title">Voice & Video Calls</div>
+            <p class="feature-desc">Crystal-clear voice and video calling when you're on Wi-Fi or have data.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+        <div class="feature-card reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=1932&auto=format&fit=crop" alt="Groups" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">👥 group chats</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">🫂</div>
+            <div class="feature-title">Unlimited Groups</div>
+            <p class="feature-desc">Family, friends, colleagues — create unlimited groups, all data-free.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+        <div class="feature-card reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop" alt="Discover" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">📰 SASSA + news</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">🌍</div>
+            <div class="feature-title">Gov Services & News</div>
+            <p class="feature-desc">SASSA grant checks, load shedding, Wikipedia — always accessible.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+        <div class="feature-card reveal" data-tilt>
+          <div class="feature-img-wrap">
+            <img class="feature-img" src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop" alt="Play" loading="lazy">
+            <div class="feature-img-overlay"></div>
+            <div class="feature-tag">🎮 MoyaPlay</div>
+          </div>
+          <div class="feature-body">
+            <div class="feature-icon">🏆</div>
+            <div class="feature-title">Play & Win Rewards</div>
+            <p class="feature-desc">Quizzes, games, surveys — earn real prizes and airtime for free.</p>
+            <a class="feature-link" href="#">Learn more <span>→</span></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOYAPAY -->
+  <div class="container moyapay-section" id="moyapay">
+    <div class="moyapay-inner reveal">
+      <div class="moyapay-bg"></div>
+      <div class="moyapay-grid-lines"></div>
+      <div class="moyapay-orb"></div>
+      <div class="moyapay-content">
+        <div>
+          <div class="moyapay-eyebrow">🔥 New Feature</div>
+          <h2 class="moyapay-h2">Send money.<br>Buy prepaid.<br>Get the <em>Moya</em> card.</h2>
+          <p class="moyapay-sub">Digital wallet, prepaid Mastercard, airtime top-ups & bus tickets — all in one super app. Zero data transactions on supported networks.</p>
+          <div class="moyapay-btns-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+            <button class="btn-glass-white" onclick="openModal()">Explore MoyaPay →</button>
+            <button class="btn-ghost">Learn more</button>
+          </div>
+        </div>
+        <div class="moyapay-cards">
+          <div class="mp-card"><div class="mp-card-icon">💳</div><div class="mp-card-title">Prepaid Mastercard</div><div class="mp-card-sub">Virtual & physical card</div></div>
+          <div class="mp-card"><div class="mp-card-icon">💸</div><div class="mp-card-title">Send & receive money</div><div class="mp-card-sub">Zero data on SA networks</div></div>
+          <div class="mp-card"><div class="mp-card-icon">🚌</div><div class="mp-card-title">Bus & event tickets</div><div class="mp-card-sub">Intercape, Eldo coaches & more</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section class="hiw" id="how">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ How It Works</div>
+        <h2 class="section-h2">Up and running in minutes</h2>
+        <p class="section-sub">Four simple steps to stay connected without ever worrying about data again.</p>
+      </div>
+      <div class="steps-grid">
+        <div class="step-card reveal" data-tilt><div class="step-num">1</div><div><div class="step-title">Download Moya</div><p class="step-desc">Get the app free from the Play Store or App Store. Under a minute to install.</p></div></div>
+        <div class="step-card reveal" data-tilt><div class="step-num">2</div><div><div class="step-title">Sign up with your number</div><p class="step-desc">No email needed — just your South African mobile number on any major network.</p></div></div>
+        <div class="step-card reveal" data-tilt><div class="step-num">3</div><div><div class="step-title">Add your contacts</div><p class="step-desc">Moya syncs with your phonebook so you instantly find friends already on the app.</p></div></div>
+        <div class="step-card reveal" data-tilt><div class="step-num">4</div><div><div class="step-title">Chat without limits</div><p class="step-desc">Text freely — even with zero data. Messages always get through on SA networks.</p></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DISCOVER -->
+  <section class="discover" id="discover">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Discover</div>
+        <h2 class="section-h2">More than just messaging</h2>
+        <p class="section-sub">A full super-app with news, entertainment, and essential government services — built for South Africa.</p>
+      </div>
+      <div class="discover-grid">
+        <div class="discover-card reveal">
+          <img src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop" alt="News" loading="lazy">
+          <div class="discover-overlay">
+            <div style="flex:1"><span class="discover-tag">📰 News & Weather</span><div class="discover-title">Stay informed, always</div><div class="discover-sub">Local news, weather & live sports — data-efficient</div></div>
+            <div class="discover-arrow">→</div>
+          </div>
+        </div>
+        <div class="discover-card reveal">
+          <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=2069&auto=format&fit=crop" alt="SASSA" loading="lazy">
+          <div class="discover-overlay">
+            <div style="flex:1"><span class="discover-tag">🏛️ SASSA & Gov</span><div class="discover-title">Government at your fingertips</div><div class="discover-sub">Grant status, load shedding schedules — for free</div></div>
+            <div class="discover-arrow">→</div>
+          </div>
+        </div>
+        <div class="discover-card reveal">
+          <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?q=80&w=2071&auto=format&fit=crop" alt="Games" loading="lazy">
+          <div class="discover-overlay">
+            <div style="flex:1"><span class="discover-tag">🎮 Games & Rewards</span><div class="discover-title">Play and earn real prizes</div><div class="discover-sub">Trivia, quizzes and games with airtime rewards</div></div>
+            <div class="discover-arrow">→</div>
+          </div>
+        </div>
+        <div class="discover-card reveal">
+          <img src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop" alt="Marketplace" loading="lazy">
+          <div class="discover-overlay">
+            <div style="flex:1"><span class="discover-tag">🛒 Marketplace</span><div class="discover-title">Buy tickets, vouchers & more</div><div class="discover-sub">Bus tickets, events, prepaid vouchers, classifieds</div></div>
+            <div class="discover-arrow">→</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section class="download-cta">
+    <div class="container">
+      <div class="download-inner reveal">
+        <div class="section-eyebrow" style="justify-content:center;display:inline-flex;margin-bottom:18px;">✨ It's Free, Forever</div>
+        <h2 class="download-h2">Join millions chatting<br>data<em>free</em></h2>
+        <p class="download-sub">No data bundle? No problem. Download Moya and stay connected.</p>
+        <div class="download-btns">
+          <button class="btn-store" onclick="openModal()">
+            <span class="btn-store-icon">🤖</span>
+            <div class="btn-store-text"><small>Get it on</small><strong>Google Play</strong></div>
+          </button>
+          <button class="btn-store" onclick="openModal()">
+            <span class="btn-store-icon">🍎</span>
+            <div class="btn-store-text"><small>Download on the</small><strong>App Store</strong></div>
+          </button>
+        </div>
+        <p class="download-note">* Data-free texting on SA networks only. Attachments & calls use data or Wi-Fi.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <a class="logo" href="#">
+            <div class="logo-mark">M</div>
+            <span class="logo-text">Moya<em>App</em></span>
+          </a>
+          <p class="footer-copy" style="margin-top:10px;">© 2025 MoyaApp · Built for South Africa 🇿🇦</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Support</a>
+          <a href="#">About</a>
+          <a href="#">Careers</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal" id="modal">
+      <div class="modal-hero">
+        <div class="modal-hero-grid"></div>
+        <button class="modal-close-x" onclick="closeModal()" aria-label="Close">✕</button>
+        <div class="modal-hero-content">
+          <div class="modal-brand">Moya<em>App</em></div>
+          <div class="modal-tagline">chat without limits · dataFREE in SA</div>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title">Get the app — it's free 🎉</div>
+        <p class="modal-sub">Join 6.5 million South Africans who never run out of conversation, even when they run out of data.</p>
+        <div class="modal-perks">
+          <div class="perk-item"><span class="perk-icon">📡</span><span class="perk-text">DataFree texts</span></div>
+          <div class="perk-item"><span class="perk-icon">🔒</span><span class="perk-text">E2E encrypted</span></div>
+          <div class="perk-item"><span class="perk-icon">💳</span><span class="perk-text">MoyaPay wallet</span></div>
+          <div class="perk-item"><span class="perk-icon">🎮</span><span class="perk-text">Win real prizes</span></div>
+          <div class="perk-item"><span class="perk-icon">🏛️</span><span class="perk-text">SASSA check</span></div>
+          <div class="perk-item"><span class="perk-icon">⚡</span><span class="perk-text">Load shedding</span></div>
+        </div>
+        <div class="modal-btns">
+          <button class="btn-modal-primary">🤖 Download on Google Play</button>
+          <button class="btn-modal-primary btn-modal-apple">🍎 Download on App Store</button>
+        </div>
+        <button class="btn-modal-close" onclick="closeModal()">Maybe later</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ── Custom Cursor (desktop only) ──
+    const cursor = document.getElementById('cursor');
+    const ring = document.getElementById('cursor-ring');
+    let mx = 0, my = 0, rx = 0, ry = 0;
+    const isTouch = window.matchMedia('(hover: none)').matches;
+
+    if (!isTouch && cursor && ring) {
+      document.addEventListener('mousemove', e => {
+        mx = e.clientX; my = e.clientY;
+        cursor.style.left = mx - 7 + 'px';
+        cursor.style.top = my - 7 + 'px';
+      });
+      function animateRing() {
+        rx += (mx - rx - 19) * 0.14;
+        ry += (my - ry - 19) * 0.14;
+        ring.style.left = rx + 'px';
+        ring.style.top = ry + 'px';
+        requestAnimationFrame(animateRing);
+      }
+      animateRing();
+      document.querySelectorAll('a, button, .network-chip, .perk-item, .stat-item, .mp-card').forEach(el => {
+        el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
+        el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+      });
+    }
+
+    // ── Mobile Nav ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      hamburger.children[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+      hamburger.children[1].style.opacity = '0';
+      hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+      hamburger.children[0].style.transform = '';
+      hamburger.children[1].style.opacity = '';
+      hamburger.children[2].style.transform = '';
+    }
+    hamburger.addEventListener('click', () => {
+      if (mobileNav.classList.contains('open')) closeMobileNav();
+      else openMobileNav();
+    });
+    mobileNavClose.addEventListener('click', closeMobileNav);
+
+    // ── Modal ──
+    function openModal() {
+      document.getElementById('modalOverlay').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    function closeModal() {
+      document.getElementById('modalOverlay').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    document.getElementById('modalOverlay').addEventListener('click', e => {
+      if (e.target === document.getElementById('modalOverlay')) closeModal();
+    });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+    // Auto-show after 9s
+    setTimeout(() => {
+      if (!sessionStorage.getItem('modalShown')) {
+        openModal();
+        sessionStorage.setItem('modalShown', '1');
+      }
+    }, 9000);
+
+    // ── Scroll Reveals ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.reveal').forEach((el, i) => {
+      const siblings = el.parentElement.querySelectorAll('.reveal');
+      const idx = Array.from(siblings).indexOf(el);
+      el.style.transitionDelay = (idx * 80) + 'ms';
+      observer.observe(el);
+    });
+
+    // ── 3D Tilt on cards (desktop only) ──
+    if (!isTouch) {
+      document.querySelectorAll('[data-tilt]').forEach(card => {
+        card.addEventListener('mousemove', e => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const rotX = ((y - cy) / cy) * -7;
+          const rotY = ((x - cx) / cx) * 7;
+          card.style.transform = `perspective(900px) rotateX(${rotX}deg) rotateY(${rotY}deg) translateY(-10px) scale(1.02)`;
+          card.style.transition = 'transform 0.1s ease';
+        });
+        card.addEventListener('mouseleave', () => {
+          card.style.transform = '';
+          card.style.transition = 'transform 0.5s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.4s ease';
+        });
+      });
+
+      // ── 3D Phone Parallax ──
+      const heroRight = document.getElementById('heroRight');
+      const phoneScene = document.getElementById('phoneScene');
+      if (heroRight && phoneScene) {
+        heroRight.addEventListener('mousemove', e => {
+          const rect = heroRight.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          const cx = rect.width / 2;
+          const cy = rect.height / 2;
+          const ry = ((x - cx) / cx) * 14;
+          const rx = ((y - cy) / cy) * -7;
+          phoneScene.style.transform = `rotateY(${ry - 9}deg) rotateX(${rx + 3}deg)`;
+          phoneScene.style.transition = 'transform 0.15s ease';
+          phoneScene.style.animation = 'none';
+        });
+        heroRight.addEventListener('mouseleave', () => {
+          phoneScene.style.transform = '';
+          phoneScene.style.transition = '';
+          phoneScene.style.animation = '';
+        });
+      }
+    }
+
+    // ── Scroll parallax on bg (desktop only) ──
+    if (!isTouch) {
+      window.addEventListener('scroll', () => {
+        document.querySelector('.bg-layer').style.transform = `translateY(${window.scrollY * 0.12}px)`;
+      }, { passive: true });
+    }
+
+    // ── Stat counter pop on appear ──
+    const statObs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.animation = 'countPop 0.6s cubic-bezier(0.34,1.56,0.64,1) both';
+          statObs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    document.querySelectorAll('.stat-num').forEach(n => statObs.observe(n));
+
+    // ── Touch feedback for mobile buttons ──
+    document.querySelectorAll('.btn-primary, .btn-outline, .btn-store, .btn-modal-primary, .mobile-nav-cta').forEach(btn => {
+      btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
+      btn.addEventListener('touchend', () => btn.style.opacity = '', { passive: true });
+    });
+  </script>
+</body>
+</html>

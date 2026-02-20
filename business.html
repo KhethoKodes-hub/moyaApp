@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MoyaApp · Business</title>
+  <!-- Fonts: Syne + DM Sans -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-950: #0a1628;
+      --blue-900: #0f2240;
+      --blue-800: #1a3a6e;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+      --white: #ffffff;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: #e8f2ff;
+      color: var(--blue-900);
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    /* ── Animated mesh background ── */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 80% at 20% -10%, rgba(147,197,253,0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 90% 30%, rgba(59,130,246,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 10% 80%, rgba(191,219,254,0.6) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 80% 90%, rgba(255,255,255,0.9) 0%, transparent 60%),
+        linear-gradient(160deg, #f0f8ff 0%, #dbeafe 40%, #bfdbfe 75%, #93c5fd 100%);
+      animation: meshFloat 20s ease-in-out infinite alternate;
+    }
+    @keyframes meshFloat {
+      0%   { background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%, 0% 0%; }
+      100% { background-position: 10% 20%, 90% 80%, 15% 85%, 85% 10%, 0% 0%; }
+    }
+
+    /* ── floating orbs ── */
+    .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.35; pointer-events: none; z-index: -1; }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #93c5fd, #3b82f6); top: -100px; left: -150px; animation: orb1 18s ease-in-out infinite; }
+    .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #bfdbfe, #60a5fa); top: 40%; right: -80px; animation: orb2 22s ease-in-out infinite; }
+    .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, #dbeafe, #93c5fd); bottom: 10%; left: 15%; animation: orb3 26s ease-in-out infinite; }
+    @keyframes orb1 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,80px) scale(1.1);} 66%{transform:translate(-40px,40px) scale(0.9);} }
+    @keyframes orb2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-80px,-60px) scale(1.15);} }
+    @keyframes orb3 { 0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(50px,-40px) scale(1.08);} 80%{transform:translate(-30px,30px) scale(0.95);} }
+
+    /* ── Glass utilities (consistent) ── */
+    .glass {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: 0 25px 50px -12px rgba(15,34,64,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .glass-strong {
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow: 0 32px 64px -16px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+    .glass-dark {
+      backdrop-filter: blur(20px) saturate(150%);
+      -webkit-backdrop-filter: blur(20px) saturate(150%);
+      background: rgba(10,22,40,0.55);
+      border: 1px solid rgba(59,130,246,0.25);
+      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── NAV (same as other pages) ── */
+    nav { position: sticky; top: 0; z-index: 100; padding: 14px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-radius: 20px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+    .logo-mark { width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
+    .logo-mark span { color: white; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
+    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--blue-900); letter-spacing: -0.5px; }
+    .logo-text em { font-style: normal; color: var(--blue-600); }
+
+    .nav-links { display: flex; gap: 32px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--blue-800); font-size: 14px; font-weight: 500; opacity: 0.8; transition: color 0.2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue-600); opacity: 1; }
+    .nav-links a.active { font-weight: 600; border-bottom: 2px solid var(--blue-600); padding-bottom: 2px; }
+
+    .badge-datafree { background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(96,165,250,0.15)); border: 1px solid rgba(37,99,235,0.3); color: var(--blue-700); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+    .btn-nav { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 10px 20px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4); transition: all 0.2s; }
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--blue-800); border-radius: 2px; }
+
+    /* ── PAGE HERO (Business) ── */
+    .business-hero {
+      margin: 24px 0 48px; border-radius: 32px; overflow: hidden; position: relative; min-height: 340px;
+      display: flex; align-items: center;
+    }
+    .business-hero-bg {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1557804506-669a67965ba0?q=80&w=1974&auto=format&fit=crop');
+      background-size: cover; background-position: center 25%;
+      transition: transform 0.6s ease;
+    }
+    .business-hero:hover .business-hero-bg { transform: scale(1.02); }
+    .business-hero-overlay {
+      position: absolute; inset: 0; background: linear-gradient(110deg, rgba(10,22,40,0.7) 0%, rgba(15,34,64,0.5) 60%, rgba(10,22,40,0.3) 100%);
+    }
+    .business-hero-content { position: relative; z-index: 1; padding: 56px 64px; max-width: 650px; }
+    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; color: #bfdbfe; margin-bottom: 20px; }
+    .hero-h1 { font-family: 'Syne', sans-serif; font-size: clamp(38px, 5.5vw, 60px); font-weight: 800; letter-spacing: -2px; color: white; line-height: 1.08; margin-bottom: 20px; }
+    .hero-h1 .accent { background: linear-gradient(135deg, #93c5fd, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .hero-sub { font-size: 18px; color: rgba(255,255,255,0.75); max-width: 500px; line-height: 1.7; font-weight: 300; margin-bottom: 32px; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 12px; background: white; color: var(--blue-950); border: none; padding: 14px 32px; border-radius: 18px; font-size: 15px; font-weight: 600; cursor: pointer; box-shadow: 0 8px 24px rgba(0,0,0,0.3); transition: all 0.25s; }
+    .hero-cta:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.4); }
+
+    /* ── CLIENTS CAROUSEL (logos) ── */
+    .clients-section { padding: 32px 0 48px; }
+    .clients-title { text-align: center; font-size: 14px; font-weight: 600; color: #64748b; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 24px; }
+    .clients-grid {
+      display: flex; flex-wrap: wrap; gap: 24px 32px; justify-content: center; align-items: center;
+      padding: 16px 24px; border-radius: 40px;
+    }
+    .client-item {
+      font-family: 'Syne', sans-serif; font-weight: 700; font-size: 18px;
+      color: var(--blue-800); padding: 6px 12px; transition: all 0.2s;
+      display: flex; align-items: center; gap: 8px;
+    }
+    .client-item.large { font-size: 20px; }
+    .client-item .small-tagline { font-size: 11px; font-weight: 400; color: #64748b; }
+    .client-item:hover { color: var(--blue-600); transform: scale(1.03); }
+
+    /* ── FEATURE CARDS (products) ── */
+    .features-business { padding: 48px 0 64px; }
+    .section-header { text-align: center; margin-bottom: 48px; }
+    .section-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--blue-600); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px; }
+    .section-h2 { font-family: 'Syne', sans-serif; font-size: clamp(28px, 3.8vw, 42px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 12px; }
+    .section-sub { font-size: 17px; color: #4a6a9c; font-weight: 300; line-height: 1.7; max-width: 600px; margin: 0 auto; }
+
+    .product-grid {
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px;
+    }
+    .product-card {
+      border-radius: 24px; padding: 28px 22px; text-align: center;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .product-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 28px 48px -20px rgba(37,99,235,0.4); }
+    .product-icon { font-size: 44px; margin-bottom: 18px; }
+    .product-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--blue-950); margin-bottom: 12px; }
+    .product-desc { font-size: 14px; color: #4a6a9c; line-height: 1.6; margin-bottom: 20px; flex: 1; }
+    .product-link { font-size: 14px; font-weight: 600; color: var(--blue-600); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; align-self: center; margin-top: 8px; }
+    .product-link:hover { gap: 10px; color: var(--blue-800); }
+
+    /* ── STATS BANNER (big numbers) ── */
+    .stats-section { padding: 48px 0 64px; }
+    .stats-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px;
+      padding: 36px 40px; border-radius: 40px;
+    }
+    .stat-item { text-align: center; }
+    .stat-number { font-family: 'Syne', sans-serif; font-size: 48px; font-weight: 800; color: var(--blue-600); line-height: 1; margin-bottom: 8px; }
+    .stat-label { font-size: 14px; font-weight: 500; color: #3a5a8c; }
+    .stat-extra { font-size: 12px; color: #64748b; margin-top: 4px; }
+
+    /* ── WHY CHOOSE / USP CARDS ── */
+    .usp-section { padding: 48px 0 64px; }
+    .usp-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .usp-card {
+      border-radius: 28px; padding: 32px 28px;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .usp-card:hover { transform: translateY(-8px); }
+    .usp-icon { font-size: 48px; margin-bottom: 18px; }
+    .usp-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--blue-950); margin-bottom: 12px; }
+    .usp-desc { font-size: 14px; color: #4a6a9c; line-height: 1.7; }
+
+    /* ── DEMOGRAPHICS (province data) ── */
+    .demographics-section { padding: 48px 0 64px; }
+    .demo-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 28px; align-items: center; }
+    .demo-stats {
+      display: grid; grid-template-columns: 1fr 1fr; gap: 20px;
+    }
+    .demo-stat-card {
+      border-radius: 22px; padding: 24px 18px; text-align: center;
+    }
+    .demo-stat-number { font-family: 'Syne', sans-serif; font-size: 40px; font-weight: 800; color: var(--blue-600); line-height: 1; margin-bottom: 4px; }
+    .demo-stat-label { font-size: 13px; color: #4a6a9c; font-weight: 500; }
+    .demo-note { font-size: 12px; color: #64748b; margin-top: 6px; font-style: italic; }
+
+    .province-bars {
+      background: rgba(255,255,255,0.35); backdrop-filter: blur(8px);
+      border-radius: 28px; padding: 32px; border: 1px solid rgba(255,255,255,0.5);
+    }
+    .province-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 20px; color: var(--blue-950); margin-bottom: 24px; display: flex; align-items: center; gap: 8px; }
+    .province-list { display: flex; flex-direction: column; gap: 14px; }
+    .province-item { display: flex; align-items: center; gap: 12px; }
+    .province-name { width: 90px; font-size: 14px; font-weight: 500; color: var(--blue-900); }
+    .province-bar-bg { flex: 1; height: 12px; background: rgba(255,255,255,0.3); border-radius: 20px; overflow: hidden; }
+    .province-bar-fill { height: 100%; background: linear-gradient(90deg, #2563eb, #60a5fa); border-radius: 20px; width: 0; transition: width 1s ease; }
+    .province-percent { width: 40px; font-size: 13px; font-weight: 600; color: var(--blue-700); }
+
+    /* ── TECHNOLOGY SECTION ── */
+    .tech-section { padding: 48px 0 64px; }
+    .tech-banner {
+      border-radius: 32px; overflow: hidden; position: relative; min-height: 280px;
+      display: flex; align-items: center;
+    }
+    .tech-img {
+      position: absolute; inset: 0;
+      background-image: url('https://images.unsplash.com/photo-1451187580459-43490279c0fa?q=80&w=2072&auto=format&fit=crop');
+      background-size: cover; background-position: center 30%;
+    }
+    .tech-overlay { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(10,22,40,0.75) 0%, rgba(15,34,64,0.5) 70%, transparent 100%); }
+    .tech-content { position: relative; z-index: 1; padding: 56px 56px; max-width: 600px; }
+    .tech-eyebrow { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: white; margin-bottom: 16px; }
+    .tech-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 32px; color: white; margin-bottom: 12px; letter-spacing: -1px; }
+    .tech-desc { font-size: 16px; color: rgba(255,255,255,0.7); line-height: 1.7; font-weight: 300; max-width: 480px; }
+    .powered-by { display: flex; align-items: center; gap: 12px; margin-top: 28px; color: rgba(255,255,255,0.45); font-size: 13px; }
+
+    /* ── FOOTER (business) ── */
+    footer { padding: 40px 0 24px; border-top: 1px solid rgba(37,99,235,0.12); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 13px; color: #94a3b8; }
+    .footer-links { display: flex; gap: 24px; }
+    .footer-links a { font-size: 13px; color: #64748b; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--blue-600); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 1024px) {
+      .product-grid { grid-template-columns: repeat(2, 1fr); }
+      .usp-grid { grid-template-columns: 1fr 1fr; }
+      .demo-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: 1fr; gap: 32px; }
+      .usp-grid { grid-template-columns: 1fr; }
+      .nav-links { display: none; }
+      .hamburger { display: flex; }
+      .business-hero-content { padding: 40px 32px; }
+      .tech-content { padding: 40px 32px; }
+    }
+    @media (max-width: 600px) {
+      .product-grid { grid-template-columns: 1fr; }
+      .clients-grid { gap: 16px; }
+      .client-item { font-size: 16px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-mesh"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- ── NAVIGATION (consistent) ── -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner glass">
+        <a class="logo" href="index.html">
+          <div class="logo-mark"><span>M</span></div>
+          <span class="logo-text">Moya<em>App</em></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="features.html">Features</a></li>
+          <li><a href="works.html">How it works</a></li>
+          <li><a href="discover.html">Discover</a></li>
+          <li><a href="story.html">Our Story</a></li>
+          <li><a href="business.html" class="active">Business</a></li>
+        </ul>
+        <div style="display:flex;align-items:center;gap:10px;">
+          <span class="badge-datafree">dataFREE in SA ✓</span>
+          <a href="download.html"><button class="btn-nav">Download</button></a>
+        </div>
+        <div class="hamburger" id="hamburger">
+          <span></span><span></span><span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ── BUSINESS HERO ── -->
+  <section class="business-hero">
+    <div class="business-hero-bg"></div>
+    <div class="business-hero-overlay"></div>
+    <div class="container" style="width:100%;">
+      <div class="business-hero-content">
+        <div class="hero-eyebrow">🚀 MoyaApp for Business</div>
+        <h1 class="hero-h1">Reach & engage <span class="accent">mobile audiences</span> that other platforms can’t.</h1>
+        <p class="hero-sub">Tap into millions of daily active users in South Africa with our data‑free super app.</p>
+        <button class="hero-cta">View Products →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CLIENTS (from provided list) ── -->
+  <section class="clients-section">
+    <div class="container">
+      <div class="clients-title">Trusted by industry leaders</div>
+      <div class="clients-grid glass-strong">
+        <span class="client-item large">KANTAR</span>
+        <span class="client-item">Survey54</span>
+        <span class="client-item">yazi</span>
+        <span class="client-item">Worldreader</span>
+        <span class="client-item">DataTech Solutions</span>
+        <span class="client-item">AVBOB</span>
+        <span class="client-item">AMANDLA <span class="small-tagline">action for mzansi</span></span>
+        <span class="client-item">BOXER</span>
+        <span class="client-item">SPAR</span>
+        <span class="client-item">Deloitte</span>
+        <span class="client-item">Social Surveys Africa</span>
+        <span class="client-item">Sanlam</span>
+        <span class="client-item">Cint</span>
+        <span class="client-item">1Life <span class="small-tagline">Changing Lives</span></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── QUICK PRODUCT LINKS (Discover, Ads, Business API, Research, Brand Quizzes) ── -->
+  <section class="features-business">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Products</div>
+        <h2 class="section-h2">Engage on your terms</h2>
+        <p class="section-sub">Powerful tools to connect with South Africa's mobile-first audience.</p>
+      </div>
+      <div class="product-grid">
+        <div class="product-card glass">
+          <span class="product-icon">📱</span>
+          <div class="product-title">Discover</div>
+          <p class="product-desc">Branded content and native placements inside Moya's popular Discover feed.</p>
+          <a href="#" class="product-link">Learn more →</a>
+        </div>
+        <div class="product-card glass">
+          <span class="product-icon">📢</span>
+          <div class="product-title">Ads</div>
+          <p class="product-desc">Targeted in-app advertising reaching millions of daily active users.</p>
+          <a href="#" class="product-link">Learn more →</a>
+        </div>
+        <div class="product-card glass">
+          <span class="product-icon">🔌</span>
+          <div class="product-title">Business API</div>
+          <p class="product-desc">Integrate Moya's data‑free messaging and engagement into your own platform.</p>
+          <a href="#" class="product-link">Documentation →</a>
+        </div>
+        <div class="product-card glass">
+          <span class="product-icon">📊</span>
+          <div class="product-title">Research</div>
+          <p class="product-desc">Quantitative & qualitative research with an engaged, captive audience.</p>
+          <a href="#" class="product-link">Learn more →</a>
+        </div>
+        <div class="product-card glass">
+          <span class="product-icon">🏆</span>
+          <div class="product-title">Brand Quizzes</div>
+          <p class="product-desc">Interactive branded quizzes that drive engagement and insights.</p>
+          <a href="#" class="product-link">Learn more →</a>
+        </div>
+        <div class="product-card glass">
+          <span class="product-icon">📞</span>
+          <div class="product-title">Contact Us</div>
+          <p class="product-desc">Ready to start? Get in touch with our business team.</p>
+          <a href="#" class="product-link">Reach out →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── STATS / DAU / MAU / GROWTH ── -->
+  <section class="stats-section">
+    <div class="container">
+      <div class="stats-grid glass-strong">
+        <div class="stat-item">
+          <div class="stat-number">4M+</div>
+          <div class="stat-label">Daily Active Users</div>
+          <div class="stat-extra">up to 4 million daily</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">6.5M+</div>
+          <div class="stat-label">Monthly Active Users</div>
+          <div class="stat-extra">up to 6.5 million monthly</div>
+        </div>
+        <div class="stat-item">
+          <div class="stat-number">100%</div>
+          <div class="stat-label">Viral Growth</div>
+          <div class="stat-extra">To date</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── WHY CHOOSE MOYAAPP (USP CARDS) ── -->
+  <section class="usp-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Why choose MoyaApp</div>
+        <h2 class="section-h2">Customers are always connected</h2>
+        <p class="section-sub">Reach & engage data‑conscious users with industry‑leading results.</p>
+      </div>
+      <div class="usp-grid">
+        <div class="usp-card glass">
+          <span class="usp-icon">📶</span>
+          <div class="usp-title">Always connected</div>
+          <p class="usp-desc">Moya removes the data barrier — users stay active even with zero balance. Your message gets through every time.</p>
+        </div>
+        <div class="usp-card glass">
+          <span class="usp-icon">📲</span>
+          <div class="usp-title">Data‑conscious reach</div>
+          <p class="usp-desc">Engage audiences that other platforms miss. Moya is built for the South African mass market.</p>
+        </div>
+        <div class="usp-card glass">
+          <span class="usp-icon">🚀</span>
+          <div class="usp-title">Industry‑leading results</div>
+          <p class="usp-desc">Higher open rates, deeper engagement, and measurable ROI for brands and researchers.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── DEMOGRAPHICS + PROVINCE DATA ── -->
+  <section class="demographics-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Facts about our users</div>
+        <h2 class="section-h2">Statistically significant at 99% confidence</h2>
+        <p class="section-sub">Our demographic breakdown reflects the diversity of South Africa.</p>
+      </div>
+      <div class="demo-grid">
+        <div class="demo-stats">
+          <div class="demo-stat-card glass">
+            <div class="demo-stat-number">4M</div>
+            <div class="demo-stat-label">Daily Active</div>
+            <div class="demo-note">up to 4 million</div>
+          </div>
+          <div class="demo-stat-card glass">
+            <div class="demo-stat-number">6.5M</div>
+            <div class="demo-stat-label">Monthly Active</div>
+            <div class="demo-note">up to 6.5 million</div>
+          </div>
+          <div class="demo-stat-card glass">
+            <div class="demo-stat-number">100%</div>
+            <div class="demo-stat-label">Viral Growth</div>
+            <div class="demo-note">organic</div>
+          </div>
+          <div class="demo-stat-card glass">
+            <div class="demo-stat-number">99%</div>
+            <div class="demo-stat-label">Confidence Interval</div>
+            <div class="demo-note">statistically significant</div>
+          </div>
+        </div>
+
+        <div class="province-bars">
+          <div class="province-title">📍 User distribution by province</div>
+          <div class="province-list">
+            <div class="province-item">
+              <span class="province-name">Gauteng</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 24%;"></div></div>
+              <span class="province-percent">24%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">KZN</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 19%;"></div></div>
+              <span class="province-percent">19%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Western Cape</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 16%;"></div></div>
+              <span class="province-percent">16%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Limpopo</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 11%;"></div></div>
+              <span class="province-percent">11%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Mpumalanga</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 10%;"></div></div>
+              <span class="province-percent">10%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Eastern Cape</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 10%;"></div></div>
+              <span class="province-percent">10%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">North West</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 5%;"></div></div>
+              <span class="province-percent">5%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Free State</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 4%;"></div></div>
+              <span class="province-percent">4%</span>
+            </div>
+            <div class="province-item">
+              <span class="province-name">Northern Cape</span>
+              <div class="province-bar-bg"><div class="province-bar-fill" style="width: 1%;"></div></div>
+              <span class="province-percent">1%</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── TECHNOLOGY (cloud / zero‑data) ── -->
+  <section class="tech-section">
+    <div class="container">
+      <div class="tech-banner">
+        <div class="tech-img"></div>
+        <div class="tech-overlay"></div>
+        <div class="tech-content">
+          <div class="tech-eyebrow">⚡ Our Technology</div>
+          <div class="tech-title">A cloud solution that eliminates the mobile data cost barrier</div>
+          <p class="tech-desc">Moya's inclusive online presence maximises your reach. Data affordability remains one of the biggest barriers in low‑ and middle‑income countries — we remove it completely.</p>
+          <div class="powered-by">
+            <span>Proudly powered by</span>
+            <span style="font-family:'Syne',sans-serif; font-weight:700;">☁️ MoyaCloud</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FOOTER (business) ── -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <a class="logo" href="index.html" style="display:inline-flex;margin-bottom:8px;">
+            <div class="logo-mark"><span>M</span></div>
+            <span class="logo-text">Moya<em>App</em></span>
+          </a>
+          <p class="footer-copy" style="margin-top:8px;">© 2026 Moya App (Pty) Ltd. All rights reserved.</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Business Portal</a>
+          <a href="#">Contact</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Mobile nav toggle
+    const hamburger = document.getElementById('hamburger');
+    let navOpen = false;
+    hamburger.addEventListener('click', () => {
+      navOpen = !navOpen;
+      const links = document.querySelector('.nav-links');
+      if (navOpen) {
+        links.style.cssText = `
+          display: flex; flex-direction: column; gap: 16px;
+          position: absolute; top: 80px; left: 20px; right: 20px;
+          background: rgba(255,255,255,0.92); backdrop-filter: blur(24px);
+          border: 1px solid rgba(255,255,255,0.6); border-radius: 20px;
+          padding: 20px 24px; box-shadow: 0 24px 48px rgba(15,34,64,0.2); z-index: 200;
+        `;
+        links.querySelectorAll('a').forEach(a => { a.style.fontSize = '16px'; a.style.padding = '6px 0'; });
+      } else {
+        links.style.cssText = 'display: none;';
+      }
+    });
+
+    // Animate province bars on scroll (simple)
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.querySelectorAll('.province-bar-fill').forEach(bar => {
+            bar.style.transition = 'width 1s ease';
+            // widths already set inline in style; just trigger
+          });
+        }
+      });
+    }, { threshold: 0.3 });
+    const provinceSection = document.querySelector('.province-bars');
+    if (provinceSection) observer.observe(provinceSection);
+
+    // Generic fade-ins
+    const fadeEls = document.querySelectorAll('.product-card, .usp-card, .stat-item, .demo-stat-card');
+    fadeEls.forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(20px)';
+      el.style.transition = `opacity 0.5s ease ${i*0.07}s, transform 0.5s ease ${i*0.07}s`;
+      const obs = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+          }
+        });
+      }, { threshold: 0.1 });
+      obs.observe(el);
+    });
+  </script>
+</body>
+</html>

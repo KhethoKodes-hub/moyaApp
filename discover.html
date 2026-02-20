@@ -1,0 +1,783 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>MoyaApp · Discover</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --blue-950: #0a1628;
+      --blue-900: #0f2240;
+      --blue-800: #1a3a6e;
+      --blue-700: #1d4ed8;
+      --blue-600: #2563eb;
+      --blue-500: #3b82f6;
+      --blue-400: #60a5fa;
+      --blue-300: #93c5fd;
+      --blue-200: #bfdbfe;
+      --blue-100: #dbeafe;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+    body { font-family: 'DM Sans', sans-serif; background: #e8f2ff; color: var(--blue-900); overflow-x: hidden; min-height: 100vh; }
+
+    /* ── Animated mesh background ── */
+    .bg-mesh {
+      position: fixed; inset: 0; z-index: -1;
+      background:
+        radial-gradient(ellipse 80% 80% at 20% -10%, rgba(147,197,253,0.55) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 70% at 90% 30%, rgba(59,130,246,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse 70% 60% at 10% 80%, rgba(191,219,254,0.6) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 60% at 80% 90%, rgba(255,255,255,0.9) 0%, transparent 60%),
+        linear-gradient(160deg, #f0f8ff 0%, #dbeafe 40%, #bfdbfe 75%, #93c5fd 100%);
+      animation: meshFloat 20s ease-in-out infinite alternate;
+    }
+    @keyframes meshFloat {
+      0%   { background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%, 0% 0%; }
+      100% { background-position: 10% 20%, 90% 80%, 15% 85%, 85% 10%, 0% 0%; }
+    }
+    .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.35; pointer-events: none; z-index: -1; }
+    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #93c5fd, #3b82f6); top: -100px; left: -150px; animation: o1 18s ease-in-out infinite; }
+    .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #bfdbfe, #60a5fa); top: 40%; right: -80px; animation: o2 22s ease-in-out infinite; }
+    .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, #dbeafe, #93c5fd); bottom: 10%; left: 15%; animation: o3 26s ease-in-out infinite; }
+    @keyframes o1 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,80px) scale(1.1);} 66%{transform:translate(-40px,40px) scale(0.9);} }
+    @keyframes o2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-80px,-60px) scale(1.15);} }
+    @keyframes o3 { 0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(50px,-40px) scale(1.08);} 80%{transform:translate(-30px,30px) scale(0.95);} }
+
+    /* ── Glass ── */
+    .glass {
+      backdrop-filter: blur(20px) saturate(180%);
+      -webkit-backdrop-filter: blur(20px) saturate(180%);
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.45);
+      box-shadow: 0 25px 50px -12px rgba(15,34,64,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
+    }
+    .glass-strong {
+      backdrop-filter: blur(30px) saturate(200%);
+      -webkit-backdrop-filter: blur(30px) saturate(200%);
+      background: rgba(255,255,255,0.55);
+      border: 1px solid rgba(255,255,255,0.75);
+      box-shadow: 0 32px 64px -16px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.85);
+    }
+
+    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+
+    /* ── NAV ── */
+    nav { position: sticky; top: 0; z-index: 100; padding: 12px 0; }
+    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 11px 22px; border-radius: 18px; gap: 12px; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
+    .logo-mark { width: 36px; height: 36px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 11px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37,99,235,0.4); flex-shrink: 0; }
+    .logo-mark span { color: white; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px; }
+    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 20px; color: var(--blue-900); letter-spacing: -0.5px; white-space: nowrap; }
+    .logo-text em { font-style: normal; color: var(--blue-600); }
+    .nav-links { display: flex; gap: 28px; list-style: none; }
+    .nav-links a { text-decoration: none; color: var(--blue-800); font-size: 14px; font-weight: 500; opacity: 0.8; transition: color 0.2s; white-space: nowrap; }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue-600); opacity: 1; }
+    .nav-links a.active { font-weight: 600; border-bottom: 2px solid var(--blue-600); padding-bottom: 2px; }
+    .badge-datafree { background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(96,165,250,0.15)); border: 1px solid rgba(37,99,235,0.3); color: var(--blue-700); padding: 6px 13px; border-radius: 20px; font-size: 11px; font-weight: 600; white-space: nowrap; }
+    .btn-nav { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 9px 18px; border-radius: 13px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4); transition: all 0.2s; white-space: nowrap; font-family: 'DM Sans', sans-serif; touch-action: manipulation; }
+    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
+
+    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; flex-shrink: 0; touch-action: manipulation; }
+    .hamburger span { display: block; width: 24px; height: 2px; background: var(--blue-800); border-radius: 2px; transition: all 0.3s; }
+
+    /* Mobile nav overlay */
+    .mobile-nav {
+      display: none; position: fixed; inset: 0; z-index: 190;
+      background: rgba(240,248,255,0.97); backdrop-filter: blur(30px);
+      flex-direction: column; align-items: center; justify-content: center;
+      gap: 6px; padding: 80px 32px 40px;
+      opacity: 0; transition: opacity 0.3s ease;
+    }
+    .mobile-nav.open { display: flex; opacity: 1; }
+    .mobile-nav a {
+      text-decoration: none; color: var(--blue-900);
+      font-size: 26px; font-weight: 800; font-family: 'Syne', sans-serif;
+      padding: 13px 0; border-bottom: 1px solid rgba(37,99,235,0.1);
+      width: 100%; text-align: center; letter-spacing: -0.5px; transition: color 0.2s;
+    }
+    .mobile-nav a:hover, .mobile-nav a.active { color: var(--blue-600); }
+    .mobile-nav-close {
+      position: absolute; top: 18px; right: 18px; width: 44px; height: 44px;
+      background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.15); border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; font-size: 18px; color: var(--blue-900);
+      font-family: 'Syne', sans-serif; touch-action: manipulation;
+    }
+    .mobile-nav-cta {
+      margin-top: 18px; background: linear-gradient(135deg, #2563eb, #3b82f6);
+      color: white; border: none; padding: 17px 48px; border-radius: 18px;
+      font-size: 17px; font-weight: 700; font-family: 'Syne', sans-serif;
+      cursor: pointer; box-shadow: 0 10px 30px rgba(37,99,235,0.45);
+      width: 100%; touch-action: manipulation;
+    }
+
+    /* ── PAGE HERO ── */
+    .page-hero { margin: 20px 0 56px; border-radius: 28px; overflow: hidden; position: relative; min-height: 280px; display: flex; align-items: center; justify-content: center; }
+    .page-hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2072&auto=format&fit=crop'); background-size: cover; background-position: center 30%; transition: transform 0.6s ease; }
+    .page-hero:hover .page-hero-img { transform: scale(1.03); }
+    .page-hero-overlay { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(191,219,254,0.5) 0%, rgba(255,255,255,0.3) 50%, rgba(147,197,253,0.35) 100%); backdrop-filter: blur(3px); }
+    .page-hero-content { position: relative; z-index: 1; text-align: center; padding: 56px 20px; }
+    .hero-pill { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(20px); background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.7); padding: 7px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--blue-800); margin-bottom: 20px; }
+    .page-hero-h1 { font-family: 'Syne', sans-serif; font-size: clamp(44px, 10vw, 80px); font-weight: 800; letter-spacing: -3px; color: var(--blue-950); line-height: 1.03; margin-bottom: 18px; }
+    .page-hero-h1 .accent { background: linear-gradient(135deg, #2563eb, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .page-hero-sub { font-size: 16px; color: #3a5a8c; max-width: 480px; margin: 0 auto; backdrop-filter: blur(12px); background: rgba(255,255,255,0.3); border: 1px solid rgba(255,255,255,0.5); padding: 12px 22px; border-radius: 18px; font-weight: 300; line-height: 1.65; }
+
+    /* ── FILTER CHIPS ── */
+    .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-bottom: 56px; }
+    .chip { padding: 8px 18px; border-radius: 30px; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.22s; color: var(--blue-800); user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; }
+    .chip:hover, .chip.active { background: linear-gradient(135deg, #2563eb, #3b82f6) !important; color: white !important; border-color: transparent !important; box-shadow: 0 6px 18px rgba(37,99,235,0.4); transform: translateY(-2px); }
+
+    /* ── SECTION HEADER ── */
+    .section-header { margin-bottom: 36px; }
+    .section-header.center { text-align: center; }
+    .section-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 600; color: var(--blue-600); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; }
+    .section-h2 { font-family: 'Syne', sans-serif; font-size: clamp(22px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 10px; }
+    .section-sub { font-size: 16px; color: #4a6a9c; font-weight: 300; line-height: 1.7; max-width: 560px; }
+    .section-header.center .section-sub { margin: 0 auto; }
+
+    /* ── FEATURED (SASSA + Load Shedding) ── */
+    .featured-section { padding: 0 0 64px; }
+    .featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+    .featured-card {
+      border-radius: 26px; overflow: hidden; position: relative;
+      min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end;
+      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
+    }
+    .featured-card:hover { transform: translateY(-10px) scale(1.01); box-shadow: 0 36px 64px -20px rgba(37,99,235,0.4); }
+    .featured-img { position: absolute; inset: 0; background-size: cover; transition: transform 0.5s; }
+    .featured-card:hover .featured-img { transform: scale(1.06); }
+    .featured-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.05) 60%, transparent 100%); }
+    .featured-content { position: relative; z-index: 1; padding: 24px 28px; }
+    .featured-badge { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); padding: 5px 13px; border-radius: 20px; font-size: 11px; font-weight: 600; color: white; margin-bottom: 10px; }
+    .featured-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(18px, 2.5vw, 28px); color: white; margin-bottom: 9px; letter-spacing: -0.5px; line-height: 1.15; }
+    .featured-desc { font-size: 14px; color: rgba(255,255,255,0.8); line-height: 1.65; font-weight: 300; margin-bottom: 14px; }
+    .featured-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .featured-tag { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 4px 12px; border-radius: 14px; font-size: 11px; color: white; font-weight: 500; }
+
+    /* ── SECONDARY (3 col) ── */
+    .secondary-section { padding: 0 0 64px; }
+    .secondary-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .secondary-card { border-radius: 22px; overflow: hidden; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+    .secondary-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 28px 52px -16px rgba(37,99,235,0.35); }
+    .secondary-img-wrap { height: 180px; overflow: hidden; position: relative; }
+    .secondary-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; display: block; }
+    .secondary-card:hover .secondary-img { transform: scale(1.08); }
+    .secondary-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.35) 0%, transparent 60%); }
+    .secondary-img-tag { position: absolute; top: 10px; left: 10px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.25); border: 1px solid rgba(255,255,255,0.45); padding: 4px 11px; border-radius: 14px; font-size: 11px; font-weight: 600; color: white; }
+    .secondary-body { padding: 18px 20px 22px; }
+    .secondary-icon { font-size: 24px; margin-bottom: 7px; }
+    .secondary-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 17px; color: var(--blue-950); margin-bottom: 6px; }
+    .secondary-desc { font-size: 13px; color: #4a6a9c; line-height: 1.65; }
+
+    /* ── SPORTS BANNER ── */
+    .sports-section { padding: 0 0 64px; }
+    .sports-banner { border-radius: 26px; overflow: hidden; position: relative; min-height: 280px; display: flex; align-items: center; }
+    .sports-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1579952363873-27f3bade9f55?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center 45%; transition: transform 0.5s; }
+    .sports-banner:hover .sports-img { transform: scale(1.03); }
+    .sports-overlay { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.3) 60%, transparent 100%); }
+    .sports-content { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 36px; padding: 44px 48px; width: 100%; flex-wrap: wrap; }
+    .sports-badge { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 5px 13px; border-radius: 20px; font-size: 12px; font-weight: 600; color: white; margin-bottom: 12px; }
+    .sports-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(24px, 4vw, 46px); color: white; margin-bottom: 9px; letter-spacing: -1.5px; line-height: 1.1; }
+    .sports-desc { font-size: 15px; color: rgba(255,255,255,0.75); max-width: 440px; line-height: 1.7; font-weight: 300; margin-bottom: 18px; }
+    .sports-teams { display: flex; gap: 8px; flex-wrap: wrap; }
+    .sports-team { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 6px 14px; border-radius: 14px; font-size: 13px; color: white; font-weight: 500; }
+    .fixture-card { backdrop-filter: blur(20px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); border-radius: 22px; padding: 22px 26px; text-align: center; min-width: 180px; flex-shrink: 0; }
+    .fixture-label { font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.6); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 7px; }
+    .fixture-teams { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; color: white; margin-bottom: 5px; }
+    .fixture-time { font-size: 20px; font-weight: 800; color: #93c5fd; font-family: 'Syne', sans-serif; }
+    .live-dot { display: inline-flex; align-items: center; gap: 5px; margin-top: 7px; }
+    .live-dot-circle { width: 6px; height: 6px; background: #ef4444; border-radius: 50%; animation: livePulse 1.2s ease-in-out infinite; flex-shrink: 0; }
+    @keyframes livePulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+    .live-dot-text { font-size: 10px; color: #fca5a5; font-weight: 600; }
+
+    /* ── PLAY + PAY ── */
+    .playpay-section { padding: 0 0 64px; }
+    .playpay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    .playpay-card { border-radius: 26px; overflow: hidden; position: relative; min-height: 300px; display: flex; flex-direction: column; justify-content: flex-end; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
+    .playpay-card:hover { transform: translateY(-10px) scale(1.01); }
+    .playpay-img { position: absolute; inset: 0; background-size: cover; background-position: center 30%; transition: transform 0.5s; }
+    .playpay-card:hover .playpay-img { transform: scale(1.06); }
+    .playpay-overlay-purple { position: absolute; inset: 0; background: linear-gradient(to top, rgba(88,28,135,0.6) 0%, rgba(10,22,40,0.1) 60%, transparent 100%); }
+    .playpay-overlay-blue { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.65) 0%, rgba(10,22,40,0.1) 60%, transparent 100%); }
+    .playpay-content { position: relative; z-index: 1; padding: 24px 28px; }
+    .playpay-badge { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.18); border: 1px solid rgba(255,255,255,0.35); padding: 5px 12px; border-radius: 18px; font-size: 11px; font-weight: 600; color: white; margin-bottom: 10px; }
+    .playpay-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 24px; color: white; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .playpay-desc { font-size: 14px; color: rgba(255,255,255,0.82); line-height: 1.65; font-weight: 300; margin-bottom: 14px; }
+    .playpay-tags { display: flex; gap: 7px; flex-wrap: wrap; }
+    .playpay-tag { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 4px 11px; border-radius: 13px; font-size: 11px; color: white; }
+
+    /* ── MORE CATEGORIES ── */
+    .more-section { padding: 0 0 64px; }
+    .more-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+    .more-card { border-radius: 18px; padding: 22px 14px; text-align: center; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); position: relative; overflow: hidden; touch-action: manipulation; }
+    .more-card:hover { transform: translateY(-8px) scale(1.02); }
+    .more-card::after { content:''; position:absolute; inset:0; background:linear-gradient(135deg, rgba(37,99,235,0.05) 0%, transparent 100%); pointer-events:none; }
+    .more-icon { font-size: 34px; margin-bottom: 9px; display: block; }
+    .more-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--blue-950); margin-bottom: 3px; }
+    .more-label { font-size: 11px; color: #64748b; }
+
+    /* ── TESTIMONIAL ── */
+    .testimonial-section { padding: 0 0 64px; }
+    .testimonial-card { border-radius: 26px; overflow: hidden; position: relative; min-height: 280px; display: flex; align-items: center; justify-content: center; }
+    .testimonial-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1527683611643-4009f3a761c2?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center 50%; }
+    .testimonial-overlay { position: absolute; inset: 0; background: rgba(191,219,254,0.4); backdrop-filter: blur(5px); }
+    .testimonial-content { position: relative; z-index: 1; text-align: center; padding: 48px 36px; max-width: 720px; }
+    .quote-mark { font-family: 'Syne', sans-serif; font-size: 80px; line-height: 0.6; color: rgba(37,99,235,0.2); display: block; margin-bottom: 20px; }
+    .testimonial-text { font-size: clamp(15px, 2.2vw, 22px); color: var(--blue-950); font-weight: 400; line-height: 1.65; margin-bottom: 22px; font-style: italic; }
+    .testimonial-author { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(16px); background: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.65); padding: 9px 18px; border-radius: 30px; font-size: 13px; font-weight: 600; color: var(--blue-900); }
+    .author-dot { width: 7px; height: 7px; background: #22c55e; border-radius: 50%; flex-shrink: 0; }
+
+    /* ── DOWNLOAD CTA ── */
+    .download-section { padding: 0 0 56px; }
+    .download-inner { border-radius: 32px; padding: 58px 48px; text-align: center; position: relative; overflow: hidden; }
+    .download-inner::before { content:''; position:absolute; inset:0; background:radial-gradient(ellipse 80% 80% at 50% -20%, rgba(37,99,235,0.07), transparent); pointer-events:none; }
+    .download-h2 { font-family: 'Syne', sans-serif; font-size: clamp(26px, 4vw, 48px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 12px; }
+    .download-sub { font-size: 16px; color: #4a6a9c; margin-bottom: 32px; font-weight: 300; }
+    .download-buttons { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 18px; }
+    .btn-store { display: inline-flex; align-items: center; gap: 12px; background: var(--blue-950); color: white; border: none; padding: 15px 26px; border-radius: 17px; font-size: 14px; font-weight: 500; cursor: pointer; box-shadow: 0 8px 24px rgba(10,22,40,0.3); transition: all 0.25s; font-family: 'DM Sans', sans-serif; touch-action: manipulation; }
+    .btn-store:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(10,22,40,0.4); }
+    .btn-store-icon { font-size: 24px; }
+    .btn-store-small { font-size: 10px; opacity: 0.7; display: block; }
+    .btn-store-big { font-size: 16px; font-weight: 700; display: block; }
+    .download-note { font-size: 12px; color: #94a3b8; }
+
+    /* ── FOOTER ── */
+    footer { padding: 36px 0 24px; border-top: 1px solid rgba(37,99,235,0.12); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
+    .footer-copy { font-size: 12px; color: #94a3b8; }
+    .footer-links { display: flex; gap: 22px; flex-wrap: wrap; }
+    .footer-links a { font-size: 13px; color: #64748b; text-decoration: none; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--blue-600); }
+
+    /* ══════════════════════════════
+       RESPONSIVE BREAKPOINTS
+    ══════════════════════════════ */
+
+    /* ── Large tablet: 900–1200px ── */
+    @media (max-width: 1200px) {
+      .more-grid { grid-template-columns: repeat(4, 1fr); }
+    }
+
+    /* ── Tablet: 768–900px ── */
+    @media (max-width: 900px) {
+      .nav-links { display: none !important; }
+      .badge-datafree { display: none; }
+      .hamburger { display: flex !important; }
+
+      .featured-grid { grid-template-columns: 1fr; gap: 14px; }
+      .featured-card { min-height: 300px; }
+
+      .secondary-grid { grid-template-columns: 1fr 1fr; gap: 14px; }
+
+      .sports-content { flex-direction: column; align-items: flex-start; padding: 36px 32px; gap: 0; }
+      .fixture-card { display: none; }
+
+      .playpay-grid { grid-template-columns: 1fr; gap: 14px; }
+
+      .more-grid { grid-template-columns: repeat(4, 1fr); }
+
+      .page-hero { min-height: 230px; }
+    }
+
+    /* ── Mobile: 600–768px ── */
+    @media (max-width: 768px) {
+      .container { padding: 0 14px; }
+      .nav-inner { padding: 10px 14px; border-radius: 15px; }
+      .logo-text { font-size: 18px; }
+      .logo-mark { width: 33px; height: 33px; border-radius: 10px; }
+      .logo-mark span { font-size: 16px; }
+
+      .page-hero { margin: 12px 0 36px; border-radius: 20px; min-height: 200px; }
+      .page-hero-content { padding: 32px 14px; }
+      .page-hero-h1 { font-size: clamp(36px, 11vw, 56px); letter-spacing: -2px; }
+      .page-hero-sub { font-size: 14px; padding: 10px 16px; }
+      .hero-pill { font-size: 12px; padding: 6px 14px; }
+
+      .chips-wrap { gap: 7px; margin-bottom: 36px; }
+      .chip { padding: 7px 13px; font-size: 12px; }
+
+      .section-h2 { font-size: clamp(20px, 6vw, 32px); letter-spacing: -1px; }
+      .section-sub { font-size: 14px; }
+      .section-header { margin-bottom: 28px; }
+
+      /* Featured — stack vertically */
+      .featured-section { padding: 0 0 48px; }
+      .featured-grid { grid-template-columns: 1fr; gap: 12px; }
+      .featured-card { min-height: 260px; border-radius: 20px; }
+      .featured-content { padding: 18px 20px; }
+      .featured-title { font-size: clamp(17px, 4.5vw, 22px); }
+      .featured-desc { font-size: 13px; }
+      .featured-tags { gap: 5px; }
+      .featured-tag { font-size: 10px; padding: 3px 9px; }
+
+      /* Secondary */
+      .secondary-section { padding: 0 0 48px; }
+      .secondary-grid { grid-template-columns: 1fr; gap: 12px; }
+      .secondary-img-wrap { height: 160px; }
+      .secondary-card { border-radius: 18px; }
+      .secondary-body { padding: 15px 17px 20px; }
+
+      /* Sports */
+      .sports-section { padding: 0 0 48px; }
+      .sports-banner { border-radius: 20px; min-height: 240px; }
+      .sports-content { padding: 28px 22px; gap: 0; }
+      .sports-title { font-size: clamp(22px, 6vw, 34px); letter-spacing: -1px; }
+      .sports-desc { font-size: 13px; margin-bottom: 14px; }
+      .sports-team { font-size: 12px; padding: 5px 11px; }
+
+      /* Play & Pay */
+      .playpay-section { padding: 0 0 48px; }
+      .playpay-grid { grid-template-columns: 1fr; gap: 12px; }
+      .playpay-card { min-height: 260px; border-radius: 20px; }
+      .playpay-content { padding: 18px 22px; }
+      .playpay-title { font-size: 20px; }
+      .playpay-desc { font-size: 13px; }
+
+      /* More grid */
+      .more-section { padding: 0 0 48px; }
+      .more-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .more-card { padding: 18px 12px; border-radius: 16px; }
+      .more-icon { font-size: 28px; margin-bottom: 7px; }
+
+      /* Testimonial */
+      .testimonial-section { padding: 0 0 48px; }
+      .testimonial-card { border-radius: 20px; min-height: 240px; }
+      .testimonial-content { padding: 36px 22px; }
+      .quote-mark { font-size: 60px; margin-bottom: 14px; }
+      .testimonial-text { font-size: clamp(14px, 4vw, 18px); }
+
+      /* Download */
+      .download-section { padding: 0 0 44px; }
+      .download-inner { padding: 38px 20px; border-radius: 22px; }
+      .download-buttons { flex-direction: column; align-items: center; gap: 10px; }
+      .btn-store { width: 100%; max-width: 300px; justify-content: center; }
+
+      footer { padding: 28px 0 20px; }
+      .footer-inner { flex-direction: column; gap: 14px; }
+      .footer-links { gap: 14px; }
+    }
+
+    /* ── Small Mobile: up to 480px ── */
+    @media (max-width: 480px) {
+      .container { padding: 0 12px; }
+
+      .page-hero { border-radius: 16px; min-height: 180px; }
+      .page-hero-content { padding: 24px 12px; }
+      .page-hero-h1 { font-size: clamp(32px, 12vw, 48px); letter-spacing: -1.5px; }
+
+      .featured-card { min-height: 230px; }
+      .secondary-img-wrap { height: 140px; }
+
+      .sports-banner { min-height: 200px; }
+      .sports-content { padding: 22px 18px; }
+      .sports-teams { gap: 6px; }
+      .sports-team { font-size: 11px; padding: 4px 9px; }
+
+      .more-grid { grid-template-columns: repeat(2, 1fr); gap: 8px; }
+      .more-card { padding: 16px 10px; }
+      .more-icon { font-size: 26px; }
+      .more-title { font-size: 12px; }
+
+      .testimonial-content { padding: 28px 16px; }
+    }
+
+    /* ── Very small: up to 360px ── */
+    @media (max-width: 360px) {
+      .page-hero-h1 { font-size: 30px; }
+      .featured-title { font-size: 16px; }
+      .sports-title { font-size: 20px; }
+      .playpay-title { font-size: 18px; }
+      .section-h2 { font-size: 19px; }
+    }
+
+    /* ── Landscape phone ── */
+    @media (max-width: 900px) and (orientation: landscape) and (max-height: 520px) {
+      .page-hero { min-height: 160px; margin: 10px 0 28px; }
+      .page-hero-content { padding: 22px 14px; }
+      .featured-grid { grid-template-columns: 1fr 1fr; }
+      .featured-card { min-height: 220px; }
+      .secondary-grid { grid-template-columns: repeat(3, 1fr); }
+      .more-grid { grid-template-columns: repeat(4, 1fr); }
+      .chips-wrap { margin-bottom: 28px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="bg-mesh"></div>
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+
+  <!-- MOBILE NAV OVERLAY -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
+    <a href="index.html" onclick="closeMobileNav()">Home</a>
+    <a href="features.html" onclick="closeMobileNav()">Features</a>
+    <a href="works.html" onclick="closeMobileNav()">How it works</a>
+    <a href="discover.html" class="active" onclick="closeMobileNav()">Discover</a>
+    <a href="story.html" onclick="closeMobileNav()">Our story</a>
+    <a href="business.html" onclick="closeMobileNav()">Business</a>
+    <a href="download.html" onclick="closeMobileNav()"></a><button class="mobile-nav-cta">🚀 Download free</button></a>
+  </div>
+
+  <!-- NAV -->
+  <nav>
+    <div class="container">
+      <div class="nav-inner glass">
+        <a class="logo" href="index.html">
+          <div class="logo-mark"><span>M</span></div>
+          <span class="logo-text">Moya<em>App</em></span>
+        </a>
+        <ul class="nav-links">
+          <li><a href="features.html">Features</a></li>
+          <li><a href="works.html">How it works</a></li>
+          <li><a href="discover.html" class="active">Discover</a></li>
+          <li><a href="story.html">Our story</a></li>
+          <li><a href="business.html">Business</a></li>
+        </ul>
+        <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
+          <span class="badge-datafree">dataFREE in SA ✓</span>
+          <a href="download.html"><button class="btn-nav">Download</button></a>
+        </div>
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
+          <span></span><span></span><span></span>
+        </button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- PAGE HERO -->
+  <div class="container">
+    <div class="page-hero">
+      <div class="page-hero-img"></div>
+      <div class="page-hero-overlay"></div>
+      <div class="page-hero-content">
+        <div class="hero-pill">🔍 Explore the hub</div>
+        <h1 class="page-hero-h1"><span class="accent">Discover</span></h1>
+        <p class="page-hero-sub">News, tools, games, and essential services — all data-efficient, all inside Moya.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- FILTER CHIPS -->
+  <div class="container">
+    <div class="chips-wrap">
+      <span class="chip glass active">📰 News</span>
+      <span class="chip glass">⚽ Soccer</span>
+      <span class="chip glass">🇿🇦 Gov services</span>
+      <span class="chip glass">📚 Wikipedia</span>
+      <span class="chip glass">⚡ Load shedding</span>
+      <span class="chip glass">🌦️ Weather</span>
+      <span class="chip glass">🎮 MoyaPlay</span>
+      <span class="chip glass">💳 MoyaPay</span>
+    </div>
+  </div>
+
+  <!-- FEATURED -->
+  <section class="featured-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Today's highlights</div>
+        <h2 class="section-h2">Essential SA services</h2>
+        <p class="section-sub">Zero-rated and data-efficient — tap into what matters most, every single day.</p>
+      </div>
+      <div class="featured-grid">
+        <div class="featured-card">
+          <div class="featured-img" style="background-image: url('https://images.unsplash.com/photo-1575505586569-646b2ca898fc?q=80&w=2070&auto=format&fit=crop'); background-position: center 20%;"></div>
+          <div class="featured-overlay"></div>
+          <div class="featured-content">
+            <div class="featured-badge">🇿🇦 Government · dataFREE</div>
+            <div class="featured-title">SASSA grants & social services</div>
+            <p class="featured-desc">Check your grant status, apply for social relief, and access government info — all data-free on supported networks.</p>
+            <div class="featured-tags">
+              <span class="featured-tag">📅 Application status</span>
+              <span class="featured-tag">📞 SRD hotline</span>
+              <span class="featured-tag">🆔 ID verification</span>
+            </div>
+          </div>
+        </div>
+        <div class="featured-card">
+          <div class="featured-img" style="background-image: url('https://images.unsplash.com/photo-1473341304170-971dccb5ac1e?q=80&w=2070&auto=format&fit=crop'); background-position: center 40%;"></div>
+          <div class="featured-overlay"></div>
+          <div class="featured-content">
+            <div class="featured-badge">⚡ Essential · real-time</div>
+            <div class="featured-title">Load shedding schedules</div>
+            <p class="featured-desc">Real-time updates by area, stage forecasts, and push notifications — never be left in the dark again.</p>
+            <div class="featured-tags">
+              <span class="featured-tag">📍 Johannesburg</span>
+              <span class="featured-tag">📍 Cape Town</span>
+              <span class="featured-tag">📍 Durban</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECONDARY -->
+  <section class="secondary-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Daily essentials</div>
+        <h2 class="section-h2">Stay informed, stay ahead</h2>
+        <p class="section-sub">Curated content built for South Africans — data-light and always current.</p>
+      </div>
+      <div class="secondary-grid">
+        <div class="secondary-card glass">
+          <div class="secondary-img-wrap">
+            <img class="secondary-img" src="https://images.unsplash.com/photo-1504711434969-e33886168f5c?q=80&w=2070&auto=format&fit=crop" alt="News" loading="lazy">
+            <div class="secondary-img-overlay"></div>
+            <span class="secondary-img-tag">📰 Daily</span>
+          </div>
+          <div class="secondary-body">
+            <div class="secondary-icon">🗞️</div>
+            <div class="secondary-title">News & current affairs</div>
+            <p class="secondary-desc">Top stories from South Africa and the world, curated and data-light. Updated every hour.</p>
+          </div>
+        </div>
+        <div class="secondary-card glass">
+          <div class="secondary-img-wrap">
+            <img class="secondary-img" src="https://images.unsplash.com/photo-1592210454359-9043f067919b?q=80&w=2070&auto=format&fit=crop" alt="Weather" loading="lazy">
+            <div class="secondary-img-overlay"></div>
+            <span class="secondary-img-tag">🌦️ Real-time</span>
+          </div>
+          <div class="secondary-body">
+            <div class="secondary-icon">🌤️</div>
+            <div class="secondary-title">Weather & alerts</div>
+            <p class="secondary-desc">Hourly forecasts, severe weather warnings, and alerts for your specific region in South Africa.</p>
+          </div>
+        </div>
+        <div class="secondary-card glass">
+          <div class="secondary-img-wrap">
+            <img class="secondary-img" src="https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1974&auto=format&fit=crop" alt="Wikipedia" loading="lazy">
+            <div class="secondary-img-overlay"></div>
+            <span class="secondary-img-tag">📚 Zero data</span>
+          </div>
+          <div class="secondary-body">
+            <div class="secondary-icon">📖</div>
+            <div class="secondary-title">Wikipedia</div>
+            <p class="secondary-desc">Millions of articles — zero data for text browsing inside Moya on supported networks.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SPORTS BANNER -->
+  <section class="sports-section">
+    <div class="container">
+      <div class="sports-banner">
+        <div class="sports-img"></div>
+        <div class="sports-overlay"></div>
+        <div class="sports-content">
+          <div class="sports-text">
+            <div class="sports-badge">⚽ Live scores</div>
+            <div class="sports-title">Soccer & sports</div>
+            <p class="sports-desc">Follow PSL, English Premier League, and international matches. Live scores, line-ups, and stats — updated in real time with minimal data.</p>
+            <div class="sports-teams">
+              <span class="sports-team">🔥 Kaizer Chiefs</span>
+              <span class="sports-team">⚪ Orlando Pirates</span>
+              <span class="sports-team">🏆 Bafana Bafana</span>
+              <span class="sports-team">🔵 Sundowns</span>
+            </div>
+          </div>
+          <div class="fixture-card">
+            <div class="fixture-label">Today's fixture</div>
+            <div class="fixture-teams">Sundowns vs Swallows</div>
+            <div class="fixture-time">18:30</div>
+            <div class="live-dot">
+              <span class="live-dot-circle"></span>
+              <span class="live-dot-text">Live updates</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MOYAPLAY + MOYAPAY -->
+  <section class="playpay-section">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">✦ Play & Pay</div>
+        <h2 class="section-h2">Earn and transact inside Discover</h2>
+        <p class="section-sub">Win real cash and manage your money — all within the app you already love.</p>
+      </div>
+      <div class="playpay-grid">
+        <div class="playpay-card">
+          <div class="playpay-img" style="background-image: url('https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?q=80&w=2070&auto=format&fit=crop');"></div>
+          <div class="playpay-overlay-purple"></div>
+          <div class="playpay-content">
+            <div class="playpay-badge">🎮 Play & earn</div>
+            <div class="playpay-title">MoyaPlay</div>
+            <p class="playpay-desc">Answer daily quizzes, compete with friends, and win real cash. The quiz lobby uses zero data — anyone can play, any time.</p>
+            <div class="playpay-tags">
+              <span class="playpay-tag">🏆 R5,000+ weekly</span>
+              <span class="playpay-tag">⏱️ 60-sec rounds</span>
+              <span class="playpay-tag">📊 Leaderboards</span>
+            </div>
+          </div>
+        </div>
+        <div class="playpay-card">
+          <div class="playpay-img" style="background-image: url('https://images.unsplash.com/photo-1563013544-824ae1b704d9?q=80&w=2070&auto=format&fit=crop'); background-position: center 20%;"></div>
+          <div class="playpay-overlay-blue"></div>
+          <div class="playpay-content">
+            <div class="playpay-badge">💸 Financial</div>
+            <div class="playpay-title">MoyaPay & Marketplace</div>
+            <p class="playpay-desc">Send money, buy airtime, bus tickets, and get a prepaid Mastercard — all without data charges on supported networks.</p>
+            <div class="playpay-tags">
+              <span class="playpay-tag">💳 Virtual card</span>
+              <span class="playpay-tag">🚌 Bus tickets</span>
+              <span class="playpay-tag">💸 Send money</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MORE CATEGORIES -->
+  <section class="more-section">
+    <div class="container">
+      <div class="section-header center">
+        <div class="section-eyebrow">✦ And there's more</div>
+        <h2 class="section-h2">300+ content services</h2>
+        <p class="section-sub">Moya's Discover hub is constantly growing with more services South Africans love.</p>
+      </div>
+      <div class="more-grid">
+        <div class="more-card glass"><span class="more-icon">📈</span><div class="more-title">Stock prices</div><div class="more-label">JSE live</div></div>
+        <div class="more-card glass"><span class="more-icon">💼</span><div class="more-title">Job listings</div><div class="more-label">Updated daily</div></div>
+        <div class="more-card glass"><span class="more-icon">🏥</span><div class="more-title">Health vouchers</div><div class="more-label">Clinic bookings</div></div>
+        <div class="more-card glass"><span class="more-icon">📚</span><div class="more-title">Educational</div><div class="more-label">Courses & tips</div></div>
+        <div class="more-card glass"><span class="more-icon">🎟️</span><div class="more-title">Events</div><div class="more-label">Buy tickets</div></div>
+        <div class="more-card glass"><span class="more-icon">📺</span><div class="more-title">TV guide</div><div class="more-label">What's on tonight</div></div>
+        <div class="more-card glass"><span class="more-icon">🚗</span><div class="more-title">Classifieds</div><div class="more-label">Buy & sell local</div></div>
+        <div class="more-card glass"><span class="more-icon">📻</span><div class="more-title">Radio streams</div><div class="more-label">SA stations live</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIAL -->
+  <section class="testimonial-section">
+    <div class="container">
+      <div class="testimonial-card">
+        <div class="testimonial-img"></div>
+        <div class="testimonial-overlay"></div>
+        <div class="testimonial-content">
+          <span class="quote-mark">"</span>
+          <p class="testimonial-text">I check my SASSA status and load shedding schedule on Moya every day — and it doesn't cost me any data. It's more than an app, it's a lifeline.</p>
+          <div class="testimonial-author">
+            <span class="author-dot"></span>
+            Thando, Soweto
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DOWNLOAD CTA -->
+  <section class="download-section">
+    <div class="container">
+      <div class="download-inner glass-strong">
+        <div class="section-eyebrow" style="display:inline-flex;justify-content:center;margin-bottom:18px;">✨ Discover it all today</div>
+        <h2 class="download-h2">From news to grants,<br>quizzes to <span style="color:var(--blue-600)">payments</span></h2>
+        <p class="download-sub">All in one data-friendly super app — download MoyaApp for free.</p>
+        <div class="download-buttons">
+          <button class="btn-store">
+            <span class="btn-store-icon">🤖</span>
+            <div><span class="btn-store-small">Get it on</span><span class="btn-store-big">Google Play</span></div>
+          </button>
+          <button class="btn-store">
+            <span class="btn-store-icon">🍎</span>
+            <div><span class="btn-store-small">Download on the</span><span class="btn-store-big">App Store</span></div>
+          </button>
+        </div>
+        <p class="download-note">* dataFREE texts on MTN, Vodacom, Cell C & Telkom when out of bundle. Some Discover services are zero-rated or data-efficient. SA only.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="container">
+      <div class="footer-inner">
+        <div>
+          <a class="logo" href="index.html" style="display:inline-flex;margin-bottom:8px;">
+            <div class="logo-mark"><span>M</span></div>
+            <span class="logo-text">Moya<em>App</em></span>
+          </a>
+          <p class="footer-copy" style="margin-top:8px;">© 2025 MoyaApp · Built for South Africa 🇿🇦</p>
+        </div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Use</a>
+          <a href="#">Support</a>
+          <a href="#">About</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Mobile Nav ──
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+
+    function openMobileNav() {
+      mobileNav.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      hamburger.children[0].style.transform = 'rotate(45deg) translate(5px,5px)';
+      hamburger.children[1].style.opacity = '0';
+      hamburger.children[2].style.transform = 'rotate(-45deg) translate(5px,-5px)';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open');
+      document.body.style.overflow = '';
+      hamburger.children[0].style.transform = '';
+      hamburger.children[1].style.opacity = '';
+      hamburger.children[2].style.transform = '';
+    }
+    hamburger.addEventListener('click', () => {
+      if (mobileNav.classList.contains('open')) closeMobileNav();
+      else openMobileNav();
+    });
+    mobileNavClose.addEventListener('click', closeMobileNav);
+
+    // ── Filter chips ──
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        chips.forEach(c => c.classList.remove('active'));
+        chip.classList.add('active');
+      });
+    });
+
+    // ── Scroll entrance animations ──
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        }
+      });
+    }, { threshold: 0.06, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.featured-card, .secondary-card, .playpay-card, .more-card').forEach((el, i) => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(26px)';
+      el.style.transition = `opacity 0.55s ease ${i * 0.06}s, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.06}s`;
+      observer.observe(el);
+    });
+
+    // ── Touch feedback ──
+    document.querySelectorAll('.btn-store, .mobile-nav-cta, .btn-nav').forEach(btn => {
+      btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
+      btn.addEventListener('touchend', () => btn.style.opacity = '', { passive: true });
+    });
+  </script>
+</body>
+</html>
