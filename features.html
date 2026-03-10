@@ -6,9 +6,7 @@
   <title>MoyaApp · Features</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
   <style>
-    /* ══════════════════════════════════
-       THEME VARIABLES
-    ══════════════════════════════════ */
+   
     :root {
       --blue-950: #0a1628;
       --blue-900: #0f2240;
@@ -21,7 +19,6 @@
       --blue-200: #bfdbfe;
       --blue-100: #dbeafe;
 
-      /* Light theme tokens */
       --bg:           #e8f2ff;
       --bg2:          #dbeafe;
       --text:         #0a1628;
@@ -103,7 +100,6 @@
       background-size: 200px;
     }
 
-    /* BG MESH */
     .bg-mesh {
       position: fixed; inset: 0; z-index: -1;
       background: var(--mesh);
@@ -138,7 +134,6 @@
     @keyframes o2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-80px,-60px) scale(1.15);} }
     @keyframes o3 { 0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(50px,-40px) scale(1.08);} 80%{transform:translate(-30px,30px) scale(0.95);} }
 
-    /* DATA STREAMS */
     .data-streams { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; opacity: var(--stream-opacity); transition: opacity 0.4s; }
     .stream { position: absolute; width: 1px; background: linear-gradient(180deg, transparent, rgba(37,99,235,0.9), transparent); animation: stream-fall linear infinite; }
     .stream:nth-child(1){left:5%;height:90px;animation-duration:4s;animation-delay:0s}
@@ -150,7 +145,6 @@
     .stream:nth-child(7){left:88%;height:80px;animation-duration:3.4s;animation-delay:1.9s}
     @keyframes stream-fall { 0%{top:-15%;opacity:0} 10%{opacity:1} 90%{opacity:1} 100%{top:115%;opacity:0} }
 
-    /* WIFI RINGS */
     .wifi-pulse { position: fixed; bottom: 8%; right: 4%; width: 120px; height: 120px; pointer-events: none; z-index: 0; opacity: var(--wifi-opacity); transition: opacity 0.4s; }
     .wp-ring { position: absolute; top: 50%; left: 50%; border: 1.5px solid rgba(37,99,235,0.8); border-radius: 50%; transform: translate(-50%,-50%) scale(0); animation: wp-expand 3.5s ease-out infinite; }
     .wp-ring:nth-child(1){width:40px;height:40px;animation-delay:0s}
@@ -158,7 +152,6 @@
     .wp-ring:nth-child(3){width:120px;height:120px;animation-delay:1.4s}
     @keyframes wp-expand { 0%{transform:translate(-50%,-50%) scale(0);opacity:.9} 100%{transform:translate(-50%,-50%) scale(1);opacity:0} }
 
-    /* GLASS */
     .glass { backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%); background: var(--glass-bg); border: 1px solid var(--glass-border); box-shadow: 0 25px 50px -12px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.3); transition: background 0.4s, border 0.4s; }
     .glass-strong { backdrop-filter: blur(30px) saturate(200%); -webkit-backdrop-filter: blur(30px) saturate(200%); background: var(--glass-strong-bg); border: 1px solid var(--glass-strong-border); box-shadow: 0 32px 64px -16px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.4); transition: background 0.4s, border 0.4s; }
     [data-theme="dark"] .glass { box-shadow: 0 25px 50px -12px rgba(0,10,40,0.5), inset 0 1px 0 rgba(255,255,255,0.06); }
@@ -166,9 +159,7 @@
 
     .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; position: relative; z-index: 1; }
 
-    /* ══════════════════════════════
-       THEME TOGGLE
-    ══════════════════════════════ */
+    
     .theme-toggle {
       position: relative; width: 54px; height: 28px;
       background: var(--glass-bg); border: 1px solid var(--glass-border);
@@ -193,9 +184,7 @@
     [data-theme="dark"] .t-moon { opacity: 0.4; }
     [data-theme="dark"] .t-sun  { opacity: 1; }
 
-    /* ══════════════════════════════
-       NAV
-    ══════════════════════════════ */
+   
     nav { position: sticky; top: 0; z-index: 100; padding: 12px 0; }
     .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 11px 22px; border-radius: 18px; gap: 12px; transition: background 0.4s; }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; flex-shrink: 0; }
@@ -214,7 +203,6 @@
     .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; background: none; border: none; flex-shrink: 0; touch-action: manipulation; }
     .hamburger span { display: block; width: 24px; height: 2px; background: var(--text); border-radius: 2px; transition: all 0.3s; }
 
-    /* MOBILE NAV */
     .mobile-nav { display: none; position: fixed; inset: 0; z-index: 190; background: var(--nav-bg); backdrop-filter: blur(30px); flex-direction: column; align-items: center; justify-content: center; gap: 6px; padding: 80px 32px 40px; opacity: 0; transition: opacity 0.3s ease, background 0.4s; }
     .mobile-nav.open { display: flex; opacity: 1; }
     .mobile-nav a { text-decoration: none; color: var(--text); font-size: 26px; font-weight: 900; font-family: 'Montserrat', sans-serif; padding: 13px 0; border-bottom: 1px solid var(--border); width: 100%; text-align: center; letter-spacing: -0.5px; transition: color 0.2s; }
@@ -222,9 +210,7 @@
     .mobile-nav-close { position: absolute; top: 18px; right: 18px; width: 44px; height: 44px; background: var(--eyebrow-bg); border: 1px solid var(--eyebrow-border); border-radius: 50%; display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 18px; color: var(--text); font-family: 'Montserrat', sans-serif; touch-action: manipulation; transition: background 0.4s; }
     .mobile-nav-cta { margin-top: 18px; background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 17px 48px; border-radius: 18px; font-size: 17px; font-weight: 900; font-family: 'Montserrat', sans-serif; cursor: pointer; box-shadow: 0 10px 30px rgba(37,99,235,0.45); width: 100%; touch-action: manipulation; }
 
-    /* ══════════════════════════════
-       PAGE HERO
-    ══════════════════════════════ */
+    
     .page-hero { margin: 20px 0 56px; border-radius: 28px; overflow: hidden; position: relative; min-height: 320px; display: flex; align-items: center; justify-content: center; }
     .page-hero-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop'); background-size: cover; background-position: center 35%; transition: transform 0.6s ease; }
     .page-hero:hover .page-hero-img { transform: scale(1.03); }
@@ -246,22 +232,18 @@
     [data-theme="light"] .page-hero-sub { color: #3a5a8c; }
     [data-theme="dark"]  .page-hero-sub { color: rgba(255,255,255,0.82); background: rgba(0,0,0,0.3); border-color: rgba(255,255,255,0.15); }
 
-    /* CHIPS */
     .chips-wrap { display: flex; flex-wrap: wrap; gap: 9px; justify-content: center; margin-bottom: 56px; }
     .chip { padding: 8px 16px; border-radius: 30px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.25s cubic-bezier(.34,1.56,.64,1); color: var(--text2); user-select: none; touch-action: manipulation; -webkit-tap-highlight-color: transparent; display: flex; align-items: center; gap: 7px; }
     .chip svg { width: 15px; height: 15px; flex-shrink: 0; }
     .chip:hover, .chip.active { background: linear-gradient(135deg, #2563eb, #3b82f6) !important; color: white !important; border-color: transparent !important; box-shadow: 0 6px 18px rgba(37,99,235,0.4); transform: translateY(-2px) scale(1.04); }
     .chip:hover svg, .chip.active svg { stroke: white; fill: none; }
 
-    /* SECTION HEADER */
     .section-header { margin-bottom: 36px; }
     .section-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: var(--eyebrow-bg); border: 1px solid var(--eyebrow-border); padding: 5px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--eyebrow-text); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 14px; transition: background 0.4s, color 0.4s; }
     .section-h2 { font-family: 'Montserrat', sans-serif; font-size: clamp(22px, 3.5vw, 42px); font-weight: 900; letter-spacing: -1.5px; color: var(--text); margin-bottom: 10px; transition: color 0.4s; }
     .section-sub { font-size: 16px; color: var(--text3); font-weight: 400; line-height: 1.7; max-width: 560px; transition: color 0.4s; }
 
-    /* ══════════════════════════════
-       MESSAGING
-    ══════════════════════════════ */
+   
     .msg-section { padding: 0 0 64px; }
     .msg-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 18px; }
     .msg-hero-card { border-radius: 26px; overflow: hidden; position: relative; min-height: 380px; display: flex; flex-direction: column; justify-content: flex-end; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
@@ -290,9 +272,7 @@
     .sub-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 17px; color: white; margin-bottom: 4px; }
     .sub-desc { font-size: 12px; color: rgba(255,255,255,0.78); line-height: 1.5; font-weight: 400; }
 
-    /* ══════════════════════════════
-       DISCOVER
-    ══════════════════════════════ */
+    
     .discover-section { padding: 0 0 64px; }
     .discover-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
     .discover-card { border-radius: 22px; overflow: hidden; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
@@ -311,9 +291,7 @@
     .discover-title { font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 18px; color: var(--text); margin-bottom: 7px; transition: color 0.4s; }
     .discover-desc { font-size: 13px; color: var(--text3); line-height: 1.65; font-weight: 400; transition: color 0.4s; }
 
-    /* ══════════════════════════════
-       PLAYPAY
-    ══════════════════════════════ */
+   
     .playpay-section { padding: 0 0 64px; }
     .playpay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .playpay-card { border-radius: 26px; overflow: hidden; position: relative; min-height: 340px; display: flex; flex-direction: column; justify-content: flex-end; transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1); }
@@ -332,9 +310,7 @@
     .playpay-tag { backdrop-filter: blur(12px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 4px 11px; border-radius: 14px; font-size: 12px; color: white; font-weight: 500; display: flex; align-items: center; gap: 5px; }
     .playpay-tag svg { width: 12px; height: 12px; stroke: white; flex-shrink: 0; }
 
-    /* ══════════════════════════════
-       TRUST
-    ══════════════════════════════ */
+    
     .trust-section { padding: 0 0 64px; }
     .trust-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
     .privacy-card { border-radius: 26px; padding: 32px; }
@@ -360,9 +336,7 @@
     .network-pill { background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(12px); padding: 9px 18px; border-radius: 14px; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 14px; color: white; transition: all 0.25s cubic-bezier(.34,1.56,.64,1); cursor: default; }
     .network-pill:hover { background: rgba(37,99,235,0.4); transform: translateY(-3px); }
 
-    /* ══════════════════════════════
-       MORE
-    ══════════════════════════════ */
+  
     .more-section { padding: 0 0 64px; }
     .more-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
     .more-card { border-radius: 18px; padding: 20px 22px; display: flex; align-items: center; gap: 16px; transition: all 0.3s cubic-bezier(0.34,1.56,0.64,1); touch-action: manipulation; cursor: pointer; }
@@ -374,9 +348,7 @@
     .more-title { font-family: 'Montserrat', sans-serif; font-weight: 700; font-size: 15px; color: var(--text); margin-bottom: 3px; transition: color 0.4s; }
     .more-label { font-size: 12px; color: var(--more-label); font-weight: 500; transition: color 0.4s; }
 
-    /* ══════════════════════════════
-       COMPARE
-    ══════════════════════════════ */
+   
     .compare-section { padding: 0 0 64px; }
     .compare-card { border-radius: 26px; padding: 40px 44px; }
     .compare-header { display: flex; align-items: center; gap: 14px; margin-bottom: 32px; }
@@ -390,9 +362,7 @@
     .check-circle svg { width: 14px; height: 14px; stroke: white; stroke-width: 2.5; }
     .compare-item-text { font-size: 14px; font-weight: 600; color: var(--text); line-height: 1.4; transition: color 0.4s; }
 
-    /* ══════════════════════════════
-       DOWNLOAD CTA
-    ══════════════════════════════ */
+   
     .download-section { padding: 0 0 56px; }
     .download-inner { border-radius: 32px; padding: 58px 48px; text-align: center; position: relative; overflow: hidden; }
     .download-inner-photo { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=2069&auto=format&fit=crop'); background-size: cover; background-position: center; opacity: 0.07; transition: opacity 0.4s; }
@@ -402,7 +372,6 @@
     .download-sub { font-size: 16px; color: var(--text3); margin-bottom: 36px; font-weight: 400; position: relative; z-index: 1; transition: color 0.4s; }
     .download-buttons { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px; position: relative; z-index: 1; }
 
-    /* STORE BUTTONS with real brand logos */
     .btn-store {
       display: inline-flex; align-items: center; gap: 13px;
       background: #000; color: white; border: 1px solid rgba(255,255,255,0.15);
@@ -419,7 +388,6 @@
 
     .download-note { font-size: 12px; color: var(--text-muted); position: relative; z-index: 1; font-weight: 500; transition: color 0.4s; }
 
-    /* FOOTER */
     footer { padding: 36px 0 24px; border-top: 1px solid var(--border); transition: border-color 0.4s; }
     .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
     .footer-copy { font-size: 12px; color: var(--footer-copy); font-weight: 500; transition: color 0.4s; }
@@ -427,9 +395,7 @@
     .footer-links a { font-size: 13px; color: var(--footer-link); text-decoration: none; font-weight: 600; transition: color 0.2s; }
     .footer-links a:hover { color: var(--blue-600); }
 
-    /* ══════════════════════════════
-       RESPONSIVE
-    ══════════════════════════════ */
+   
     @media (max-width: 1200px) {
       .msg-grid { grid-template-columns: 1fr; }
       .msg-stack { flex-direction: row; gap: 16px; }
@@ -556,7 +522,6 @@
     <div class="wp-ring"></div><div class="wp-ring"></div><div class="wp-ring"></div>
   </div>
 
-  <!-- MOBILE NAV -->
   <div class="mobile-nav" id="mobileNav">
     <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
     <a href="index.html" onclick="closeMobileNav()">Home</a>
@@ -568,7 +533,6 @@
     <a href="download.html"><button class="mobile-nav-cta" onclick="closeMobileNav()">Download free</button></a>
   </div>
 
-  <!-- NAV -->
   <nav>
     <div class="container">
       <div class="nav-inner glass">
@@ -585,7 +549,6 @@
         </ul>
         <div style="display:flex;align-items:center;gap:10px;flex-shrink:0;">
           <span class="badge-datafree">dataFREE in SA ✓</span>
-          <!-- THEME TOGGLE -->
           <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
             <span class="t-icon t-moon">🌙</span>
             <span class="t-icon t-sun">☀️</span>
@@ -599,7 +562,6 @@
     </div>
   </nav>
 
-  <!-- PAGE HERO -->
   <div class="container">
     <div class="page-hero">
       <div class="page-hero-img"></div>
@@ -616,48 +578,39 @@
     </div>
   </div>
 
-  <!-- FILTER CHIPS -->
   <div class="container">
     <div class="chips-wrap">
       <span class="chip glass active">
-        <!-- Chat bubble icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
         Messaging
       </span>
       <span class="chip glass">
-        <!-- Phone icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 1.17h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 8.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
         Calls
       </span>
       <span class="chip glass">
-        <!-- Compass icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polygon points="16.24 7.76 14.12 14.12 7.76 16.24 9.88 9.88 16.24 7.76"/></svg>
         Discover
       </span>
       <span class="chip glass">
-        <!-- Gamepad icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="6" y1="12" x2="10" y2="12"/><line x1="8" y1="10" x2="8" y2="14"/><line x1="15" y1="13" x2="15.01" y2="13"/><line x1="18" y1="11" x2="18.01" y2="11"/><rect x="2" y="8" width="20" height="12" rx="2"/></svg>
         MoyaPlay
       </span>
       <span class="chip glass">
-        <!-- Credit card icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
         MoyaPay
       </span>
       <span class="chip glass">
-        <!-- Shield icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
         Privacy
       </span>
       <span class="chip glass">
-        <!-- Flag icon -->
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><line x1="4" y1="22" x2="4" y2="15"/></svg>
         Gov Services
       </span>
     </div>
   </div>
 
-  <!-- MESSAGING -->
   <section class="msg-section">
     <div class="container">
       <div class="section-header">
@@ -726,7 +679,6 @@
     </div>
   </section>
 
-  <!-- DISCOVER -->
   <section class="discover-section">
     <div class="container">
       <div class="section-header">
@@ -790,7 +742,6 @@
     </div>
   </section>
 
-  <!-- PLAYPAY -->
   <section class="playpay-section">
     <div class="container">
       <div class="section-header">
@@ -855,7 +806,6 @@
     </div>
   </section>
 
-  <!-- PRIVACY + NETWORKS -->
   <section class="trust-section">
     <div class="container">
       <div class="section-header">
@@ -916,7 +866,6 @@
     </div>
   </section>
 
-  <!-- MORE IN DISCOVER -->
   <section class="more-section">
     <div class="container">
       <div class="section-header">
@@ -952,7 +901,6 @@
     </div>
   </section>
 
-  <!-- COMPARISON -->
   <section class="compare-section">
     <div class="container">
       <div class="compare-card glass-strong">
@@ -974,7 +922,6 @@
     </div>
   </section>
 
-  <!-- DOWNLOAD CTA -->
   <section class="download-section">
     <div class="container">
       <div class="download-inner glass-strong">
@@ -983,7 +930,6 @@
         <h2 class="download-h2">All features. <span style="color:var(--blue-600)">Free. Forever.</span></h2>
         <p class="download-sub">Download MoyaApp — it's free, it's datafree, it's yours.</p>
         <div class="download-buttons">
-          <!-- GOOGLE PLAY — official logo SVG -->
           <a class="btn-store" href="#" onclick="return false">
             <div class="btn-store-logo">
               <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
@@ -998,7 +944,6 @@
               <span class="btn-store-big">Google Play</span>
             </div>
           </a>
-          <!-- APP STORE — official Apple logo SVG -->
           <a class="btn-store" href="#" onclick="return false">
             <div class="btn-store-logo">
               <svg viewBox="0 0 24 24" width="30" height="30" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -1016,7 +961,6 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-inner">
@@ -1038,7 +982,6 @@
   </footer>
 
   <script>
-    // ── THEME TOGGLE ──
     const html = document.documentElement;
     const themeBtn = document.getElementById('themeToggle');
     let dark = false;
@@ -1051,7 +994,6 @@
       localStorage.setItem('moya_feat_theme', t);
     });
 
-    // ── MOBILE NAV ──
     const hamburger = document.getElementById('hamburger');
     const mobileNav = document.getElementById('mobileNav');
     const mobileNavClose = document.getElementById('mobileNavClose');
@@ -1071,7 +1013,6 @@
     mobileNavClose.addEventListener('click', closeMobileNav);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileNav(); });
 
-    // ── FILTER CHIPS ──
     document.querySelectorAll('.chip').forEach(chip => {
       chip.addEventListener('click', () => {
         document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
@@ -1079,7 +1020,6 @@
       });
     });
 
-    // ── SCROLL REVEAL ──
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -1104,7 +1044,6 @@
       observer.observe(el);
     });
 
-    // ── TOUCH FEEDBACK ──
     document.querySelectorAll('.btn-store, .mobile-nav-cta, .btn-nav').forEach(btn => {
       btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
       btn.addEventListener('touchend',   () => btn.style.opacity = '',       { passive: true });
