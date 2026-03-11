@@ -1,428 +1,411 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MoyaApp · Download (enhanced)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>MoyaApp · Download</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400&display=swap" rel="stylesheet">
   <style>
+    /* ══════════════════════════════════
+       THEME VARIABLES
+    ══════════════════════════════════ */
     :root {
-      --blue-950: #0a1628;
-      --blue-900: #0f2240;
-      --blue-800: #1a3a6e;
-      --blue-700: #1d4ed8;
-      --blue-600: #2563eb;
-      --blue-500: #3b82f6;
-      --blue-400: #60a5fa;
-      --blue-300: #93c5fd;
-      --blue-200: #bfdbfe;
-      --blue-100: #dbeafe;
+      --bg:#e8f2ff; --bg2:#dbeafe;
+      --text:#0a1628; --text2:#1a3a6e; --text3:#4a6a9c; --text-muted:#94a3b8;
+      --cobalt:#2563eb; --cobalt-b:#3b82f6; --electric:#60a5fa;
+      --border:rgba(37,99,235,0.15); --border-w:rgba(255,255,255,0.75);
+      --glass-bg:rgba(255,255,255,0.55); --glass-border:rgba(255,255,255,0.8);
+      --glass-lite-bg:rgba(255,255,255,0.18); --glass-lite-border:rgba(255,255,255,0.45);
+      --eyebrow-bg:rgba(37,99,235,0.08); --eyebrow-border:rgba(37,99,235,0.2); --eyebrow-text:#2563eb;
+      --badge-bg:rgba(37,99,235,0.12); --badge-border:rgba(37,99,235,0.3); --badge-text:#1d4ed8;
+      --nav-bg:rgba(240,248,255,0.97);
+      --faq-bg:rgba(37,99,235,0.05); --faq-border:rgba(37,99,235,0.12);
+      --network-overlay:rgba(191,219,254,0.55);
+      --qr-overlay:rgba(191,219,254,0.4);
+      --footer-copy:#94a3b8; --footer-link:#64748b;
+      --orb-opacity:0.35; --stream-opacity:0.14; --wifi-opacity:0.2;
+      --why-title:#0a1628; --why-desc:#4a6a9c;
+      --step-title:#0a1628; --step-desc:#4a6a9c;
     }
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    html { scroll-behavior: smooth; }
-    body { font-family: 'DM Sans', sans-serif; background: #e8f2ff; color: var(--blue-900); overflow-x: hidden; min-height: 100vh; }
-
-    /* ── Animated mesh background ── */
-    .bg-mesh {
-      position: fixed; inset: 0; z-index: -1;
-      background:
-        radial-gradient(ellipse 80% 80% at 20% -10%, rgba(147,197,253,0.55) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 70% at 90% 30%, rgba(59,130,246,0.25) 0%, transparent 55%),
-        radial-gradient(ellipse 70% 60% at 10% 80%, rgba(191,219,254,0.6) 0%, transparent 55%),
-        radial-gradient(ellipse 80% 60% at 80% 90%, rgba(255,255,255,0.9) 0%, transparent 60%),
-        linear-gradient(160deg, #f0f8ff 0%, #dbeafe 40%, #bfdbfe 75%, #93c5fd 100%);
-      animation: meshFloat 20s ease-in-out infinite alternate;
-    }
-    @keyframes meshFloat {
-      0%   { background-position: 0% 0%, 100% 100%, 0% 100%, 100% 0%, 0% 0%; }
-      100% { background-position: 10% 20%, 90% 80%, 15% 85%, 85% 10%, 0% 0%; }
-    }
-    .orb { position: fixed; border-radius: 50%; filter: blur(60px); opacity: 0.35; pointer-events: none; z-index: -1; }
-    .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #93c5fd, #3b82f6); top: -100px; left: -150px; animation: o1 18s ease-in-out infinite; }
-    .orb-2 { width: 350px; height: 350px; background: radial-gradient(circle, #bfdbfe, #60a5fa); top: 40%; right: -80px; animation: o2 22s ease-in-out infinite; }
-    .orb-3 { width: 280px; height: 280px; background: radial-gradient(circle, #dbeafe, #93c5fd); bottom: 10%; left: 15%; animation: o3 26s ease-in-out infinite; }
-    @keyframes o1 { 0%,100%{transform:translate(0,0) scale(1);} 33%{transform:translate(60px,80px) scale(1.1);} 66%{transform:translate(-40px,40px) scale(0.9);} }
-    @keyframes o2 { 0%,100%{transform:translate(0,0) scale(1);} 50%{transform:translate(-80px,-60px) scale(1.15);} }
-    @keyframes o3 { 0%,100%{transform:translate(0,0) scale(1);} 40%{transform:translate(50px,-40px) scale(1.08);} 80%{transform:translate(-30px,30px) scale(0.95);} }
-
-    /* ── Glass utilities (enhanced) ── */
-    .glass {
-      backdrop-filter: blur(20px) saturate(180%);
-      -webkit-backdrop-filter: blur(20px) saturate(180%);
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.45);
-      box-shadow: 0 25px 50px -12px rgba(15,34,64,0.25), inset 0 1px 0 rgba(255,255,255,0.6);
-    }
-    .glass-strong {
-      backdrop-filter: blur(30px) saturate(200%);
-      -webkit-backdrop-filter: blur(30px) saturate(200%);
-      background: rgba(255,255,255,0.55);
-      border: 1px solid rgba(255,255,255,0.75);
-      box-shadow: 0 32px 64px -16px rgba(15,34,64,0.2), inset 0 1px 0 rgba(255,255,255,0.85);
-    }
-    .glass-dark {
-      backdrop-filter: blur(20px) saturate(150%);
-      -webkit-backdrop-filter: blur(20px) saturate(150%);
-      background: rgba(10,22,40,0.6);
-      border: 1px solid rgba(59,130,246,0.3);
-      box-shadow: 0 20px 40px -10px rgba(0,0,0,0.4);
+    [data-theme="dark"] {
+      --bg:#04091A; --bg2:#060D22;
+      --text:#f0f6ff; --text2:#93c5fd; --text3:#60a5fa; --text-muted:rgba(255,255,255,0.35);
+      --border:rgba(255,255,255,0.1); --border-w:rgba(255,255,255,0.12);
+      --glass-bg:rgba(255,255,255,0.06); --glass-border:rgba(255,255,255,0.12);
+      --glass-lite-bg:rgba(255,255,255,0.04); --glass-lite-border:rgba(255,255,255,0.1);
+      --eyebrow-bg:rgba(96,165,250,0.12); --eyebrow-border:rgba(96,165,250,0.3); --eyebrow-text:#60a5fa;
+      --badge-bg:rgba(96,165,250,0.12); --badge-border:rgba(96,165,250,0.3); --badge-text:#93c5fd;
+      --nav-bg:rgba(4,9,26,0.97);
+      --faq-bg:rgba(96,165,250,0.06); --faq-border:rgba(96,165,250,0.18);
+      --network-overlay:rgba(10,22,40,0.55);
+      --qr-overlay:rgba(4,9,26,0.65);
+      --footer-copy:rgba(255,255,255,0.3); --footer-link:rgba(255,255,255,0.5);
+      --orb-opacity:0.18; --stream-opacity:0.28; --wifi-opacity:0.28;
+      --why-title:#f0f6ff; --why-desc:#60a5fa;
+      --step-title:#f0f6ff; --step-desc:#60a5fa;
     }
 
-    .container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;}
+    body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;transition:background 0.4s,color 0.4s;}
+    body::after{content:'';position:fixed;inset:0;z-index:2000;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");background-size:200px;}
 
-    /* ── NAV (enhanced) ── */
-    nav { position: sticky; top: 0; z-index: 100; padding: 14px 0; }
-    .nav-inner { display: flex; align-items: center; justify-content: space-between; padding: 12px 24px; border-radius: 20px; }
-    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark { width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 12px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 14px rgba(37,99,235,0.4); }
-    .logo-mark span { color: white; font-family: 'Syne', sans-serif; font-weight: 800; font-size: 18px; }
-    .logo-text { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 22px; color: var(--blue-900); letter-spacing: -0.5px; }
-    .logo-text em { font-style: normal; color: var(--blue-600); }
-    .nav-links { display: flex; gap: 32px; list-style: none; }
-    .nav-links a { text-decoration: none; color: var(--blue-800); font-size: 14px; font-weight: 500; opacity: 0.8; transition: color 0.2s; }
-    .nav-links a:hover, .nav-links a.active { color: var(--blue-600); opacity: 1; }
-    .nav-links a.active { font-weight: 600; border-bottom: 2px solid var(--blue-600); padding-bottom: 2px; }
-    .badge-datafree { background: linear-gradient(135deg, rgba(37,99,235,0.15), rgba(96,165,250,0.15)); border: 1px solid rgba(37,99,235,0.3); color: var(--blue-700); padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 600; }
-    .btn-nav { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border: none; padding: 10px 20px; border-radius: 14px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 14px rgba(37,99,235,0.4); transition: all 0.2s; }
-    .btn-nav:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(37,99,235,0.5); }
-    .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
-    .hamburger span { display: block; width: 24px; height: 2px; background: var(--blue-800); border-radius: 2px; }
+    /* BG MESH */
+    .bg-mesh{position:fixed;inset:0;z-index:-1;transition:background 0.4s;}
+    [data-theme="light"] .bg-mesh{background:radial-gradient(ellipse 80% 80% at 20% -10%,rgba(147,197,253,0.55) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 90% 30%,rgba(59,130,246,0.25) 0%,transparent 55%),radial-gradient(ellipse 70% 60% at 10% 80%,rgba(191,219,254,0.6) 0%,transparent 55%),radial-gradient(ellipse 80% 60% at 80% 90%,rgba(255,255,255,0.9) 0%,transparent 60%),linear-gradient(160deg,#f0f8ff 0%,#dbeafe 40%,#bfdbfe 75%,#93c5fd 100%);animation:meshFloat 20s ease-in-out infinite alternate;}
+    [data-theme="dark"]  .bg-mesh{background:radial-gradient(ellipse 80% 80% at 20% -10%,rgba(0,56,255,0.3) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 90% 30%,rgba(0,229,255,0.1) 0%,transparent 55%),linear-gradient(160deg,#04091A 0%,#060D22 40%,#0A1430 75%,#0f2240 100%);animation:meshFloat 20s ease-in-out infinite alternate;}
+    @keyframes meshFloat{0%{background-position:0% 0%}100%{background-position:10% 20%}}
 
-    /* ── HERO (enhanced) ── */
-    .hero-section { padding: 24px 0 72px; }
-    .hero-inner {
-      border-radius: 36px; overflow: hidden; position: relative;
-      min-height: 520px; display: flex; align-items: center;
-    }
-    .hero-bg {
-      position: absolute; inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover; background-position: center 20%;
-      transition: transform 0.6s ease;
-    }
-    .hero-section:hover .hero-bg { transform: scale(1.02); }
-    .hero-overlay { position: absolute; inset: 0; background: linear-gradient(110deg, rgba(10,22,40,0.75) 0%, rgba(10,22,40,0.45) 50%, rgba(15,34,64,0.3) 100%); }
-    .hero-content { position: relative; z-index: 1; padding: 60px 64px; max-width: 680px; }
-    .hero-eyebrow { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(16px); background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.3); padding: 8px 18px; border-radius: 24px; font-size: 13px; font-weight: 600; color: #bfdbfe; margin-bottom: 24px; }
-    .hero-h1 { font-family: 'Syne', sans-serif; font-size: clamp(38px, 5.5vw, 68px); font-weight: 800; letter-spacing: -2.5px; color: white; line-height: 1.06; margin-bottom: 20px; }
-    .hero-h1 .accent { background: linear-gradient(135deg, #93c5fd, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .hero-sub { font-size: 18px; color: rgba(255,255,255,0.75); line-height: 1.7; font-weight: 300; margin-bottom: 40px; max-width: 480px; }
+    .orb{position:fixed;border-radius:50%;filter:blur(65px);opacity:var(--orb-opacity);pointer-events:none;z-index:0;transition:opacity 0.4s;}
+    .orb-1{width:500px;height:500px;background:radial-gradient(circle,#93c5fd,#3b82f6);top:-100px;left:-150px;animation:o1 18s ease-in-out infinite;}
+    .orb-2{width:350px;height:350px;background:radial-gradient(circle,#bfdbfe,#60a5fa);top:40%;right:-80px;animation:o2 22s ease-in-out infinite;}
+    .orb-3{width:280px;height:280px;background:radial-gradient(circle,#dbeafe,#93c5fd);bottom:10%;left:15%;animation:o3 26s ease-in-out infinite;}
+    @keyframes o1{0%,100%{transform:translate(0,0) scale(1);}33%{transform:translate(60px,80px) scale(1.1);}66%{transform:translate(-40px,40px) scale(0.9);}}
+    @keyframes o2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-80px,-60px) scale(1.15);}}
+    @keyframes o3{0%,100%{transform:translate(0,0) scale(1);}40%{transform:translate(50px,-40px) scale(1.08);}80%{transform:translate(-30px,30px) scale(0.95);}}
 
-    /* Download buttons — hero */
-    .hero-btns { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 28px; }
-    .btn-android {
-      display: inline-flex; align-items: center; gap: 14px;
-      background: white; color: var(--blue-950);
-      border: none; padding: 16px 28px; border-radius: 20px;
-      font-size: 15px; font-weight: 600; cursor: pointer;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.3);
-      transition: all 0.25s;
-      animation: ctaPulse 2.8s ease-in-out infinite;
-    }
-    @keyframes ctaPulse { 0%,100%{box-shadow:0 8px 28px rgba(0,0,0,0.3);} 50%{box-shadow:0 8px 36px rgba(37,99,235,0.5), 0 0 0 8px rgba(37,99,235,0.1);} }
-    .btn-android:hover { transform: translateY(-3px); box-shadow: 0 14px 40px rgba(0,0,0,0.4); }
-    .btn-ios {
-      display: inline-flex; align-items: center; gap: 14px;
-      background: rgba(255,255,255,0.15); backdrop-filter: blur(14px);
-      border: 1.5px solid rgba(255,255,255,0.4); color: white;
-      padding: 16px 28px; border-radius: 20px;
-      font-size: 15px; font-weight: 600; cursor: pointer;
-      transition: all 0.25s;
-    }
-    .btn-ios:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
-    .btn-store-icon { font-size: 28px; }
-    .btn-store-small { font-size: 10px; opacity: 0.7; display: block; }
-    .btn-store-big { font-size: 17px; font-weight: 700; display: block; }
+    /* DATA STREAMS */
+    .data-streams{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--stream-opacity);transition:opacity 0.4s;}
+    .stream{position:absolute;width:1px;background:linear-gradient(180deg,transparent,rgba(37,99,235,0.9),transparent);animation:stream-fall linear infinite;}
+    .stream:nth-child(1){left:5%;height:90px;animation-duration:4s;animation-delay:0s}
+    .stream:nth-child(2){left:15%;height:60px;animation-duration:3.2s;animation-delay:.8s}
+    .stream:nth-child(3){left:28%;height:110px;animation-duration:4.8s;animation-delay:1.6s}
+    .stream:nth-child(4){left:44%;height:75px;animation-duration:3.6s;animation-delay:.4s}
+    .stream:nth-child(5){left:60%;height:95px;animation-duration:2.8s;animation-delay:2.2s}
+    .stream:nth-child(6){left:75%;height:65px;animation-duration:4.2s;animation-delay:1.1s}
+    .stream:nth-child(7){left:88%;height:80px;animation-duration:3.4s;animation-delay:1.9s}
+    @keyframes stream-fall{0%{top:-15%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:115%;opacity:0}}
 
-    .hero-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
-    .hero-meta-item { display: flex; align-items: center; gap: 6px; backdrop-filter: blur(12px); background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); padding: 6px 14px; border-radius: 14px; font-size: 12px; color: rgba(255,255,255,0.8); font-weight: 500; }
+    /* WIFI RINGS */
+    .wifi-pulse{position:fixed;bottom:8%;right:4%;width:120px;height:120px;pointer-events:none;z-index:0;opacity:var(--wifi-opacity);transition:opacity 0.4s;}
+    .wp-ring{position:absolute;top:50%;left:50%;border:1.5px solid rgba(37,99,235,0.8);border-radius:50%;transform:translate(-50%,-50%) scale(0);animation:wp-expand 3.5s ease-out infinite;}
+    .wp-ring:nth-child(1){width:40px;height:40px;animation-delay:0s}
+    .wp-ring:nth-child(2){width:80px;height:80px;animation-delay:.7s}
+    .wp-ring:nth-child(3){width:120px;height:120px;animation-delay:1.4s}
+    @keyframes wp-expand{0%{transform:translate(-50%,-50%) scale(0);opacity:.9}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
-    /* Floating phone on hero right */
-    .hero-phone-wrap {
-      position: absolute; right: 64px; top: 50%; transform: translateY(-50%);
-      z-index: 2;
-    }
-    .hero-phone {
-      width: 220px;
-      background: rgba(10,22,40,0.9);
-      border-radius: 40px;
-      border: 5px solid rgba(255,255,255,0.18);
-      box-shadow: 0 40px 80px rgba(0,0,0,0.5), 0 0 0 1px rgba(96,165,250,0.3), inset 0 1px 0 rgba(255,255,255,0.1);
-      overflow: hidden;
-      padding: 14px;
-    }
-    .phone-notch { width: 80px; height: 7px; background: rgba(255,255,255,0.12); border-radius: 4px; margin: 0 auto 14px; }
-    .phone-screen-label { font-size: 9px; color: #60a5fa; font-weight: 600; letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 8px; opacity: 0.8; }
-    .chat-bub { border-radius: 14px; padding: 8px 12px; margin: 5px 0; font-size: 11px; line-height: 1.5; animation: fadeSlide 0.5s ease both; }
-    .chat-bub.them { background: rgba(59,130,246,0.2); border: 1px solid rgba(59,130,246,0.3); color: #93c5fd; border-radius: 14px 14px 14px 3px; }
-    .chat-bub.me { background: linear-gradient(135deg, #2563eb, #3b82f6); color: white; border-radius: 14px 14px 3px 14px; margin-left: 24px; }
-    .chat-bub:nth-child(1){animation-delay:.1s} .chat-bub:nth-child(2){animation-delay:.4s} .chat-bub:nth-child(3){animation-delay:.7s} .chat-bub:nth-child(4){animation-delay:1s}
-    @keyframes fadeSlide { from{opacity:0;transform:translateY(12px)} to{opacity:1;transform:none} }
-    .phone-status-bar { display: flex; align-items: center; gap: 6px; margin-top: 10px; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.25); border-radius: 10px; padding: 6px 10px; }
-    .status-dot { width: 5px; height: 5px; background: #22c55e; border-radius: 50%; }
-    .status-text { font-size: 9px; color: #86efac; font-weight: 600; }
+    /* GLASS */
+    .glass{backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);background:var(--glass-lite-bg);border:1px solid var(--glass-lite-border);box-shadow:0 25px 50px -12px rgba(15,34,64,0.25),inset 0 1px 0 rgba(255,255,255,0.6);transition:background 0.4s,border 0.4s;}
+    .glass-strong{backdrop-filter:blur(30px) saturate(200%);-webkit-backdrop-filter:blur(30px) saturate(200%);background:var(--glass-bg);border:1px solid var(--glass-border);box-shadow:0 32px 64px -16px rgba(15,34,64,0.2),inset 0 1px 0 rgba(255,255,255,0.85);transition:background 0.4s,border 0.4s;}
 
-    /* ── SECTION HEADER (enhanced) ── */
-    .section-header { margin-bottom: 40px; }
-    .section-header.center { text-align: center; }
-    .section-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(37,99,235,0.08); border: 1px solid rgba(37,99,235,0.2); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; color: var(--blue-600); letter-spacing: 0.5px; text-transform: uppercase; margin-bottom: 16px; }
-    .section-h2 { font-family: 'Syne', sans-serif; font-size: clamp(26px, 3.5vw, 42px); font-weight: 800; letter-spacing: -1.5px; color: var(--blue-950); margin-bottom: 10px; }
-    .section-sub { font-size: 17px; color: #4a6a9c; font-weight: 300; line-height: 1.7; max-width: 560px; }
-    .section-header.center .section-sub { margin: 0 auto; }
+    .container{max-width:1280px;margin:0 auto;padding:0 20px;position:relative;z-index:1;}
 
-    /* ── WHY DOWNLOAD (enhanced) ── */
-    .why-section { padding: 0 0 72px; }
-    .why-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
-    .why-card {
-      border-radius: 24px; overflow: hidden;
-      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-    }
-    .why-card:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 28px 56px -16px rgba(37,99,235,0.35); }
-    .why-img-wrap { height: 190px; overflow: hidden; position: relative; }
-    .why-img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
-    .why-card:hover .why-img { transform: scale(1.07); }
-    .why-img-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(10,22,40,0.35) 0%, transparent 60%); }
-    .why-body { padding: 20px 22px 26px; }
-    .why-icon-title { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
-    .why-icon { font-size: 30px; }
-    .why-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 19px; color: var(--blue-950); }
-    .why-desc { font-size: 14px; color: #4a6a9c; line-height: 1.65; }
+    /* REVEAL */
+    .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);}
+    .reveal.visible{opacity:1;transform:none;}
 
-    /* ── PLATFORM CARDS (enhanced) ── */
-    .platform-section { padding: 0 0 72px; }
-    .platform-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+    /* ══ THEME TOGGLE ══ */
+    .theme-toggle{position:relative;width:54px;height:28px;background:var(--glass-lite-bg);border:1px solid var(--glass-lite-border);border-radius:100px;cursor:pointer;flex-shrink:0;transition:all 0.3s;overflow:hidden;}
+    .theme-toggle::before{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);transition:transform 0.4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 8px rgba(37,99,235,0.5);}
+    [data-theme="dark"] .theme-toggle::before{transform:translateX(26px);background:linear-gradient(135deg,#f0b429,#f97316);box-shadow:0 2px 8px rgba(249,115,22,0.4);}
+    .t-icon{position:absolute;top:50%;font-size:11px;transform:translateY(-50%);pointer-events:none;transition:opacity 0.3s;}
+    .t-moon{left:6px;opacity:1;}.t-sun{right:5px;opacity:0.4;}
+    [data-theme="dark"] .t-moon{opacity:0.4;}[data-theme="dark"] .t-sun{opacity:1;}
 
-    .platform-card {
-      border-radius: 28px; overflow: hidden; position: relative;
-      padding: 40px; display: flex; flex-direction: column;
-      transition: all 0.3s;
-    }
-    .platform-card:hover { transform: translateY(-6px); }
-    .platform-card.android { background: linear-gradient(135deg, #0f2240 0%, #1a3a6e 60%, #1e3fa3 100%); }
-    .platform-card.ios { background: rgba(255,255,255,0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.8); }
+    /* ══ NAV ══ */
+    nav{position:sticky;top:0;z-index:200;padding:10px 0;}
+    .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-radius:20px;gap:12px;}
+    .logo{display:flex;align-items:center;gap:10px;text-decoration:none;flex-shrink:0;}
+    .logo-mark{width:38px;height:38px;background:linear-gradient(135deg,#2563eb,#3b82f6);border-radius:12px;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(37,99,235,0.4);transition:transform 0.4s cubic-bezier(0.34,1.56,0.64,1);font-weight:900;color:white;font-size:18px;font-family:'Montserrat',sans-serif;}
+    .logo:hover .logo-mark{transform:rotate(-8deg) scale(1.12);}
+    .logo-text{font-family:'Montserrat',sans-serif;font-weight:900;font-size:22px;color:var(--text);letter-spacing:-0.5px;white-space:nowrap;transition:color 0.4s;}
+    .logo-text em{font-style:normal;color:#2563eb;}
+    .nav-links{display:flex;gap:32px;list-style:none;}
+    .nav-links a{text-decoration:none;color:var(--text2);font-size:14px;font-weight:600;opacity:0.88;transition:color 0.2s;position:relative;padding-bottom:2px;white-space:nowrap;}
+    .nav-links a::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:2px;background:#2563eb;border-radius:2px;transition:width 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+    .nav-links a:hover,.nav-links a.active{color:#2563eb;opacity:1;}
+    .nav-links a:hover::after,.nav-links a.active::after{width:100%;}
+    .badge-datafree{background:var(--badge-bg);border:1px solid var(--badge-border);color:var(--badge-text);padding:6px 14px;border-radius:20px;font-size:12px;font-weight:700;white-space:nowrap;transition:all 0.3s;}
+    .btn-nav{background:linear-gradient(135deg,#2563eb,#3b82f6);color:white;border:none;padding:10px 20px;border-radius:14px;font-size:14px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;box-shadow:0 4px 14px rgba(37,99,235,0.4);transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);white-space:nowrap;}
+    .btn-nav:hover{transform:translateY(-2px) scale(1.05);box-shadow:0 8px 24px rgba(37,99,235,0.5);}
+    .hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:4px;touch-action:manipulation;flex-shrink:0;}
+    .hamburger span{display:block;width:24px;height:2px;background:var(--text);border-radius:2px;transition:all 0.3s;}
 
-    .platform-card.android::before {
-      content: '';
-      position: absolute; inset: 0;
-      background: radial-gradient(ellipse 70% 70% at 90% 10%, rgba(96,165,250,0.2), transparent);
-      pointer-events: none;
-    }
+    .mobile-nav{display:none;position:fixed;inset:0;background:var(--nav-bg);backdrop-filter:blur(30px);z-index:190;flex-direction:column;align-items:center;justify-content:center;gap:8px;padding:80px 32px 40px;opacity:0;transition:opacity 0.3s ease,background 0.4s;}
+    .mobile-nav.open{display:flex;opacity:1;}
+    .mobile-nav a{text-decoration:none;color:var(--text);font-size:28px;font-weight:900;font-family:'Montserrat',sans-serif;padding:14px 0;border-bottom:1px solid var(--border);width:100%;text-align:center;letter-spacing:-0.5px;transition:color 0.2s;}
+    .mobile-nav a:hover,.mobile-nav a.active{color:#2563eb;}
+    .mobile-nav-close{position:absolute;top:20px;right:20px;width:44px;height:44px;background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--text);transition:all 0.25s;}
+    .mobile-nav-cta{margin-top:20px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:white;border:none;padding:18px 48px;border-radius:18px;font-size:18px;font-weight:700;font-family:'Montserrat',sans-serif;cursor:pointer;box-shadow:0 12px 36px rgba(37,99,235,0.5);width:100%;touch-action:manipulation;}
 
-    .platform-header { display: flex; align-items: center; gap: 16px; margin-bottom: 28px; }
-    .platform-os-icon { font-size: 52px; }
-    .platform-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 28px; }
-    .platform-name.dark { color: white; }
-    .platform-name.light { color: var(--blue-950); }
+    /* ══ SECTION SYSTEM ══ */
+    .section-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);padding:6px 16px;border-radius:20px;font-size:12px;font-weight:700;color:var(--eyebrow-text);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:16px;transition:all 0.4s;}
+    .section-eyebrow svg{width:12px;height:12px;stroke:currentColor;flex-shrink:0;}
+    .section-h2{font-family:'Montserrat',sans-serif;font-size:clamp(26px,3.5vw,42px);font-weight:900;letter-spacing:-1.5px;color:var(--text);margin-bottom:10px;transition:color 0.4s;}
+    .section-sub{font-size:17px;color:var(--text3);font-weight:400;line-height:1.7;max-width:560px;transition:color 0.4s;}
+    .section-header{margin-bottom:40px;}
+    .section-header.center{text-align:center;}
+    .section-header.center .section-sub{margin:0 auto;}
 
-    .platform-specs { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; flex: 1; }
-    .platform-spec { display: flex; align-items: center; gap: 12px; }
-    .spec-check { width: 22px; height: 22px; background: linear-gradient(135deg, #22c55e, #16a34a); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
-    .spec-check.dark-check { background: linear-gradient(135deg, rgba(96,165,250,0.3), rgba(37,99,235,0.3)); border: 1px solid rgba(96,165,250,0.5); font-size: 13px; }
-    .spec-text { font-size: 14px; font-weight: 500; }
-    .spec-text.dark { color: rgba(255,255,255,0.85); }
-    .spec-text.light { color: var(--blue-900); }
+    /* ══ HERO ══ */
+    .hero-section{padding:16px 0 64px;}
+    .hero-inner{border-radius:36px;overflow:hidden;position:relative;min-height:520px;display:flex;align-items:center;}
+    .hero-bg{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center 20%;transition:transform 0.6s ease;}
+    .hero-inner:hover .hero-bg{transform:scale(1.02);}
+    .hero-overlay{position:absolute;inset:0;background:linear-gradient(110deg,rgba(10,22,40,0.82) 0%,rgba(10,22,40,0.5) 55%,rgba(15,34,64,0.28) 100%);}
+    .hero-scan{position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,rgba(37,99,235,0.5),transparent);animation:hero-scan 8s ease-in-out infinite;pointer-events:none;z-index:2;}
+    @keyframes hero-scan{0%{top:-2%;opacity:0}8%{opacity:.6}92%{opacity:.6}100%{top:102%;opacity:0}}
+    .hero-content{position:relative;z-index:3;padding:60px 64px;max-width:660px;}
+    .hero-eyebrow{display:inline-flex;align-items:center;gap:8px;backdrop-filter:blur(16px);background:rgba(255,255,255,0.14);border:1px solid rgba(255,255,255,0.28);padding:8px 18px;border-radius:24px;font-size:13px;font-weight:700;color:#bfdbfe;margin-bottom:24px;}
+    .hero-eyebrow svg{width:15px;height:15px;stroke:currentColor;flex-shrink:0;}
+    .hero-h1{font-family:'Montserrat',sans-serif;font-size:clamp(36px,5.5vw,66px);font-weight:900;letter-spacing:-2.5px;color:white;line-height:1.06;margin-bottom:20px;}
+    .hero-h1 .accent{background:linear-gradient(135deg,#93c5fd,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .hero-sub{font-size:18px;color:rgba(255,255,255,0.75);line-height:1.7;font-weight:400;margin-bottom:40px;max-width:480px;}
 
-    .btn-dl-android {
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      background: white; color: var(--blue-950);
-      border: none; padding: 18px 24px; border-radius: 18px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.25); transition: all 0.25s;
-      font-family: 'Syne', sans-serif;
-    }
-    .btn-dl-android:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(0,0,0,0.3); }
-    .btn-dl-ios {
-      display: flex; align-items: center; justify-content: center; gap: 12px;
-      background: linear-gradient(135deg, #1d4ed8, #2563eb, #3b82f6);
-      color: white; border: none; padding: 18px 24px; border-radius: 18px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 8px 24px rgba(37,99,235,0.4); transition: all 0.25s;
-      font-family: 'Syne', sans-serif;
-    }
-    .btn-dl-ios:hover { transform: translateY(-3px); box-shadow: 0 14px 36px rgba(37,99,235,0.55); }
-    .platform-rating { text-align: center; margin-top: 12px; font-size: 13px; }
-    .platform-rating.dark { color: rgba(255,255,255,0.5); }
-    .platform-rating.light { color: #94a3b8; }
+    /* Store buttons */
+    .hero-btns{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
+    .btn-store-gp,.btn-store-as{display:inline-flex;align-items:center;gap:14px;padding:14px 24px;border-radius:20px;cursor:pointer;border:none;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);font-family:'Montserrat',sans-serif;}
+    .btn-store-gp{background:white;color:#0a1628;box-shadow:0 8px 28px rgba(0,0,0,0.28);animation:ctaPulse 2.8s ease-in-out infinite;}
+    @keyframes ctaPulse{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,0.28);}50%{box-shadow:0 8px 36px rgba(37,99,235,0.5),0 0 0 8px rgba(37,99,235,0.1);}}
+    .btn-store-gp:hover{transform:translateY(-3px);box-shadow:0 14px 40px rgba(0,0,0,0.38);}
+    .btn-store-as{background:rgba(255,255,255,0.14);backdrop-filter:blur(14px);border:1.5px solid rgba(255,255,255,0.38) !important;color:white;}
+    .btn-store-as:hover{background:rgba(255,255,255,0.24);transform:translateY(-3px);}
+    .store-icon{flex-shrink:0;}
+    .store-small{font-size:10px;opacity:0.7;display:block;font-weight:500;}
+    .store-big{font-size:16px;font-weight:800;display:block;letter-spacing:-0.3px;}
 
-    /* ── NETWORK BANNER (enhanced) ── */
-    .network-section { padding: 0 0 72px; }
-    .network-banner {
-      border-radius: 32px; overflow: hidden; position: relative; min-height: 280px;
-      display: flex; align-items: center;
-    }
-    .network-banner-img {
-      position: absolute; inset: 0;
-      background-image: url('https://images.unsplash.com/photo-1526406915894-7bcd65f60845?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover; background-position: center 70%;
-      transition: transform 0.5s;
-    }
-    .network-banner:hover .network-banner-img { transform: scale(1.03); }
-    .network-banner-overlay { position: absolute; inset: 0; background: linear-gradient(100deg, rgba(191,219,254,0.55) 0%, rgba(255,255,255,0.3) 60%, transparent 100%); backdrop-filter: blur(3px); }
-    .network-banner-content { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 40px; padding: 48px 52px; width: 100%; flex-wrap: wrap; }
-    .network-text-wrap {}
-    .network-eyebrow { display: inline-flex; align-items: center; gap: 6px; backdrop-filter: blur(14px); background: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.65); padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; color: var(--blue-800); margin-bottom: 14px; }
-    .network-title { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(22px, 3vw, 36px); color: var(--blue-950); margin-bottom: 10px; letter-spacing: -1px; }
-    .network-desc { font-size: 15px; color: #3a5a8c; max-width: 440px; line-height: 1.7; font-weight: 300; }
-    .network-pills-wrap { display: flex; gap: 12px; flex-wrap: wrap; }
-    .network-pill {
-      backdrop-filter: blur(16px); background: rgba(255,255,255,0.5); border: 1.5px solid rgba(255,255,255,0.7);
-      padding: 14px 22px; border-radius: 18px;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 17px;
-      color: var(--blue-900); box-shadow: 0 6px 18px rgba(15,34,64,0.12);
-      transition: all 0.2s;
-    }
-    .network-pill:hover { transform: translateY(-4px); box-shadow: 0 12px 28px rgba(37,99,235,0.2); }
+    /* Google Play SVG logo */
+    .gp-logo{width:28px;height:28px;flex-shrink:0;}
+    /* Apple logo */
+    .apple-logo{width:24px;height:24px;flex-shrink:0;}
 
-    /* ── STEPS (enhanced) ── */
-    .steps-section { padding: 0 0 72px; }
-    .steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px; }
-    .step-card {
-      border-radius: 24px; padding: 28px 20px;
-      text-align: center;
-      transition: all 0.35s cubic-bezier(0.34,1.56,0.64,1);
-      position: relative;
-    }
-    .step-card:hover { transform: translateY(-8px); }
-    .step-avatar { width: 72px; height: 72px; border-radius: 50%; overflow: hidden; margin: 0 auto 16px; border: 3px solid rgba(255,255,255,0.7); box-shadow: 0 6px 18px rgba(15,34,64,0.2); }
-    .step-avatar img { width: 100%; height: 100%; object-fit: cover; }
-    .step-num-badge {
-      position: absolute; top: 20px; right: 20px;
-      width: 32px; height: 32px;
-      background: linear-gradient(135deg, #2563eb, #60a5fa);
-      border-radius: 10px; display: flex; align-items: center; justify-content: center;
-      font-family: 'Syne', sans-serif; font-weight: 800; font-size: 14px; color: white;
-      box-shadow: 0 4px 12px rgba(37,99,235,0.4);
-    }
-    .step-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--blue-950); margin-bottom: 6px; }
-    .step-desc { font-size: 13px; color: #4a6a9c; line-height: 1.6; }
+    .hero-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+    .hero-meta-item{display:inline-flex;align-items:center;gap:6px;backdrop-filter:blur(12px);background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);padding:6px 14px;border-radius:14px;font-size:12px;color:rgba(255,255,255,0.82);font-weight:600;}
+    .hero-meta-item svg{width:13px;height:13px;stroke:currentColor;flex-shrink:0;}
 
-    /* ── QR / LINK CARD (enhanced) ── */
-    .qr-section { padding: 0 0 72px; }
-    .qr-card {
-      border-radius: 32px; overflow: hidden; position: relative;
-      display: flex; align-items: center; gap: 60px;
-      padding: 52px 56px;
-    }
-    .qr-card-img { position: absolute; inset: 0; background-image: url('https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=2070&auto=format&fit=crop'); background-size: cover; background-position: center 60%; }
-    .qr-card-overlay { position: absolute; inset: 0; background: rgba(191,219,254,0.4); backdrop-filter: blur(6px); }
-    .qr-content { position: relative; z-index: 1; display: flex; align-items: center; gap: 52px; flex-wrap: wrap; }
-    .qr-box {
-      width: 150px; height: 150px; flex-shrink: 0;
-      backdrop-filter: blur(20px); background: rgba(255,255,255,0.6);
-      border: 2px solid rgba(255,255,255,0.8); border-radius: 24px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      box-shadow: 0 12px 32px rgba(15,34,64,0.15);
-    }
-    .qr-emoji { font-size: 64px; }
-    .qr-label { font-size: 10px; font-weight: 600; color: #64748b; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-    .qr-text-wrap {}
-    .qr-eyebrow { display: inline-flex; align-items: center; gap: 6px; background: rgba(255,255,255,0.45); border: 1px solid rgba(255,255,255,0.65); backdrop-filter: blur(12px); padding: 6px 14px; border-radius: 16px; font-size: 12px; font-weight: 600; color: var(--blue-800); margin-bottom: 16px; }
-    .qr-h3 { font-family: 'Syne', sans-serif; font-weight: 800; font-size: clamp(22px, 3vw, 36px); color: var(--blue-950); margin-bottom: 12px; letter-spacing: -1px; }
-    .qr-desc { font-size: 16px; color: #3a5a8c; line-height: 1.7; font-weight: 300; margin-bottom: 20px; max-width: 440px; }
-    .sms-badge { display: inline-flex; align-items: center; gap: 8px; backdrop-filter: blur(16px); background: rgba(255,255,255,0.5); border: 1.5px solid rgba(255,255,255,0.7); padding: 12px 20px; border-radius: 16px; font-size: 15px; font-weight: 600; color: var(--blue-900); box-shadow: 0 6px 18px rgba(15,34,64,0.1); }
+    /* Floating phone */
+    .hero-phone-wrap{position:absolute;right:64px;top:50%;transform:translateY(-50%);z-index:3;}
+    .hero-phone{width:220px;background:rgba(10,22,40,0.92);border-radius:40px;border:5px solid rgba(255,255,255,0.16);box-shadow:0 40px 80px rgba(0,0,0,0.5),0 0 0 1px rgba(96,165,250,0.28),inset 0 1px 0 rgba(255,255,255,0.08);overflow:hidden;padding:14px;}
+    .phone-notch{width:80px;height:7px;background:rgba(255,255,255,0.12);border-radius:4px;margin:0 auto 14px;}
+    .phone-screen-label{font-size:9px;color:#60a5fa;font-weight:700;letter-spacing:0.5px;text-transform:uppercase;margin-bottom:8px;opacity:0.8;}
+    .chat-bub{border-radius:14px;padding:8px 12px;margin:5px 0;font-size:11px;line-height:1.5;animation:fadeSlide 0.5s ease both;}
+    .chat-bub.them{background:rgba(59,130,246,0.2);border:1px solid rgba(59,130,246,0.3);color:#93c5fd;border-radius:14px 14px 14px 3px;}
+    .chat-bub.me{background:linear-gradient(135deg,#2563eb,#3b82f6);color:white;border-radius:14px 14px 3px 14px;margin-left:24px;}
+    .chat-bub:nth-child(1){animation-delay:.1s}.chat-bub:nth-child(2){animation-delay:.4s}.chat-bub:nth-child(3){animation-delay:.7s}.chat-bub:nth-child(4){animation-delay:1s}
+    @keyframes fadeSlide{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+    .phone-status-bar{display:flex;align-items:center;gap:6px;margin-top:10px;background:rgba(34,197,94,0.12);border:1px solid rgba(34,197,94,0.25);border-radius:10px;padding:6px 10px;}
+    .status-dot{width:5px;height:5px;background:#22c55e;border-radius:50%;animation:pulse-dot 2s ease-in-out infinite;}
+    @keyframes pulse-dot{0%,100%{opacity:1;}50%{opacity:0.4;}}
+    .status-text{font-size:9px;color:#86efac;font-weight:700;}
 
-    /* ── FAQ (enhanced) ── */
-    .faq-section { padding: 0 0 72px; }
-    .faq-card { border-radius: 28px; padding: 44px 48px; }
-    .faq-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 32px; }
-    .faq-item { border-radius: 20px; padding: 22px 24px; background: rgba(37,99,235,0.05); border: 1px solid rgba(37,99,235,0.12); transition: all 0.2s; }
-    .faq-item:hover { background: rgba(37,99,235,0.09); transform: translateY(-2px); }
-    .faq-q { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; color: var(--blue-950); margin-bottom: 8px; display: flex; align-items: flex-start; gap: 10px; }
-    .faq-q-icon { width: 22px; height: 22px; background: linear-gradient(135deg, #2563eb, #60a5fa); border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: white; flex-shrink: 0; margin-top: 1px; }
-    .faq-a { font-size: 14px; color: #4a6a9c; line-height: 1.7; padding-left: 32px; font-weight: 300; }
+    /* ══ WHY SECTION ══ */
+    .why-section{padding:0 0 72px;}
+    .why-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+    .why-card{border-radius:24px;overflow:hidden;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+    .why-card:hover{transform:translateY(-8px) scale(1.01);box-shadow:0 28px 56px -16px rgba(37,99,235,0.32);}
+    .why-img-wrap{height:190px;overflow:hidden;position:relative;}
+    .why-img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s;}
+    .why-card:hover .why-img{transform:scale(1.07);}
+    .why-img-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(10,22,40,0.35) 0%,transparent 60%);}
+    .why-body{padding:20px 22px 26px;}
+    .why-icon-title{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
+    .why-icon-wrap{width:44px;height:44px;border-radius:14px;background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+    .why-card:hover .why-icon-wrap{background:linear-gradient(135deg,#2563eb,#3b82f6);border-color:transparent;}
+    .why-icon-wrap svg{width:22px;height:22px;stroke:var(--eyebrow-text);transition:stroke 0.3s;}
+    .why-card:hover .why-icon-wrap svg{stroke:white;}
+    .why-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:18px;color:var(--why-title);transition:color 0.4s;}
+    .why-desc{font-size:14px;color:var(--why-desc);line-height:1.65;transition:color 0.4s;}
 
-    /* ── MEGA CTA (enhanced) ── */
-    .mega-cta { padding: 0 0 60px; }
-    .mega-inner {
-      border-radius: 36px; overflow: hidden; position: relative;
-      background: linear-gradient(135deg, #0f2240 0%, #1a3a6e 50%, #1e3fa3 100%);
-      padding: 72px 52px; text-align: center;
-    }
-    .mega-inner::before {
-      content:''; position:absolute; inset:0;
-      background: radial-gradient(ellipse 70% 80% at 50% -10%, rgba(96,165,250,0.3), transparent),
-                  radial-gradient(ellipse 50% 60% at 80% 100%, rgba(37,99,235,0.2), transparent);
-      pointer-events: none;
-    }
-    .mega-inner::after { content:''; position:absolute; inset:0; opacity:0.04; background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size:200px 200px; pointer-events:none; }
-    .mega-content { position: relative; z-index: 1; }
-    .mega-eyebrow { display: inline-flex; align-items: center; gap: 8px; background: rgba(59,130,246,0.2); border: 1px solid rgba(96,165,250,0.4); padding: 8px 18px; border-radius: 20px; font-size: 13px; font-weight: 600; color: #93c5fd; margin-bottom: 24px; }
-    .mega-h2 { font-family: 'Syne', sans-serif; font-size: clamp(32px, 5vw, 60px); font-weight: 800; letter-spacing: -2.5px; color: white; margin-bottom: 16px; line-height: 1.06; }
-    .mega-h2 .accent { background: linear-gradient(135deg, #93c5fd, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .mega-sub { font-size: 18px; color: rgba(255,255,255,0.65); max-width: 520px; margin: 0 auto 44px; font-weight: 300; line-height: 1.7; }
-    .mega-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 24px; }
-    .btn-mega-android {
-      display: inline-flex; align-items: center; gap: 14px;
-      background: white; color: var(--blue-950); border: none;
-      padding: 18px 32px; border-radius: 20px;
-      font-size: 16px; font-weight: 700; cursor: pointer;
-      box-shadow: 0 8px 28px rgba(0,0,0,0.3); transition: all 0.25s;
-      font-family: 'Syne', sans-serif;
-      animation: ctaPulse2 2.8s ease-in-out infinite;
-    }
-    @keyframes ctaPulse2 { 0%,100%{box-shadow:0 8px 28px rgba(0,0,0,0.3);} 50%{box-shadow:0 8px 36px rgba(255,255,255,0.3), 0 0 0 8px rgba(255,255,255,0.07);} }
-    .btn-mega-android:hover { transform: translateY(-4px); }
-    .btn-mega-ios {
-      display: inline-flex; align-items: center; gap: 14px;
-      background: rgba(255,255,255,0.12); backdrop-filter: blur(12px);
-      border: 1.5px solid rgba(255,255,255,0.3); color: white;
-      padding: 18px 32px; border-radius: 20px;
-      font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.25s;
-      font-family: 'Syne', sans-serif;
-    }
-    .btn-mega-ios:hover { background: rgba(255,255,255,0.2); transform: translateY(-4px); }
-    .mega-note { font-size: 13px; color: rgba(255,255,255,0.35); }
+    /* ══ PLATFORM CARDS ══ */
+    .platform-section{padding:0 0 72px;}
+    .platform-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+    .platform-card{border-radius:28px;overflow:hidden;position:relative;padding:40px;display:flex;flex-direction:column;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);}
+    .platform-card:hover{transform:translateY(-6px);}
+    .platform-card.android{background:linear-gradient(135deg,#0f2240 0%,#1a3a6e 60%,#1e3fa3 100%);}
+    .platform-card.android::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 90% 10%,rgba(96,165,250,0.2),transparent);pointer-events:none;}
+    .platform-card.ios{background:var(--glass-bg);backdrop-filter:blur(14px);border:1px solid var(--glass-border);}
+    .platform-header{display:flex;align-items:center;gap:16px;margin-bottom:28px;}
+    .platform-os-icon-wrap{width:64px;height:64px;border-radius:20px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .platform-card.android .platform-os-icon-wrap{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);}
+    .platform-card.ios .platform-os-icon-wrap{background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);}
+    .platform-os-icon-wrap svg{width:34px;height:34px;}
+    .platform-name{font-family:'Montserrat',sans-serif;font-weight:900;font-size:28px;letter-spacing:-1px;}
+    .platform-name.dark{color:white;}
+    .platform-name.light{color:var(--text);}
+    .platform-specs{display:flex;flex-direction:column;gap:12px;margin-bottom:32px;flex:1;}
+    .platform-spec{display:flex;align-items:center;gap:12px;}
+    .spec-check{width:22px;height:22px;background:linear-gradient(135deg,#22c55e,#16a34a);border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+    .spec-check svg{width:12px;height:12px;stroke:white;stroke-width:2.5;}
+    .spec-check.dark-check{background:linear-gradient(135deg,rgba(96,165,250,0.3),rgba(37,99,235,0.3));border:1px solid rgba(96,165,250,0.5);}
+    .spec-check.dark-check svg{stroke:#93c5fd;}
+    .spec-text{font-size:14px;font-weight:600;}
+    .spec-text.dark{color:rgba(255,255,255,0.85);}
+    .spec-text.light{color:var(--text);}
+    .btn-dl{display:flex;align-items:center;justify-content:center;gap:12px;border:none;padding:18px 24px;border-radius:18px;font-size:16px;font-weight:800;font-family:'Montserrat',sans-serif;cursor:pointer;transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1);}
+    .btn-dl-android{background:white;color:#0a1628;box-shadow:0 8px 24px rgba(0,0,0,0.22);}
+    .btn-dl-android:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,0,0,0.3);}
+    .btn-dl-ios{background:linear-gradient(135deg,#1d4ed8,#2563eb,#3b82f6);color:white;box-shadow:0 8px 24px rgba(37,99,235,0.4);}
+    .btn-dl-ios:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(37,99,235,0.55);}
+    .platform-rating{text-align:center;margin-top:12px;font-size:13px;font-weight:500;}
+    .platform-rating.dark{color:rgba(255,255,255,0.45);}
+    .platform-rating.light{color:var(--text-muted);}
 
-    /* ── FOOTER ── */
-    footer { padding: 40px 0 24px; border-top: 1px solid rgba(37,99,235,0.12); }
-    .footer-inner { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px; }
-    .footer-copy { font-size: 13px; color: #94a3b8; }
-    .footer-links { display: flex; gap: 24px; }
-    .footer-links a { font-size: 13px; color: #64748b; text-decoration: none; transition: color 0.2s; }
-    .footer-links a:hover { color: var(--blue-600); }
+    /* ══ NETWORK BANNER ══ */
+    .network-section{padding:0 0 72px;}
+    .network-banner{border-radius:32px;overflow:hidden;position:relative;min-height:280px;display:flex;align-items:center;}
+    .network-banner-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1526406915894-7bcd65f60845?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center 70%;transition:transform 0.5s;}
+    .network-banner:hover .network-banner-img{transform:scale(1.03);}
+    .network-banner-overlay{position:absolute;inset:0;background:linear-gradient(100deg,var(--network-overlay) 0%,rgba(255,255,255,0.2) 60%,transparent 100%);backdrop-filter:blur(3px);transition:background 0.4s;}
+    .network-banner-content{position:relative;z-index:1;display:flex;align-items:center;justify-content:space-between;gap:40px;padding:48px 52px;width:100%;flex-wrap:wrap;}
+    .network-eyebrow{display:inline-flex;align-items:center;gap:7px;backdrop-filter:blur(14px);background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.65);padding:6px 14px;border-radius:16px;font-size:12px;font-weight:700;color:#1a3a6e;margin-bottom:14px;}
+    .network-eyebrow svg{width:13px;height:13px;stroke:currentColor;flex-shrink:0;}
+    .network-title{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(20px,3vw,34px);color:#0a1628;margin-bottom:10px;letter-spacing:-1px;}
+    .network-desc{font-size:15px;color:#3a5a8c;max-width:440px;line-height:1.7;font-weight:400;}
+    .network-pills-wrap{display:flex;gap:12px;flex-wrap:wrap;}
+    .network-pill{backdrop-filter:blur(16px);background:rgba(255,255,255,0.52);border:1.5px solid rgba(255,255,255,0.72);padding:14px 22px;border-radius:18px;font-family:'Montserrat',sans-serif;font-weight:900;font-size:16px;color:#0f2240;box-shadow:0 6px 18px rgba(15,34,64,0.12);transition:all 0.25s;cursor:default;}
+    .network-pill:hover{transform:translateY(-4px);box-shadow:0 12px 28px rgba(37,99,235,0.2);}
 
-    /* ── MOBILE (enhanced) ── */
-    @media (max-width: 1100px) {
-      .hero-phone-wrap { display: none; }
+    /* ══ STEPS ══ */
+    .steps-section{padding:0 0 72px;}
+    .steps-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;}
+    .step-card{border-radius:24px;padding:28px 20px;text-align:center;transition:all 0.35s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
+    .step-card:hover{transform:translateY(-8px);box-shadow:0 28px 48px rgba(37,99,235,0.12);}
+    .step-avatar{width:72px;height:72px;border-radius:50%;overflow:hidden;margin:0 auto 16px;border:3px solid rgba(255,255,255,0.7);box-shadow:0 6px 18px rgba(15,34,64,0.2);}
+    .step-avatar img{width:100%;height:100%;object-fit:cover;}
+    .step-num-badge{position:absolute;top:20px;right:20px;width:32px;height:32px;background:linear-gradient(135deg,#2563eb,#60a5fa);border-radius:10px;display:flex;align-items:center;justify-content:center;font-family:'Montserrat',sans-serif;font-weight:900;font-size:14px;color:white;box-shadow:0 4px 12px rgba(37,99,235,0.4);}
+    .step-title{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;color:var(--step-title);margin-bottom:6px;transition:color 0.4s;}
+    .step-desc{font-size:13px;color:var(--step-desc);line-height:1.6;transition:color 0.4s;}
+
+    /* ══ QR CARD ══ */
+    .qr-section{padding:0 0 72px;}
+    .qr-card{border-radius:32px;overflow:hidden;position:relative;padding:52px 56px;}
+    .qr-card-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1593508512255-86ab42a8e620?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center 60%;}
+    .qr-card-overlay{position:absolute;inset:0;background:var(--qr-overlay);backdrop-filter:blur(6px);transition:background 0.4s;}
+    .qr-content{position:relative;z-index:1;display:flex;align-items:center;gap:52px;flex-wrap:wrap;}
+    .qr-box{width:150px;height:150px;flex-shrink:0;backdrop-filter:blur(20px);background:rgba(255,255,255,0.62);border:2px solid rgba(255,255,255,0.8);border-radius:24px;display:flex;flex-direction:column;align-items:center;justify-content:center;box-shadow:0 12px 32px rgba(15,34,64,0.15);}
+    .qr-box svg{width:80px;height:80px;}
+    .qr-label{font-size:10px;font-weight:700;color:#64748b;margin-top:8px;text-transform:uppercase;letter-spacing:0.5px;}
+    .qr-eyebrow{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.45);border:1px solid rgba(255,255,255,0.65);backdrop-filter:blur(12px);padding:6px 14px;border-radius:16px;font-size:12px;font-weight:700;color:#1a3a6e;margin-bottom:16px;}
+    .qr-eyebrow svg{width:13px;height:13px;stroke:currentColor;flex-shrink:0;}
+    .qr-h3{font-family:'Montserrat',sans-serif;font-weight:900;font-size:clamp(20px,3vw,34px);color:#0a1628;margin-bottom:12px;letter-spacing:-1px;}
+    .qr-desc{font-size:16px;color:#3a5a8c;line-height:1.7;font-weight:400;margin-bottom:20px;max-width:440px;}
+    .sms-badge{display:inline-flex;align-items:center;gap:10px;backdrop-filter:blur(16px);background:rgba(255,255,255,0.52);border:1.5px solid rgba(255,255,255,0.72);padding:12px 20px;border-radius:16px;font-size:15px;font-weight:700;color:#0f2240;box-shadow:0 6px 18px rgba(15,34,64,0.1);}
+    .sms-badge svg{width:18px;height:18px;stroke:#2563eb;flex-shrink:0;}
+
+    /* ══ FAQ ══ */
+    .faq-section{padding:0 0 72px;}
+    .faq-card{border-radius:28px;padding:44px 48px;}
+    .faq-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:32px;}
+    .faq-item{border-radius:20px;padding:22px 24px;background:var(--faq-bg);border:1px solid var(--faq-border);transition:all 0.25s;}
+    .faq-item:hover{transform:translateY(-2px);box-shadow:0 12px 28px rgba(37,99,235,0.1);}
+    .faq-q{font-family:'Montserrat',sans-serif;font-weight:800;font-size:15px;color:var(--text);margin-bottom:8px;display:flex;align-items:flex-start;gap:10px;transition:color 0.4s;}
+    .faq-q-icon{width:22px;height:22px;background:linear-gradient(135deg,#2563eb,#60a5fa);border-radius:8px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;}
+    .faq-q-icon svg{width:13px;height:13px;stroke:white;stroke-width:2.5;}
+    .faq-a{font-size:14px;color:var(--text3);line-height:1.7;padding-left:32px;font-weight:400;transition:color 0.4s;}
+
+    /* ══ MEGA CTA ══ */
+    .mega-cta{padding:0 0 60px;}
+    .mega-inner{border-radius:36px;overflow:hidden;position:relative;background:linear-gradient(135deg,#0f2240 0%,#1a3a6e 50%,#1e3fa3 100%);padding:72px 52px;text-align:center;}
+    .mega-inner::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 70% 80% at 50% -10%,rgba(96,165,250,0.28),transparent),radial-gradient(ellipse 50% 60% at 80% 100%,rgba(37,99,235,0.2),transparent);pointer-events:none;}
+    .mega-inner::after{content:'';position:absolute;inset:0;opacity:0.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px 200px;pointer-events:none;}
+    .mega-content{position:relative;z-index:1;}
+    .mega-eyebrow{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,0.2);border:1px solid rgba(96,165,250,0.4);padding:8px 18px;border-radius:20px;font-size:13px;font-weight:700;color:#93c5fd;margin-bottom:24px;}
+    .mega-eyebrow svg{width:14px;height:14px;stroke:currentColor;flex-shrink:0;}
+    .mega-h2{font-family:'Montserrat',sans-serif;font-size:clamp(30px,5vw,58px);font-weight:900;letter-spacing:-2.5px;color:white;margin-bottom:16px;line-height:1.06;}
+    .mega-h2 .accent{background:linear-gradient(135deg,#93c5fd,#60a5fa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+    .mega-sub{font-size:18px;color:rgba(255,255,255,0.65);max-width:520px;margin:0 auto 44px;font-weight:400;line-height:1.7;}
+    .mega-btns{display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+    .btn-mega-gp{display:inline-flex;align-items:center;gap:14px;background:white;color:#0a1628;border:none;padding:18px 32px;border-radius:20px;font-size:16px;font-weight:800;font-family:'Montserrat',sans-serif;cursor:pointer;box-shadow:0 8px 28px rgba(0,0,0,0.28);transition:all 0.3s;animation:ctaPulse2 2.8s ease-in-out infinite;}
+    @keyframes ctaPulse2{0%,100%{box-shadow:0 8px 28px rgba(0,0,0,0.28);}50%{box-shadow:0 8px 36px rgba(255,255,255,0.28),0 0 0 8px rgba(255,255,255,0.07);}}
+    .btn-mega-gp:hover{transform:translateY(-4px);}
+    .btn-mega-as{display:inline-flex;align-items:center;gap:14px;background:rgba(255,255,255,0.12);backdrop-filter:blur(12px);border:1.5px solid rgba(255,255,255,0.28) !important;color:white;padding:18px 32px;border-radius:20px;font-size:16px;font-weight:800;font-family:'Montserrat',sans-serif;cursor:pointer;transition:all 0.3s;}
+    .btn-mega-as:hover{background:rgba(255,255,255,0.2);transform:translateY(-4px);}
+    .mega-note{font-size:13px;color:rgba(255,255,255,0.32);font-weight:500;}
+
+    /* ══ FOOTER ══ */
+    footer{padding:40px 0 24px;border-top:1px solid var(--border);transition:border-color 0.4s;}
+    .footer-inner{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px;}
+    .footer-copy{font-size:12px;color:var(--footer-copy);margin-top:8px;font-weight:500;transition:color 0.4s;}
+    .footer-links{display:flex;gap:24px;flex-wrap:wrap;}
+    .footer-links a{font-size:13px;color:var(--footer-link);text-decoration:none;font-weight:600;transition:color 0.2s;}
+    .footer-links a:hover{color:#2563eb;}
+
+    /* ══ RESPONSIVE ══ */
+    @media (max-width:1100px){.hero-phone-wrap{display:none;}}
+    @media (max-width:900px){
+      .nav-links{display:none!important;}.badge-datafree{display:none;}.hamburger{display:flex!important;}
+      .why-grid{grid-template-columns:1fr 1fr;}
+      .platform-grid{grid-template-columns:1fr;}
+      .steps-grid{grid-template-columns:1fr 1fr;}
+      .faq-grid{grid-template-columns:1fr;}
+      .network-banner-content{flex-direction:column;align-items:flex-start;}
+      .qr-content{flex-direction:column;text-align:center;}
+      .qr-desc{max-width:100%;}
+      .hero-content{padding:48px 36px;}
+      .wifi-pulse{display:none;}
     }
-    @media (max-width: 900px) {
-      .why-grid { grid-template-columns: 1fr 1fr; }
-      .platform-grid { grid-template-columns: 1fr; }
-      .steps-grid { grid-template-columns: 1fr 1fr; }
-      .faq-grid { grid-template-columns: 1fr; }
-      .network-banner-content { flex-direction: column; align-items: flex-start; }
-      .qr-content { flex-direction: column; text-align: center; }
-      .qr-desc { max-width: 100%; }
-      .nav-links { display: none; }
-      .hamburger { display: flex; }
-      .hero-content { padding: 48px 36px; }
+    @media (max-width:768px){
+      .container{padding:0 16px;}
+      .nav-inner{padding:10px 16px;}
+      .logo-text{font-size:18px;}.logo-mark{width:34px;height:34px;font-size:16px;}
+      .hero-section{padding:12px 0 48px;}
+      .hero-inner{min-height:440px;}
+      .hero-content{padding:36px 24px;}
+      .hero-h1{font-size:clamp(30px,8vw,48px);letter-spacing:-2px;}
+      .hero-sub{font-size:16px;margin-bottom:28px;}
+      .hero-btns{flex-direction:column;gap:10px;}
+      .btn-store-gp,.btn-store-as{width:100%;justify-content:center;}
+      .section-header{margin-bottom:28px;}
+      .section-h2{font-size:clamp(22px,6vw,30px);}
+      .why-grid{grid-template-columns:1fr;}
+      .faq-card{padding:28px 24px;}
+      .network-banner-content{padding:36px 28px;}
+      .qr-card{padding:36px 24px;}
+      .mega-inner{padding:52px 24px;}
+      footer{padding:32px 0 20px;}
+      .footer-inner{flex-direction:column;align-items:flex-start;}
     }
-    @media (max-width: 600px) {
-      .why-grid { grid-template-columns: 1fr; }
-      .steps-grid { grid-template-columns: 1fr 1fr; }
-      .mega-inner { padding: 52px 24px; }
-      .hero-inner { min-height: 420px; }
-      .hero-btns { flex-direction: column; }
-      .btn-android, .btn-ios { width: 100%; justify-content: center; }
-      .faq-card { padding: 28px 24px; }
-      .network-banner-content { padding: 36px 28px; }
-      .qr-card { padding: 36px 24px; }
+    @media (max-width:480px){
+      .container{padding:0 14px;}
+      .hero-eyebrow{font-size:11px;padding:6px 14px;}
+      .hero-h1{font-size:clamp(26px,8vw,36px);letter-spacing:-1.5px;}
+      .steps-grid{grid-template-columns:1fr 1fr;}
+      .platform-card{padding:28px 24px;}
+      .faq-item{padding:18px 16px;}
+      .faq-a{padding-left:24px;}
+    }
+    @media (max-width:360px){
+      .logo-text{font-size:16px;}.logo-mark{width:30px;height:30px;font-size:15px;}
+      .steps-grid{grid-template-columns:1fr;}
+    }
+    @media (max-width:900px) and (orientation:landscape) and (max-height:520px){
+      .hero-inner{min-height:280px;}
+      .hero-content{padding:24px;}
+      .hero-h1{font-size:28px;}
     }
   </style>
 </head>
-
 <body>
   <div class="bg-mesh"></div>
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
-  <div class="orb orb-3"></div>
+  <div class="orb orb-1"></div><div class="orb orb-2"></div><div class="orb orb-3"></div>
+  <div class="data-streams">
+    <div class="stream"></div><div class="stream"></div><div class="stream"></div>
+    <div class="stream"></div><div class="stream"></div><div class="stream"></div>
+    <div class="stream"></div>
+  </div>
+  <div class="wifi-pulse">
+    <div class="wp-ring"></div><div class="wp-ring"></div><div class="wp-ring"></div>
+  </div>
 
-  <!-- ── NAV (enhanced) ── -->
+  <!-- MOBILE NAV -->
+  <div class="mobile-nav" id="mobileNav">
+    <button class="mobile-nav-close" id="mobileNavClose">✕</button>
+    <a href="index.html">Home</a>
+    <a href="features.html">Features</a>
+    <a href="works.html">How it works</a>
+    <a href="discover.html">Discover</a>
+    <a href="story.html">Our Story</a>
+    <a href="business.html">Business</a>
+    <a href="download.html" class="active">Download</a>
+    <button class="mobile-nav-cta">Download free</button>
+  </div>
+
+  <!-- NAV -->
   <nav>
     <div class="container">
-      <div class="nav-inner glass">
+      <div class="nav-inner glass-strong">
         <a class="logo" href="index.html">
-          <div class="logo-mark"><span>M</span></div>
+          <div class="logo-mark">M</div>
           <span class="logo-text">Moya<em>App</em></span>
         </a>
         <ul class="nav-links">
@@ -430,51 +413,79 @@
           <li><a href="works.html">How it works</a></li>
           <li><a href="discover.html">Discover</a></li>
           <li><a href="story.html">Our story</a></li>
-                    <li><a href="business.html" >Business</a></li>
-
+          <li><a href="business.html">Business</a></li>
         </ul>
         <div style="display:flex;align-items:center;gap:10px;">
           <span class="badge-datafree">dataFREE in SA ✓</span>
-          <button class="btn-nav">Download</button>
+          <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+            <span class="t-icon t-moon">🌙</span>
+            <span class="t-icon t-sun">☀️</span>
+          </button>
+          <a href="download.html"><button class="btn-nav">Download</button></a>
         </div>
-        <div class="hamburger" id="hamburger">
+        <button class="hamburger" id="hamburger" aria-label="Open menu">
           <span></span><span></span><span></span>
-        </div>
+        </button>
       </div>
     </div>
   </nav>
 
-  <!-- ── HERO (enhanced) ── -->
+  <!-- HERO -->
   <section class="hero-section">
     <div class="container">
       <div class="hero-inner">
         <div class="hero-bg"></div>
         <div class="hero-overlay"></div>
-        <div class="hero-content">
-          <div class="hero-eyebrow">📲 Get the app — it's free</div>
+        <div class="hero-scan"></div>
+        <div class="hero-content reveal">
+          <div class="hero-eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+            Get the app — it's free
+          </div>
           <h1 class="hero-h1">Download<br><span class="accent">MoyaApp</span></h1>
           <p class="hero-sub">Free, datafree messaging plus a world of Discover. Pick your platform and start chatting in under a minute.</p>
           <div class="hero-btns">
-            <button class="btn-android">
-              <span class="btn-store-icon">🤖</span>
+            <!-- Google Play -->
+            <button class="btn-store-gp">
+              <svg class="gp-logo" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
+                <path fill="#4CAF50" d="M24.954 24.006 7.6 42.126c.44 1.63 1.932 2.874 3.72 2.874.832 0 1.604-.258 2.24-.694l.05-.034 19.272-11.12-7.928-9.146z"/>
+                <path fill="#F44336" d="M42.382 20.786 42.37 20.78l-8.312-4.802-8.84 7.866 8.865 8.864 8.278-4.778c1.452-.788 2.44-2.324 2.44-4.086 0-1.754-.98-3.286-2.42-4.058z"/>
+                <path fill="#FFC107" d="M7.6 5.874C7.5 6.218 7.448 6.58 7.448 6.956v34.088c0 .376.052.738.152 1.082L26.03 24.002 7.6 5.874z"/>
+                <path fill="#4CAF50" d="M25.076 24l8.982-8.982-19.218-11.1a4.26 4.26 0 0 0-2.24-.662C10.784 3.256 9.284 4.512 8.84 6.16L25.076 24z"/>
+              </svg>
               <div>
-                <span class="btn-store-small">Get it on</span>
-                <span class="btn-store-big">Google Play</span>
+                <span class="store-small">Get it on</span>
+                <span class="store-big">Google Play</span>
               </div>
             </button>
-            <button class="btn-ios">
-              <span class="btn-store-icon">🍎</span>
+            <!-- App Store -->
+            <button class="btn-store-as">
+              <svg class="apple-logo" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+              </svg>
               <div>
-                <span class="btn-store-small">Download on the</span>
-                <span class="btn-store-big">App Store</span>
+                <span class="store-small">Download on the</span>
+                <span class="store-big">App Store</span>
               </div>
             </button>
           </div>
           <div class="hero-meta">
-            <span class="hero-meta-item">⚡ Version 4.2</span>
-            <span class="hero-meta-item">📦 50 MB</span>
-            <span class="hero-meta-item">🤖 Android 8+</span>
-            <span class="hero-meta-item">🍎 iOS 14+</span>
+            <span class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              Version 4.2
+            </span>
+            <span class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+              50 MB
+            </span>
+            <span class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/></svg>
+              Android 8+
+            </span>
+            <span class="hero-meta-item">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.94c1.5 0 2.75.1 4-.25 1.17-.35 2-1.09 2-1.95V4.26C18 3.4 17.17 2.67 16 2.32c-1.25-.35-2.5-.25-4-.25s-2.75-.1-4 .25C6.83 2.67 6 3.4 6 4.26v14.48c0 .86.83 1.6 2 1.95 1.25.35 2.5.25 4 .25z"/></svg>
+              iOS 14+
+            </span>
           </div>
         </div>
 
@@ -484,9 +495,9 @@
             <div class="phone-notch"></div>
             <div class="phone-screen-label">MoyaApp · Chat</div>
             <div class="chat-bub them">Yoh, my data finished 😭</div>
-            <div class="chat-bub me">Just use Moya! Zero data texts 🚀</div>
+            <div class="chat-bub me">Just use Moya! Zero data texts</div>
             <div class="chat-bub them">For real?? Downloading now!!</div>
-            <div class="chat-bub me">See you on the other side 😄</div>
+            <div class="chat-bub me">See you on the other side</div>
             <div class="phone-status-bar">
               <span class="status-dot"></span>
               <span class="status-text">dataFREE mode active</span>
@@ -497,42 +508,60 @@
     </div>
   </section>
 
-  <!-- ── WHY DOWNLOAD (enhanced) ── -->
+  <!-- WHY DOWNLOAD -->
   <section class="why-section">
     <div class="container">
-      <div class="section-header">
-        <div class="section-eyebrow">✦ Why millions choose Moya</div>
+      <div class="section-header reveal">
+        <div class="section-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+          Why millions choose Moya
+        </div>
         <h2 class="section-h2">Install once, unlock everything</h2>
         <p class="section-sub">One download gives you the most connected app in South Africa — for free.</p>
       </div>
       <div class="why-grid">
-        <div class="why-card glass">
+        <div class="why-card glass reveal">
           <div class="why-img-wrap">
             <img class="why-img" src="https://images.unsplash.com/photo-1611162616305-69d3e6b6e4b0?q=80&w=1974&auto=format&fit=crop" alt="Chat">
             <div class="why-img-overlay"></div>
           </div>
           <div class="why-body">
-            <div class="why-icon-title"><span class="why-icon">💬</span><div class="why-title">Unlimited texts</div></div>
+            <div class="why-icon-title">
+              <div class="why-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              </div>
+              <div class="why-title">Unlimited texts</div>
+            </div>
             <p class="why-desc">Zero-data texts when your bundle runs out — only on Moya, on all major SA networks.</p>
           </div>
         </div>
-        <div class="why-card glass">
+        <div class="why-card glass reveal">
           <div class="why-img-wrap">
             <img class="why-img" src="https://images.unsplash.com/photo-1573152958734-1922c188fba3?q=80&w=2088&auto=format&fit=crop" alt="Discover">
             <div class="why-img-overlay"></div>
           </div>
           <div class="why-body">
-            <div class="why-icon-title"><span class="why-icon">🔍</span><div class="why-title">Discover & earn</div></div>
+            <div class="why-icon-title">
+              <div class="why-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              </div>
+              <div class="why-title">Discover &amp; earn</div>
+            </div>
             <p class="why-desc">News, SASSA, load shedding, MoyaPlay rewards — everything you need, all inside one app.</p>
           </div>
         </div>
-        <div class="why-card glass">
+        <div class="why-card glass reveal">
           <div class="why-img-wrap">
             <img class="why-img" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?q=80&w=2070&auto=format&fit=crop" alt="MoyaPay">
             <div class="why-img-overlay"></div>
           </div>
           <div class="why-body">
-            <div class="why-icon-title"><span class="why-icon">💳</span><div class="why-title">MoyaPay wallet</div></div>
+            <div class="why-icon-title">
+              <div class="why-icon-wrap">
+                <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
+              </div>
+              <div class="why-title">MoyaPay wallet</div>
+            </div>
             <p class="why-desc">Send money, buy prepaid airtime, get a virtual Mastercard — zero-data transactions.</p>
           </div>
         </div>
@@ -540,47 +569,57 @@
     </div>
   </section>
 
-  <!-- ── PLATFORM CARDS (enhanced) ── -->
+  <!-- PLATFORM CARDS -->
   <section class="platform-section">
     <div class="container">
-      <div class="section-header">
-        <div class="section-eyebrow">✦ Choose your platform</div>
+      <div class="section-header reveal">
+        <div class="section-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+          Choose your platform
+        </div>
         <h2 class="section-h2">Android or iOS — your pick</h2>
         <p class="section-sub">MoyaApp runs beautifully on both platforms with full feature parity.</p>
       </div>
       <div class="platform-grid">
         <!-- Android -->
-        <div class="platform-card android">
+        <div class="platform-card android reveal">
           <div class="platform-header">
-            <span class="platform-os-icon">🤖</span>
+            <div class="platform-os-icon-wrap">
+              <svg viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg" width="34" height="34">
+                <path fill="#4CAF50" d="M24.954 24.006 7.6 42.126c.44 1.63 1.932 2.874 3.72 2.874.832 0 1.604-.258 2.24-.694l.05-.034 19.272-11.12-7.928-9.146z"/><path fill="#F44336" d="M42.382 20.786 42.37 20.78l-8.312-4.802-8.84 7.866 8.865 8.864 8.278-4.778c1.452-.788 2.44-2.324 2.44-4.086 0-1.754-.98-3.286-2.42-4.058z"/><path fill="#FFC107" d="M7.6 5.874C7.5 6.218 7.448 6.58 7.448 6.956v34.088c0 .376.052.738.152 1.082L26.03 24.002 7.6 5.874z"/><path fill="#4CAF50" d="M25.076 24l8.982-8.982-19.218-11.1a4.26 4.26 0 0 0-2.24-.662C10.784 3.256 9.284 4.512 8.84 6.16L25.076 24z"/>
+              </svg>
+            </div>
             <span class="platform-name dark">Android</span>
           </div>
           <div class="platform-specs">
-            <div class="platform-spec"><div class="spec-check dark-check">✓</div><span class="spec-text dark">Android 8.0+ (Oreo) and up</span></div>
-            <div class="platform-spec"><div class="spec-check dark-check">✓</div><span class="spec-text dark">50 MB download · 120 MB after install</span></div>
-            <div class="platform-spec"><div class="spec-check dark-check">✓</div><span class="spec-text dark">Google Play Protect verified</span></div>
-            <div class="platform-spec"><div class="spec-check dark-check">✓</div><span class="spec-text dark">dataFREE on MTN, Vodacom, Cell C, Telkom</span></div>
+            <div class="platform-spec"><div class="spec-check dark-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text dark">Android 8.0+ (Oreo) and up</span></div>
+            <div class="platform-spec"><div class="spec-check dark-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text dark">50 MB download · 120 MB after install</span></div>
+            <div class="platform-spec"><div class="spec-check dark-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text dark">Google Play Protect verified</span></div>
+            <div class="platform-spec"><div class="spec-check dark-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text dark">dataFREE on MTN, Vodacom, Cell C, Telkom</span></div>
           </div>
-          <button class="btn-dl-android">
-            <span style="font-size:22px;">🤖</span> Download from Google Play
+          <button class="btn-dl btn-dl-android">
+            <svg viewBox="0 0 48 48" width="24" height="24" xmlns="http://www.w3.org/2000/svg"><path fill="#4CAF50" d="M24.954 24.006 7.6 42.126c.44 1.63 1.932 2.874 3.72 2.874.832 0 1.604-.258 2.24-.694l.05-.034 19.272-11.12-7.928-9.146z"/><path fill="#F44336" d="M42.382 20.786 42.37 20.78l-8.312-4.802-8.84 7.866 8.865 8.864 8.278-4.778c1.452-.788 2.44-2.324 2.44-4.086 0-1.754-.98-3.286-2.42-4.058z"/><path fill="#FFC107" d="M7.6 5.874C7.5 6.218 7.448 6.58 7.448 6.956v34.088c0 .376.052.738.152 1.082L26.03 24.002 7.6 5.874z"/><path fill="#4CAF50" d="M25.076 24l8.982-8.982-19.218-11.1a4.26 4.26 0 0 0-2.24-.662C10.784 3.256 9.284 4.512 8.84 6.16L25.076 24z"/></svg>
+            Download from Google Play
           </button>
           <p class="platform-rating dark">Free · 4.6 ★ · 10M+ downloads</p>
         </div>
-
-        <!-- iOS (enhanced glass) -->
-        <div class="platform-card ios glass-strong">
+        <!-- iOS -->
+        <div class="platform-card ios glass-strong reveal">
           <div class="platform-header">
-            <span class="platform-os-icon">🍎</span>
+            <div class="platform-os-icon-wrap">
+              <svg viewBox="0 0 24 24" width="34" height="34" fill="#0a1628" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            </div>
             <span class="platform-name light">iOS (iPhone)</span>
           </div>
           <div class="platform-specs">
-            <div class="platform-spec"><div class="spec-check">✓</div><span class="spec-text light">iOS 14.0+ (iPhone 6s and newer)</span></div>
-            <div class="platform-spec"><div class="spec-check">✓</div><span class="spec-text light">120 MB · optimized for latest iOS</span></div>
-            <div class="platform-spec"><div class="spec-check">✓</div><span class="spec-text light">App Store privacy nutrition labels</span></div>
-            <div class="platform-spec"><div class="spec-check">✓</div><span class="spec-text light">dataFREE texts on supported SA networks</span></div>
+            <div class="platform-spec"><div class="spec-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text light">iOS 14.0+ (iPhone 6s and newer)</span></div>
+            <div class="platform-spec"><div class="spec-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text light">120 MB · optimized for latest iOS</span></div>
+            <div class="platform-spec"><div class="spec-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text light">App Store privacy nutrition labels</span></div>
+            <div class="platform-spec"><div class="spec-check"><svg viewBox="0 0 24 24" fill="none" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><span class="spec-text light">dataFREE texts on supported SA networks</span></div>
           </div>
-          <button class="btn-dl-ios">
-            <span style="font-size:22px;">🍎</span> Download from App Store
+          <button class="btn-dl btn-dl-ios">
+            <svg viewBox="0 0 24 24" width="24" height="24" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+            Download from App Store
           </button>
           <p class="platform-rating light">Free · 4.5 ★ · featured in 15 countries</p>
         </div>
@@ -588,15 +627,18 @@
     </div>
   </section>
 
-  <!-- ── NETWORK BANNER (enhanced) ── -->
+  <!-- NETWORK BANNER -->
   <section class="network-section">
     <div class="container">
-      <div class="network-banner">
+      <div class="network-banner reveal">
         <div class="network-banner-img"></div>
         <div class="network-banner-overlay"></div>
         <div class="network-banner-content">
           <div class="network-text-wrap">
-            <div class="network-eyebrow">🇿🇦 Zero-rated networks</div>
+            <div class="network-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/></svg>
+              Zero-rated networks
+            </div>
             <div class="network-title">Works on all major SA networks</div>
             <p class="network-desc">MTN, Vodacom, Cell C, and Telkom. Once you download, Moya automatically enables datafree texts when your bundle hits zero — no settings required.</p>
           </div>
@@ -611,34 +653,37 @@
     </div>
   </section>
 
-  <!-- ── HOW TO GET STARTED (enhanced) ── -->
+  <!-- STEPS -->
   <section class="steps-section">
     <div class="container">
-      <div class="section-header center">
-        <div class="section-eyebrow">✦ Getting started</div>
+      <div class="section-header center reveal">
+        <div class="section-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          Getting started
+        </div>
         <h2 class="section-h2">Up and running in 60 seconds</h2>
         <p class="section-sub">Four easy steps from download to your first datafree message.</p>
       </div>
       <div class="steps-grid">
-        <div class="step-card glass">
+        <div class="step-card glass reveal">
           <div class="step-num-badge">1</div>
           <div class="step-avatar"><img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=144&h=144&fit=crop" alt="Tap download"></div>
           <div class="step-title">Tap download</div>
           <p class="step-desc">Choose Android or iOS above and install from your app store.</p>
         </div>
-        <div class="step-card glass">
+        <div class="step-card glass reveal">
           <div class="step-num-badge">2</div>
           <div class="step-avatar"><img src="https://images.unsplash.com/photo-1589254066213-a0c9dc85327c?w=144&h=144&fit=crop" alt="Verify"></div>
           <div class="step-title">Verify with SMS</div>
           <p class="step-desc">Enter your SA mobile number and confirm the code — free on all networks.</p>
         </div>
-        <div class="step-card glass">
+        <div class="step-card glass reveal">
           <div class="step-num-badge">3</div>
           <div class="step-avatar"><img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?w=144&h=144&fit=crop" alt="Start chatting"></div>
           <div class="step-title">Start chatting</div>
           <p class="step-desc">Invite friends and family, create groups — texting starts immediately.</p>
         </div>
-        <div class="step-card glass">
+        <div class="step-card glass reveal">
           <div class="step-num-badge">4</div>
           <div class="step-avatar"><img src="https://images.unsplash.com/photo-1556155092-490a1ba16284?w=144&h=144&fit=crop" alt="Explore"></div>
           <div class="step-title">Explore Discover</div>
@@ -648,23 +693,44 @@
     </div>
   </section>
 
-  <!-- ── QR / DIRECT LINK (enhanced) ── -->
+  <!-- QR CARD -->
   <section class="qr-section">
     <div class="container">
-      <div class="qr-card glass-strong">
+      <div class="qr-card glass-strong reveal">
         <div class="qr-card-img"></div>
         <div class="qr-card-overlay"></div>
         <div class="qr-content">
           <div class="qr-box">
-            <span class="qr-emoji">📱</span>
+            <!-- QR grid SVG pattern -->
+            <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="4" y="4" width="28" height="28" rx="3" fill="none" stroke="#2563eb" stroke-width="3"/>
+              <rect x="10" y="10" width="16" height="16" rx="1" fill="#2563eb"/>
+              <rect x="48" y="4" width="28" height="28" rx="3" fill="none" stroke="#2563eb" stroke-width="3"/>
+              <rect x="54" y="10" width="16" height="16" rx="1" fill="#2563eb"/>
+              <rect x="4" y="48" width="28" height="28" rx="3" fill="none" stroke="#2563eb" stroke-width="3"/>
+              <rect x="10" y="54" width="16" height="16" rx="1" fill="#2563eb"/>
+              <rect x="48" y="48" width="8" height="8" fill="#2563eb"/>
+              <rect x="60" y="48" width="8" height="8" fill="#2563eb"/>
+              <rect x="48" y="60" width="8" height="8" fill="#2563eb"/>
+              <rect x="60" y="60" width="16" height="8" fill="#2563eb"/>
+              <rect x="36" y="4" width="8" height="8" fill="#2563eb"/>
+              <rect x="36" y="16" width="8" height="8" fill="#2563eb"/>
+              <rect x="4" y="36" width="8" height="8" fill="#2563eb"/>
+              <rect x="16" y="36" width="8" height="8" fill="#2563eb"/>
+              <rect x="36" y="36" width="8" height="8" fill="#2563eb"/>
+            </svg>
             <span class="qr-label">Scan to download</span>
           </div>
           <div class="qr-text-wrap">
-            <div class="qr-eyebrow">📲 Alternative ways to get Moya</div>
+            <div class="qr-eyebrow">
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+              Alternative ways to get Moya
+            </div>
             <h3 class="qr-h3">Get the direct download link</h3>
             <p class="qr-desc">Scan the QR code with your phone camera, or SMS us and we'll send you the download link — completely free of charge, anywhere in South Africa.</p>
             <div class="sms-badge">
-              <span>💬</span> SMS "MOYA" to <strong>40404</strong> — free SA only
+              <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+              SMS "MOYA" to <strong>40404</strong> — free SA only
             </div>
           </div>
         </div>
@@ -672,27 +738,30 @@
     </div>
   </section>
 
-  <!-- ── FAQ (enhanced) ── -->
+  <!-- FAQ -->
   <section class="faq-section">
     <div class="container">
-      <div class="faq-card glass-strong">
-        <div class="section-eyebrow">✦ Download FAQs</div>
+      <div class="faq-card glass-strong reveal">
+        <div class="section-eyebrow">
+          <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          Download FAQs
+        </div>
         <h2 class="section-h2" style="margin-top:12px;">Common questions</h2>
         <div class="faq-grid">
           <div class="faq-item">
-            <div class="faq-q"><div class="faq-q-icon">?</div> Is MoyaApp really free?</div>
+            <div class="faq-q"><div class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div> Is MoyaApp really free?</div>
             <p class="faq-a">Yes — download is free and texting remains free when your data runs out on supported networks. No hidden costs.</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q"><div class="faq-q-icon">?</div> Can I use it outside South Africa?</div>
+            <div class="faq-q"><div class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div> Can I use it outside South Africa?</div>
             <p class="faq-a">You can download it anywhere, but datafree texts only work on SA networks (MTN, Vodacom, Cell C, Telkom).</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q"><div class="faq-q-icon">?</div> How much data does the app use?</div>
+            <div class="faq-q"><div class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div> How much data does the app use?</div>
             <p class="faq-a">First download is ~50 MB. After that, texts use zero data when out of bundle; photos and calls use minimal data.</p>
           </div>
           <div class="faq-item">
-            <div class="faq-q"><div class="faq-q-icon">?</div> Is MoyaPay available everywhere?</div>
+            <div class="faq-q"><div class="faq-q-icon"><svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div> Is MoyaPay available everywhere?</div>
             <p class="faq-a">MoyaPay is currently available in South Africa only and works with most local banks and prepaid cards.</p>
           </div>
         </div>
@@ -700,46 +769,43 @@
     </div>
   </section>
 
-  <!-- ── MEGA CTA (enhanced) ── -->
+  <!-- MEGA CTA -->
   <section class="mega-cta">
     <div class="container">
       <div class="mega-inner">
         <div class="mega-content">
-          <div class="mega-eyebrow">🚀 Join the movement</div>
+          <div class="mega-eyebrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            Join the movement
+          </div>
           <h2 class="mega-h2">Join 6.5 million+<br><span class="accent">South Africans</span></h2>
           <p class="mega-sub">Download MoyaApp now — it's free, it's datafree, it's your super app. Never lose touch again.</p>
           <div class="mega-btns">
-            <button class="btn-mega-android">
-              <span style="font-size:26px;">🤖</span>
-              <div>
-                <span style="font-size:10px;opacity:0.6;display:block;">Get it on</span>
-                <span style="font-size:18px;">Google Play</span>
-              </div>
+            <button class="btn-mega-gp">
+              <svg viewBox="0 0 48 48" width="28" height="28" xmlns="http://www.w3.org/2000/svg"><path fill="#4CAF50" d="M24.954 24.006 7.6 42.126c.44 1.63 1.932 2.874 3.72 2.874.832 0 1.604-.258 2.24-.694l.05-.034 19.272-11.12-7.928-9.146z"/><path fill="#F44336" d="M42.382 20.786 42.37 20.78l-8.312-4.802-8.84 7.866 8.865 8.864 8.278-4.778c1.452-.788 2.44-2.324 2.44-4.086 0-1.754-.98-3.286-2.42-4.058z"/><path fill="#FFC107" d="M7.6 5.874C7.5 6.218 7.448 6.58 7.448 6.956v34.088c0 .376.052.738.152 1.082L26.03 24.002 7.6 5.874z"/><path fill="#4CAF50" d="M25.076 24l8.982-8.982-19.218-11.1a4.26 4.26 0 0 0-2.24-.662C10.784 3.256 9.284 4.512 8.84 6.16L25.076 24z"/></svg>
+              <div><span style="font-size:10px;opacity:0.6;display:block;font-weight:500;">Get it on</span><span style="font-size:18px;font-weight:900;">Google Play</span></div>
             </button>
-            <button class="btn-mega-ios">
-              <span style="font-size:26px;">🍎</span>
-              <div>
-                <span style="font-size:10px;opacity:0.6;display:block;">Download on the</span>
-                <span style="font-size:18px;">App Store</span>
-              </div>
+            <button class="btn-mega-as">
+              <svg viewBox="0 0 24 24" width="28" height="28" fill="white" xmlns="http://www.w3.org/2000/svg"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+              <div><span style="font-size:10px;opacity:0.6;display:block;font-weight:500;">Download on the</span><span style="font-size:18px;font-weight:900;">App Store</span></div>
             </button>
           </div>
-          <p class="mega-note">* dataFREE texts on MTN, Vodacom, Cell C & Telkom when out of bundle. Attachments and calls use data or Wi-Fi. South Africa only.</p>
+          <p class="mega-note">* dataFREE texts on MTN, Vodacom, Cell C &amp; Telkom when out of bundle. Attachments and calls use data or Wi-Fi. South Africa only.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ── FOOTER ── -->
+  <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-inner">
         <div>
           <a class="logo" href="index.html" style="display:inline-flex;margin-bottom:8px;">
-            <div class="logo-mark"><span>M</span></div>
+            <div class="logo-mark">M</div>
             <span class="logo-text">Moya<em>App</em></span>
           </a>
-          <p class="footer-copy" style="margin-top:8px;">© 2025 MoyaApp · Built for South Africa 🇿🇦</p>
+          <p class="footer-copy">© 2026 Moya App (Pty) Ltd · Built for South Africa</p>
         </div>
         <div class="footer-links">
           <a href="#">Privacy Policy</a>
@@ -752,42 +818,60 @@
   </footer>
 
   <script>
-    // Mobile nav toggle
-    const hamburger = document.getElementById('hamburger');
-    let navOpen = false;
-    hamburger.addEventListener('click', () => {
-      navOpen = !navOpen;
-      const links = document.querySelector('.nav-links');
-      if (navOpen) {
-        links.style.cssText = `
-          display: flex; flex-direction: column; gap: 16px;
-          position: absolute; top: 80px; left: 20px; right: 20px;
-          background: rgba(255,255,255,0.92); backdrop-filter: blur(24px);
-          border: 1px solid rgba(255,255,255,0.6); border-radius: 20px;
-          padding: 20px 24px; box-shadow: 0 24px 48px rgba(15,34,64,0.2); z-index: 200;
-        `;
-        links.querySelectorAll('a').forEach(a => { a.style.fontSize = '16px'; a.style.padding = '6px 0'; });
-      } else {
-        links.style.cssText = 'display: none;';
-      }
+    // THEME TOGGLE
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('themeToggle');
+    let dark = false;
+    const saved = localStorage.getItem('moya_download_theme');
+    if (saved) { html.setAttribute('data-theme', saved); dark = saved === 'dark'; }
+    themeBtn.addEventListener('click', () => {
+      dark = !dark;
+      const t = dark ? 'dark' : 'light';
+      html.setAttribute('data-theme', t);
+      localStorage.setItem('moya_download_theme', t);
     });
 
-    // Scroll entrance animations (enhanced)
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.08, rootMargin: '0px 0px -50px 0px' });
+    // MOBILE NAV
+    const hamburger = document.getElementById('hamburger');
+    const mobileNav  = document.getElementById('mobileNav');
+    const mobileNavClose = document.getElementById('mobileNavClose');
+    function openMobileNav() {
+      mobileNav.classList.add('open'); document.body.style.overflow='hidden';
+      hamburger.children[0].style.transform='rotate(45deg) translate(5px,5px)';
+      hamburger.children[1].style.opacity='0';
+      hamburger.children[2].style.transform='rotate(-45deg) translate(5px,-5px)';
+    }
+    function closeMobileNav() {
+      mobileNav.classList.remove('open'); document.body.style.overflow='';
+      hamburger.children[0].style.transform='';
+      hamburger.children[1].style.opacity='';
+      hamburger.children[2].style.transform='';
+    }
+    hamburger.addEventListener('click', () => { if (mobileNav.classList.contains('open')) closeMobileNav(); else openMobileNav(); });
+    mobileNavClose.addEventListener('click', closeMobileNav);
+    document.addEventListener('keydown', e => { if (e.key==='Escape') closeMobileNav(); });
+    window.addEventListener('resize', () => { if (window.innerWidth > 900) closeMobileNav(); });
 
-    const animEls = document.querySelectorAll('.why-card, .step-card, .faq-item, .platform-card, .network-pill');
-    animEls.forEach((el, i) => {
-      el.style.opacity = '0';
-      el.style.transform = 'translateY(28px)';
-      el.style.transition = `opacity 0.55s ease ${i * 0.08}s, transform 0.55s cubic-bezier(0.34,1.56,0.64,1) ${i * 0.08}s`;
+    // SCROLL REVEALS
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
+    }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
+    document.querySelectorAll('.reveal').forEach((el) => {
+      const siblings = el.parentElement.querySelectorAll('.reveal');
+      const idx = Array.from(siblings).indexOf(el);
+      el.style.transitionDelay = (idx * 80) + 'ms';
       observer.observe(el);
+    });
+
+    // BG PARALLAX
+    window.addEventListener('scroll', () => {
+      document.querySelector('.bg-mesh').style.transform = `translateY(${window.scrollY * 0.06}px)`;
+    }, { passive: true });
+
+    // TOUCH FEEDBACK
+    document.querySelectorAll('.btn-nav, .btn-store-gp, .btn-store-as, .btn-mega-gp, .btn-mega-as, .mobile-nav-cta').forEach(btn => {
+      btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
+      btn.addEventListener('touchend',   () => btn.style.opacity = '',       { passive: true });
     });
   </script>
 </body>
