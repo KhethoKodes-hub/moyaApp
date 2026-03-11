@@ -6,9 +6,7 @@
   <title>MoyaApp · Our Story</title>
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,400;1,700&display=swap" rel="stylesheet">
   <style>
-    /* ══════════════════════════════════
-       THEME VARIABLES
-    ══════════════════════════════════ */
+    
     :root {
       --bg:#e8f2ff; --bg2:#dbeafe; --bg3:#f0f8ff;
       --text:#0a1628; --text2:#1a3a6e; --text3:#4a6a9c; --text-muted:#94a3b8;
@@ -48,7 +46,6 @@
     body{font-family:'Montserrat',sans-serif;background:var(--bg);color:var(--text);overflow-x:hidden;min-height:100vh;transition:background 0.4s,color 0.4s;}
     body::after{content:'';position:fixed;inset:0;z-index:2000;pointer-events:none;opacity:.025;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)'/%3E%3C/svg%3E");background-size:200px;}
 
-    /* BG MESH */
     .bg-mesh{position:fixed;inset:0;z-index:-1;animation:meshFloat 20s ease-in-out infinite alternate;transition:background 0.4s;}
     [data-theme="light"] .bg-mesh{background:radial-gradient(ellipse 80% 80% at 20% -10%,rgba(147,197,253,0.55) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 90% 30%,rgba(59,130,246,0.25) 0%,transparent 55%),radial-gradient(ellipse 70% 60% at 10% 80%,rgba(191,219,254,0.6) 0%,transparent 55%),radial-gradient(ellipse 80% 60% at 80% 90%,rgba(255,255,255,0.9) 0%,transparent 60%),linear-gradient(160deg,#f0f8ff 0%,#dbeafe 40%,#bfdbfe 75%,#93c5fd 100%);}
     [data-theme="dark"]  .bg-mesh{background:radial-gradient(ellipse 80% 80% at 20% -10%,rgba(0,56,255,0.3) 0%,transparent 60%),radial-gradient(ellipse 60% 70% at 90% 30%,rgba(0,229,255,0.1) 0%,transparent 55%),radial-gradient(ellipse 70% 60% at 10% 80%,rgba(10,20,48,0.8) 0%,transparent 55%),linear-gradient(160deg,#04091A 0%,#060D22 40%,#0A1430 75%,#0f2240 100%);}
@@ -62,7 +59,6 @@
     @keyframes o2{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(-80px,-60px) scale(1.15);}}
     @keyframes o3{0%,100%{transform:translate(0,0) scale(1);}40%{transform:translate(50px,-40px) scale(1.08);}80%{transform:translate(-30px,30px) scale(0.95);}}
 
-    /* DATA STREAMS */
     .data-streams{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;opacity:var(--stream-opacity);transition:opacity 0.4s;}
     .stream{position:absolute;width:1px;background:linear-gradient(180deg,transparent,rgba(37,99,235,0.9),transparent);animation:stream-fall linear infinite;}
     .stream:nth-child(1){left:5%;height:90px;animation-duration:4s;animation-delay:0s}
@@ -74,7 +70,6 @@
     .stream:nth-child(7){left:88%;height:80px;animation-duration:3.4s;animation-delay:1.9s}
     @keyframes stream-fall{0%{top:-15%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:115%;opacity:0}}
 
-    /* WIFI RINGS */
     .wifi-pulse{position:fixed;bottom:8%;right:4%;width:120px;height:120px;pointer-events:none;z-index:0;opacity:var(--wifi-opacity);transition:opacity 0.4s;}
     .wp-ring{position:absolute;top:50%;left:50%;border:1.5px solid rgba(37,99,235,0.8);border-radius:50%;transform:translate(-50%,-50%) scale(0);animation:wp-expand 3.5s ease-out infinite;}
     .wp-ring:nth-child(1){width:40px;height:40px;animation-delay:0s}
@@ -82,13 +77,11 @@
     .wp-ring:nth-child(3){width:120px;height:120px;animation-delay:1.4s}
     @keyframes wp-expand{0%{transform:translate(-50%,-50%) scale(0);opacity:.9}100%{transform:translate(-50%,-50%) scale(1);opacity:0}}
 
-    /* GLASS */
     .glass{backdrop-filter:blur(24px) saturate(180%);-webkit-backdrop-filter:blur(24px) saturate(180%);background:var(--glass-bg);border:1px solid var(--glass-border);box-shadow:var(--shadow-card);transition:background 0.4s,border 0.4s,box-shadow 0.4s;}
     .glass-lite{backdrop-filter:blur(20px) saturate(160%);-webkit-backdrop-filter:blur(20px) saturate(160%);background:var(--glass-lite-bg);border:1px solid var(--glass-lite-border);transition:background 0.4s,border 0.4s;}
 
     .container{max-width:1300px;margin:0 auto;padding:0 28px;position:relative;z-index:1;}
 
-    /* ══ THEME TOGGLE ══ */
     .theme-toggle{position:relative;width:54px;height:28px;background:var(--glass-lite-bg);border:1px solid var(--glass-lite-border);border-radius:100px;cursor:pointer;flex-shrink:0;transition:all 0.3s;overflow:hidden;}
     .theme-toggle::before{content:'';position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:linear-gradient(135deg,#2563eb,#60a5fa);transition:transform 0.4s cubic-bezier(.34,1.56,.64,1);box-shadow:0 2px 8px rgba(37,99,235,0.5);}
     [data-theme="dark"] .theme-toggle::before{transform:translateX(26px);background:linear-gradient(135deg,#f0b429,#f97316);box-shadow:0 2px 8px rgba(249,115,22,0.4);}
@@ -96,7 +89,6 @@
     .t-moon{left:6px;opacity:1;} .t-sun{right:5px;opacity:0.4;}
     [data-theme="dark"] .t-moon{opacity:0.4;} [data-theme="dark"] .t-sun{opacity:1;}
 
-    /* ══ NAV ══ */
     nav{position:sticky;top:0;z-index:200;padding:14px 0;}
     .nav-inner{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;border-radius:20px;gap:12px;transition:box-shadow 0.3s,background 0.4s;}
     .logo{display:flex;align-items:center;gap:12px;text-decoration:none;flex-shrink:0;}
@@ -124,7 +116,6 @@
     .mobile-nav-close{position:absolute;top:18px;right:18px;width:44px;height:44px;background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:18px;color:var(--text);touch-action:manipulation;transition:background 0.4s;}
     .mobile-nav-cta{margin-top:18px;background:linear-gradient(135deg,#2563eb,#3b82f6);color:white;border:none;padding:17px 48px;border-radius:18px;font-size:17px;font-weight:900;font-family:'Montserrat',sans-serif;cursor:pointer;box-shadow:0 10px 30px rgba(37,99,235,0.45);width:100%;touch-action:manipulation;}
 
-    /* ══ SECTION SYSTEM ══ */
     .section-eyebrow{display:inline-flex;align-items:center;gap:8px;background:var(--eyebrow-bg);border:1px solid var(--eyebrow-border);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;color:var(--eyebrow-text);margin-bottom:16px;letter-spacing:0.5px;text-transform:uppercase;transition:all 0.4s;}
     .section-eyebrow svg{width:12px;height:12px;stroke:currentColor;flex-shrink:0;}
     .section-h2{font-family:'Montserrat',sans-serif;font-size:clamp(26px,4vw,52px);font-weight:900;letter-spacing:-2px;color:var(--text);margin-bottom:12px;line-height:1.05;transition:color 0.4s;}
@@ -134,7 +125,6 @@
     .section-header.center{text-align:center;}
     .section-header.center .section-sub{margin:0 auto;}
 
-    /* ══ PAGE HERO ══ */
     .page-hero{margin:20px 0 72px;border-radius:32px;overflow:hidden;position:relative;min-height:340px;display:flex;align-items:center;justify-content:center;}
     .page-hero-img{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1527683611643-4009f3a761c2?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center 30%;transition:transform 0.8s ease;}
     .page-hero:hover .page-hero-img{transform:scale(1.04);}
@@ -155,7 +145,6 @@
     [data-theme="light"] .page-hero-sub{color:#3a5080;}
     [data-theme="dark"]  .page-hero-sub{color:rgba(255,255,255,0.82);background:rgba(0,0,0,0.28);border-color:rgba(255,255,255,0.15);}
 
-    /* ══ ORIGIN ══ */
     .origin-section{padding:0 0 72px;}
     .origin-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;}
     .origin-img-card{border-radius:28px;overflow:hidden;position:relative;height:440px;transition:transform 0.5s cubic-bezier(0.34,1.56,0.64,1),box-shadow 0.5s;}
@@ -180,7 +169,6 @@
     .origin-stat-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:24px;color:#2563eb;line-height:1;letter-spacing:-1px;}
     .origin-stat-label{font-size:10px;color:var(--text-muted);font-weight:600;margin-top:4px;text-transform:uppercase;letter-spacing:0.3px;}
 
-    /* ══ MISSION / VISION ══ */
     .mission-section{padding:0 0 72px;}
     .mission-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
     .mission-card{border-radius:28px;overflow:hidden;position:relative;min-height:360px;display:flex;flex-direction:column;justify-content:flex-end;transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);}
@@ -198,7 +186,6 @@
     .mission-arrow svg{width:14px;height:14px;stroke:currentColor;flex-shrink:0;}
     .mission-card:hover .mission-arrow{opacity:1;transform:none;}
 
-    /* ══ TIMELINE ══ */
     .timeline-section{padding:0 0 72px;}
     .timeline-wrap{border-radius:28px;padding:44px 48px;transition:background 0.4s,border 0.4s;}
     .timeline-header{display:flex;align-items:center;gap:12px;margin-bottom:44px;}
@@ -218,7 +205,6 @@
     .timeline-item:hover .timeline-year{color:#2563eb;}
     .timeline-label{font-size:11px;color:var(--text-muted);line-height:1.5;font-weight:500;transition:color 0.4s;}
 
-    /* ══ TEAM ══ */
     .team-section{padding:0 0 72px;}
     .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;}
     .team-card{border-radius:26px;overflow:hidden;background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(20px);box-shadow:var(--shadow-card);transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);position:relative;}
@@ -240,7 +226,6 @@
     .team-quote{font-size:15px;color:var(--text3);line-height:1.7;font-style:italic;padding-left:14px;border-left:3px solid var(--border);transition:border-color 0.3s,color 0.4s;}
     .team-card:hover .team-quote{border-color:#2563eb;}
 
-    /* ══ VALUES ══ */
     .values-section{padding:0 0 72px;}
     .values-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
     .value-card{border-radius:24px;padding:28px 20px;text-align:center;background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(20px);box-shadow:var(--shadow-card);transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);cursor:default;position:relative;overflow:hidden;}
@@ -255,7 +240,6 @@
     .value-card:hover .value-title{color:#2563eb;}
     .value-desc{font-size:13px;color:var(--text3);line-height:1.6;transition:color 0.4s;}
 
-    /* ══ TESTIMONIAL ══ */
     .testimonial-section{padding:0 0 72px;}
     .testimonial-card{border-radius:32px;overflow:hidden;position:relative;min-height:380px;display:flex;align-items:center;justify-content:center;transition:box-shadow 0.4s;}
     .testimonial-card:hover{box-shadow:0 60px 120px rgba(0,20,80,0.22);}
@@ -274,7 +258,6 @@
     .author-dot{width:8px;height:8px;background:#00e676;border-radius:50%;flex-shrink:0;animation:livePulse 2s infinite;}
     @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(0,230,118,0.6)}70%{box-shadow:0 0 0 10px rgba(0,230,118,0)}100%{box-shadow:0 0 0 0 rgba(0,230,118,0)}}
 
-    /* ══ IMPACT ══ */
     .impact-section{padding:0 0 72px;}
     .impact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
     .impact-card{border-radius:24px;padding:32px 20px;text-align:center;background:var(--card-bg);border:1px solid var(--card-border);backdrop-filter:blur(20px);box-shadow:var(--shadow-card);transition:all 0.45s cubic-bezier(0.34,1.56,0.64,1);cursor:default;position:relative;overflow:hidden;}
@@ -285,7 +268,6 @@
     .impact-card:hover .impact-num{transform:scale(1.1);}
     .impact-label{font-size:13px;color:var(--text3);line-height:1.5;font-weight:500;transition:color 0.4s;}
 
-    /* ══ FUTURE ══ */
     .future-section{padding:0 0 72px;}
     .future-card{border-radius:36px;overflow:hidden;position:relative;min-height:380px;display:flex;align-items:center;justify-content:center;transition:box-shadow 0.4s;}
     .future-card:hover{box-shadow:0 60px 120px rgba(0,20,80,0.25);}
@@ -311,7 +293,6 @@
     .future-tag:hover{background:#2563eb;color:white;border-color:#2563eb;transform:translateY(-4px) scale(1.06);box-shadow:0 12px 28px rgba(37,99,235,0.4);}
     .future-tag:hover svg{stroke:white;}
 
-    /* ══ DOWNLOAD CTA ══ */
     .download-section{padding:0 0 72px;}
     .download-inner{border-radius:36px;padding:72px 56px;text-align:center;position:relative;overflow:hidden;transition:background 0.4s,border 0.4s;}
     .download-inner-photo{position:absolute;inset:0;background-image:url('https://images.unsplash.com/photo-1531206715517-5c0ba140b2b8?q=80&w=2070&auto=format&fit=crop');background-size:cover;background-position:center;opacity:0.06;transition:opacity 0.4s;}
@@ -329,7 +310,6 @@
     .btn-store-big{display:block;font-size:17px;font-weight:800;letter-spacing:-0.3px;line-height:1.3;}
     .download-note{font-size:12px;color:var(--text-muted);position:relative;z-index:1;font-weight:500;transition:color 0.4s;}
 
-    /* ══ FOOTER ══ */
     footer{padding:40px 0 28px;border-top:1px solid var(--border);transition:border-color 0.4s;}
     .footer-inner{display:flex;align-items:flex-start;justify-content:space-between;flex-wrap:wrap;gap:20px;}
     .footer-copy{font-size:12px;color:var(--footer-copy);margin-top:8px;font-weight:500;transition:color 0.4s;}
@@ -337,12 +317,10 @@
     .footer-links a{font-size:13px;color:var(--footer-link);text-decoration:none;font-weight:600;transition:color 0.2s;}
     .footer-links a:hover{color:#2563eb;}
 
-    /* ══ SCROLL REVEALS ══ */
     .reveal{opacity:0;transform:translateY(32px);transition:opacity 0.7s ease,transform 0.7s cubic-bezier(0.34,1.56,0.64,1);}
     .reveal.visible{opacity:1;transform:none;}
     @keyframes countPop{from{transform:scale(0.7);opacity:0;}to{transform:scale(1);opacity:1;}}
 
-    /* ══ RESPONSIVE ══ */
     @media (max-width:1024px){
       .values-grid{grid-template-columns:repeat(2,1fr);}
       .impact-grid{grid-template-columns:repeat(2,1fr);}
@@ -474,7 +452,6 @@
     <div class="wp-ring"></div><div class="wp-ring"></div><div class="wp-ring"></div>
   </div>
 
-  <!-- MOBILE NAV -->
   <div class="mobile-nav" id="mobileNav">
     <button class="mobile-nav-close" id="mobileNavClose" aria-label="Close menu">✕</button>
     <a href="index.html" onclick="closeMobileNav()">Home</a>
@@ -486,7 +463,6 @@
     <a href="download.html"><button class="mobile-nav-cta" onclick="closeMobileNav()">Download free</button></a>
   </div>
 
-  <!-- NAV -->
   <nav>
     <div class="container">
       <div class="nav-inner glass">
@@ -516,7 +492,6 @@
     </div>
   </nav>
 
-  <!-- PAGE HERO -->
   <div class="container">
     <div class="page-hero">
       <div class="page-hero-img"></div>
@@ -533,7 +508,6 @@
     </div>
   </div>
 
-  <!-- ORIGIN -->
   <section class="origin-section">
     <div class="container">
       <div class="origin-grid">
@@ -573,7 +547,6 @@
     </div>
   </section>
 
-  <!-- MISSION / VISION -->
   <section class="mission-section">
     <div class="container">
       <div class="section-header">
@@ -585,7 +558,6 @@
         <p class="section-sub">Two guiding principles that shape every decision we make at MoyaApp.</p>
       </div>
       <div class="mission-grid">
-        <!-- Mission -->
         <div class="mission-card reveal">
           <div class="mission-img" style="background-image:url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?q=80&w=2070&auto=format&fit=crop');"></div>
           <div class="mission-overlay"></div>
@@ -602,7 +574,6 @@
             </div>
           </div>
         </div>
-        <!-- Vision -->
         <div class="mission-card reveal">
           <div class="mission-img" style="background-image:url('https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=2070&auto=format&fit=crop');background-position:center 30%;"></div>
           <div class="mission-overlay"></div>
@@ -623,7 +594,6 @@
     </div>
   </section>
 
-  <!-- TIMELINE -->
   <section class="timeline-section">
     <div class="container">
       <div class="section-header">
@@ -641,7 +611,6 @@
           <div class="timeline-header-title">Key milestones</div>
         </div>
         <div class="timeline-track">
-          <!-- 2018 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
@@ -650,7 +619,6 @@
             <div class="timeline-year">2018</div>
             <div class="timeline-label">Founded in Cape Town</div>
           </div>
-          <!-- 2019 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1.05 12a11 11 0 0 1 21.9 0m-21.9 0a11 11 0 0 0 21.9 0M1.05 12H23"/><path d="M12 1.05C12 1.05 8 6 8 12s4 10.95 4 10.95 4-4.95 4-10.95S12 1.05 12 1.05z"/></svg>
@@ -659,7 +627,6 @@
             <div class="timeline-year">2019</div>
             <div class="timeline-label">dataFREE texts launch</div>
           </div>
-          <!-- 2021 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -668,7 +635,6 @@
             <div class="timeline-year">2021</div>
             <div class="timeline-label">1 million users reached</div>
           </div>
-          <!-- 2022 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
@@ -677,7 +643,6 @@
             <div class="timeline-year">2022</div>
             <div class="timeline-label">Discover &amp; SASSA</div>
           </div>
-          <!-- 2023 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/></svg>
@@ -686,7 +651,6 @@
             <div class="timeline-year">2023</div>
             <div class="timeline-label">MoyaPlay &amp; MoyaPay</div>
           </div>
-          <!-- 2025 -->
           <div class="timeline-item">
             <div class="timeline-icon-wrap">
               <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg>
@@ -700,7 +664,6 @@
     </div>
   </section>
 
-  <!-- TEAM -->
   <section class="team-section">
     <div class="container">
       <div class="section-header">
@@ -773,7 +736,6 @@
     </div>
   </section>
 
-  <!-- VALUES -->
   <section class="values-section">
     <div class="container">
       <div class="section-header center">
@@ -816,7 +778,6 @@
     </div>
   </section>
 
-  <!-- TESTIMONIAL -->
   <section class="testimonial-section">
     <div class="container">
       <div class="testimonial-card reveal">
@@ -836,7 +797,6 @@
     </div>
   </section>
 
-  <!-- IMPACT -->
   <section class="impact-section">
     <div class="container">
       <div class="section-header center">
@@ -855,7 +815,6 @@
     </div>
   </section>
 
-  <!-- FUTURE -->
   <section class="future-section">
     <div class="container">
       <div class="future-card reveal">
@@ -891,7 +850,6 @@
     </div>
   </section>
 
-  <!-- DOWNLOAD CTA -->
   <section class="download-section">
     <div class="container">
       <div class="download-inner glass reveal">
@@ -903,7 +861,6 @@
         <h2 class="download-h2">Join millions staying<br>connected <em>their way</em></h2>
         <p class="download-sub">Download MoyaApp and never let data stop you from staying in touch.</p>
         <div class="download-btns">
-          <!-- Google Play -->
           <a class="btn-store" href="#" onclick="return false">
             <div class="btn-store-logo">
               <svg viewBox="0 0 24 24" width="32" height="32" xmlns="http://www.w3.org/2000/svg">
@@ -918,7 +875,6 @@
               <span class="btn-store-big">Google Play</span>
             </div>
           </a>
-          <!-- App Store -->
           <a class="btn-store" href="#" onclick="return false">
             <div class="btn-store-logo">
               <svg viewBox="0 0 24 24" width="30" height="30" fill="white" xmlns="http://www.w3.org/2000/svg">
@@ -936,7 +892,6 @@
     </div>
   </section>
 
-  <!-- FOOTER -->
   <footer>
     <div class="container">
       <div class="footer-inner">
@@ -959,7 +914,6 @@
   </footer>
 
   <script>
-    // THEME TOGGLE
     const html = document.documentElement;
     const themeBtn = document.getElementById('themeToggle');
     let dark = false;
@@ -972,7 +926,6 @@
       localStorage.setItem('moya_story_theme', t);
     });
 
-    // MOBILE NAV
     const hamburger = document.getElementById('hamburger');
     const mobileNav  = document.getElementById('mobileNav');
     const mobileNavClose = document.getElementById('mobileNavClose');
@@ -992,7 +945,6 @@
     mobileNavClose.addEventListener('click', closeMobileNav);
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeMobileNav(); });
 
-    // SCROLL REVEALS
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => { if (entry.isIntersecting) entry.target.classList.add('visible'); });
     }, { threshold: 0.07, rootMargin: '0px 0px -40px 0px' });
@@ -1004,7 +956,6 @@
       observer.observe(el);
     });
 
-    // IMPACT NUMBER POP
     const impactObs = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting && !entry.target.dataset.counted) {
@@ -1015,7 +966,6 @@
     }, { threshold: 0.5 });
     document.querySelectorAll('.impact-num').forEach(el => impactObs.observe(el));
 
-    // 3D TILT (desktop only)
     const isTouchDevice = !window.matchMedia('(hover: hover) and (pointer: fine)').matches;
     if (!isTouchDevice) {
       document.querySelectorAll('.team-card, .value-card, .impact-card, .mission-card').forEach(card => {
@@ -1035,13 +985,11 @@
       });
     }
 
-    // TOUCH FEEDBACK
     document.querySelectorAll('.btn-store, .btn-nav, .mobile-nav-cta').forEach(btn => {
       btn.addEventListener('touchstart', () => btn.style.opacity = '0.85', { passive: true });
       btn.addEventListener('touchend',   () => btn.style.opacity = '',       { passive: true });
     });
 
-    // SCROLL PARALLAX ON BG
     window.addEventListener('scroll', () => {
       document.querySelector('.bg-mesh').style.transform = `translateY(${window.scrollY * 0.07}px)`;
     }, { passive: true });
