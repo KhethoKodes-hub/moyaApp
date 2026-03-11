@@ -152,6 +152,18 @@
     .clients-title{text-align:center;font-size:13px;font-weight:700;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-bottom:24px;transition:color 0.4s;}
     .clients-grid{display:flex;flex-wrap:wrap;gap:20px 28px;justify-content:center;align-items:center;padding:20px 32px;border-radius:40px;}
     .client-item{font-family:'Montserrat',sans-serif;font-weight:800;font-size:16px;color:var(--client-color);padding:6px 12px;transition:all 0.2s;display:flex;align-items:center;gap:7px;letter-spacing:-0.3px;cursor:default;}
+    .client-logo{
+  height:32px;
+  width:auto;
+  object-fit:contain;
+  filter:grayscale(100%) opacity(0.7);
+  transition:all 0.3s ease;
+}
+
+.client-item:hover .client-logo{
+  filter:grayscale(0%) opacity(1);
+  transform:scale(1.08);
+}
     .client-item.large{font-size:19px;}
     .client-item .small-tagline{font-size:10px;font-weight:500;color:var(--client-tagline);letter-spacing:0;}
     .client-item:hover{color:#2563eb;transform:scale(1.04);}
@@ -415,21 +427,64 @@
     <div class="container">
       <div class="clients-title reveal">Trusted by industry leaders</div>
       <div class="clients-grid glass-strong reveal">
-        <span class="client-item large">KANTAR</span>
-        <span class="client-item">Survey54</span>
-        <span class="client-item">yazi</span>
-        <span class="client-item">Worldreader</span>
-        <span class="client-item">DataTech Solutions</span>
-        <span class="client-item">AVBOB</span>
-        <span class="client-item">AMANDLA <span class="small-tagline">action for mzansi</span></span>
-        <span class="client-item">BOXER</span>
-        <span class="client-item">SPAR</span>
-        <span class="client-item">Deloitte</span>
-        <span class="client-item">Social Surveys Africa</span>
-        <span class="client-item">Sanlam</span>
-        <span class="client-item">Cint</span>
-        <span class="client-item">1Life <span class="small-tagline">Changing Lives</span></span>
-      </div>
+
+<span class="client-item large">
+<img class="client-logo" src="https://upload.wikimedia.org/wikipedia/commons/6/62/Logo_kantar.jpg">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/survey.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/yazi.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/wor;dreader.jpeg">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/data.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/avbob.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/amandla.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/boxer.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/spar.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/deloi.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/ssa.jpeg">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/sanlam.jpeg">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/cint.png">
+</span>
+
+<span class="client-item">
+<img class="client-logo" src="assets/1life.jpg">
+</span>
+
+</div>
     </div>
   </section>
 
